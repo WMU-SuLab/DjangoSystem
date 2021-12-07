@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# 自定义项目入口url是哪个文件
 ROOT_URLCONF = 'ManagementSystem.urls'
 
 # 哪个引擎放前面就使用哪个，暂时没研究明白怎么两个同时生效
