@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+admin.site.site_title = '用户权限管理'
+admin.site.site_header = '用户权限管理'
+
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
+    # 注意，不是末尾函数(如include)最后都要加上'/'，但空字符千万也别加'/'
 ]

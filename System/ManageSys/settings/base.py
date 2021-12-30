@@ -36,8 +36,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+DATABASE_APPS_MAPPING = {
+    # example:
+    # 'app_name':'database_name',
+    'admin': 'default',
+    'auth': 'default',
+    'contenttypes': 'default',
+    'sessions': 'default',
+    'SilencerAtlas': 'SilencerAtlas',
+}
+
+DATABASE_ROUTERS = ['ManageSys.database_router.DatabaseRouter']
+
 MIDDLEWARE = [
-    # 'SilencerAtlasPage.middlewares.TimeItMiddleware',
+    # 'SilencerAtlas.middlewares.TimeItMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
@@ -49,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 # 自定义项目入口url是哪个文件
-ROOT_URLCONF = 'ManagementSystem.urls'
+ROOT_URLCONF = 'ManageSys.urls'
 
 # 哪个引擎放前面就使用哪个，暂时没研究明白怎么两个同时生效
 # 注意：django渲染引擎的语法和原生的jinja2不一样
@@ -92,7 +104,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ManagementSystem.wsgi.application'
+WSGI_APPLICATION = 'ManageSys.wsgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -156,7 +168,6 @@ CORS_ORIGIN_WHITELIST = (
 )
 # 指明在跨域访问中，后端是否支持对cookie的操作
 CORS_ALLOW_CREDENTIALS = True
-
 
 CORS_ALLOW_METHODS = (
     'DELETE',

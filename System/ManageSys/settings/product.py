@@ -25,7 +25,18 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'SilencerAtlasPage',
+        'NAME': 'Auth',
+        'USER': 'root',
+        'PASSWORD': 'laobatai981218',
+        'TEST': {
+            'NAME': 'SilencerAtlasTest'
+        }
+    },
+    'SilencerAtlas': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'NAME': 'SilencerAtlas',
         'USER': 'root',
         'PASSWORD': 'laobatai981218',
         'TEST': {
