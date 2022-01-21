@@ -27,7 +27,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'Auth',
         'USER': 'root',
-        'PASSWORD': 'laobatai981218',
+        'PASSWORD': 'wmu-sulab',
         'TEST': {
             'NAME': 'SilencerAtlasTest'
         }
@@ -38,7 +38,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'SilencerAtlas',
         'USER': 'root',
-        'PASSWORD': 'laobatai981218',
+        'PASSWORD': 'wmu-sulab',
         'TEST': {
             'NAME': 'SilencerAtlasTest'
         }

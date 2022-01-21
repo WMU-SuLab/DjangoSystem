@@ -1,0 +1,29 @@
+<meta charset="UTF-8">
+{% block title %}
+    <title>SilencerAtlas |
+        {% if  title == 'home' %}
+            Home
+        {% elif title == 'search' %}
+            Search
+        {% elif title == 'browse' %}
+            Browse
+        {% elif title == 'analysis' %}
+            Analysis
+        {% elif title == 'gene_browse' %}
+            Genome Browse
+        {% elif title == 'statistics' %}
+            Statistics
+        {% elif title == 'download' %}
+            Download
+        {% elif title == 'help' %}
+            Help
+        {% elif title == 'contact' %}
+            Contact
+        {% endif %}
+        Page
+    </title>
+{% endblock title %}
+{#<meta name="ROBOTS" content="ALL"/>#}
+{#<meta name="viewport" content="width=device-width, initial-scale=1"/>#}
+{#<meta name="description" content="SilencerAtlas: An atlas of silencer across X species "/>#}
+{#<link rel="shortcut icon" href="#" alt="SilencerAtlas " type="image/x-icon"/>#}

@@ -1,0 +1,129 @@
+{% extends 'SilencerAtlas/home.html' %}
+
+{% block main_styles %}
+    {% include 'base/table-styles.html' %}
+{% endblock %}
+
+{% block main_content %}
+    <div id="mainContent" style="display: none">
+        <div class="d-flex justify-content-center col-12 pt-4 fs-3">
+            <div class="col-11 d-flex justify-content-center">
+                <div id="silencerOverview" class="col-3 me-3 border">
+                    <h2 class="p-4 border-bottom"><i class="fas fa-list-alt"></i>Silencer Overview</h2>
+                    <ul class="list-group list-group-flush p-4" style="word-break:break-all;">
+                        <li class="list-group-item d-flex">
+                            <div class="col">SilencerID:</div>
+                            <div class="col">{{ silencer.silencer_id }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Species:</div>
+                            <div class="col">{{ silencer.species }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">BioSample type:</div>
+                            <div class="col">{{ silencer.bio_sample_type }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Tissue/Cell line type:</div>
+                            <div class="col">{{ silencer.tissue_type }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">BioSample name:</div>
+                            <div class="col">{{ silencer.bio_sample_name }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Genomic loci:</div>
+                            <div class="col">{{ silencer.genomic_loci }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Size:</div>
+                            <div class="col">{{ silencer.size }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Recognition factor:</div>
+                            <div class="col">{{ silencer.recognition_factors }}</div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <div class="col">Genome browser</div>
+                            <div class="col">
+                                <a href="{% url 'SilencerAtlas:page:genome_browse' %}?genome=hg38&locus={{ silencer.genomic_loci }}"
+                                   target="_blank">
+                                    <img src="{% static 'SilencerAtlas/images/SilencerAtlas.png' %}" alt=""
+                                         height="30" width="100">
+                                </a>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-9 px-4">
+                    <nav>
+                        <div class="nav nav-tabs" id="silencerTab" role="tablist">
+                            <button class="nav-link text-secondary px-4 active" id="SignalInSpecificBioSamples-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#SignalInSpecificBioSamples"
+                                    type="button" role="tab">Signal In<br>Specific Bio Samples
+                            </button>
+                            <button class="nav-link text-secondary px-4" id="PutativeTargetGenes-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#PutativeTargetGenes"
+                                    type="button" role="tab">Putative<br>Target Genes
+                            </button>
+                            <button class="nav-link text-secondary px-4" id="AssociatedGeneExpression-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#AssociatedGeneExpression"
+                                    type="button" role="tab">Associated<br>Gene Expression
+                            </button>
+                            <button class="nav-link text-secondary px-4" id="NearbyGenomicFeatures-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#NearbyGenomicFeatures"
+                                    type="button" role="tab">Nearby<br>Genomic Features
+                            </button>
+                            <button class="nav-link text-secondary px-4" id="CellTissueTypeSpecificity-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#CellTissueTypeSpecificity"
+                                    type="button" role="tab">Cell/Tissue<br>Type Specificity
+                            </button>
+                            <button class="nav-link text-secondary px-4" id="LinkedSilencersInOtherAssemblies-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#LinkedSilencersInOtherAssemblies"
+                                    type="button" role="tab">Linked Silencers<br>In Other Assemblies
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="silencerTabContent">
+                        <div class="tab-pane fade show active" id="SignalInSpecificBioSamples" role="tabpanel">
+                            <div class="py-3">
+                                <h2>Signal in this bio sample</h2>
+                                <table id="signalInThisBioSample"></table>
+                            </div>
+                            <div class="py-3">
+                                <h2>Signal in other bio sample</h2>
+                                <table id="signalInOtherBioSamples"></table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="PutativeTargetGenes" role="tabpanel">
+                            <div class="py-3">
+                                <table id="putativeTargetGenesTable"></table>
+                            </div>
+                            <div id="putativeTargetGenesNetwork"></div>
+                        </div>
+                        <div class="tab-pane fade" id="AssociatedGeneExpression" role="tabpanel"></div>
+                        <div class="tab-pane fade" id="NearbyGenomicFeatures" role="tabpanel"></div>
+                        <div class="tab-pane fade" id="CellTissueTypeSpecificity" role="tabpanel"></div>
+                        <div class="tab-pane fade" id="LinkedSilencersInOtherAssemblies" role="tabpanel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_scripts %}
+    {% include 'base/table-scripts.html' %}
+    {% include 'base/vue.html' %}
+    <script src="{% static 'js/plugs/echarts.min.js' %}"></script>
+    <script src="{% static 'SilencerAtlas/js/silencerDetails.js' %}"></script>
+{% endblock %}
+

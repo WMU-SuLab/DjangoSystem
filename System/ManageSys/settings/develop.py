@@ -14,7 +14,6 @@
 """
 __auth__ = 'diklios'
 
-
 from .base import *  # NOQA
 
 # Quick-start development settings - unsuitable for production
@@ -25,6 +24,36 @@ DEBUG = True
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# 查看SQL语句
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        # 'django': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        # },
+        # 'django.db.backends': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        #     'level': 'DEBUG',
+        # },
+    },
+}
+
+# 设置数据库
 DATABASES = {
     'default': {
         # 这个数据库是默认的sqlite数据库，测试用的数据库默认是存放于内存中

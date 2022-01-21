@@ -1,0 +1,129 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    min-width: 1200px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#mainContent, #loading {
+    /*使内容高度可以自由伸缩*/
+    flex: 1;
+}
+
+/*去除表格链接中的下划线*/
+.tableContent a {
+    text-decoration: none;
+}
+
+/*把因为index.css中导致缩小的工具栏恢复原来大小*/
+.tableContent .fixed-table-toolbar * {
+    font-size: 100%;
+}
+
+/*表单验证错误提示样式*/
+form.needs-validation label.error {
+    color: red;
+    font-style: italic
+}
+
+p {
+    text-indent: 2em;
+}
+
+h2 {
+    color: #36445d;
+    font-size: 30px;
+}
+
+/*loading的圆点样式*/
+.backdrop {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    /*background: linear-gradient(45deg, #389e0d, #73d13d)*/
+    background: linear-gradient(45deg, white, gray)
+}
+
+.loader {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center
+}
+
+.dot {
+    background: white;
+    margin: 5px;
+    -webkit-animation-name: loader;
+    animation-name: loader;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate
+}
+
+.dot:nth-child(1) {
+    -webkit-animation-delay: .2s;
+    animation-delay: .2s
+}
+
+.dot:nth-child(2) {
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s
+}
+
+.dot:nth-child(3) {
+    -webkit-animation-delay: .6s;
+    animation-delay: .6s
+}
+
+.dot:nth-child(4) {
+    -webkit-animation-delay: .8s;
+    animation-delay: .8s
+}
+
+.dot:nth-child(5) {
+    -webkit-animation-delay: 1s;
+    animation-delay: 1s
+}
+
+@-webkit-keyframes loader {
+    from {
+        width: 2px;
+        height: 2px;
+        border-radius: 1px
+    }
+    to {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px
+    }
+}
+
+@keyframes loader {
+    from {
+        width: 2px;
+        height: 2px;
+        border-radius: 1px
+    }
+    to {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px
+    }
+}

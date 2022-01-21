@@ -1,0 +1,21 @@
+#searchForms {
+    min-height: 300px;
+}
+
+#searchByRegionForm {
+    margin: 2rem 0;
+}
+
+#searchByGeneForm {
+    margin: 2rem 0;
+}
+
+#searchByTFForm {
+    margin: 2rem 0;
+}
+
+#searchBySNPForm {
+    margin: 2rem 0;
+}
+
+

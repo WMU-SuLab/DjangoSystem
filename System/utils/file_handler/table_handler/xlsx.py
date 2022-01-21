@@ -18,7 +18,7 @@ import os
 from django.conf import settings
 from openpyxl import Workbook
 
-from utils.file_handler import make_dir
+from utils.file_handler.dir import make_dir
 
 
 def generate_xlsx_file(filename, table_sheets, file_dir):

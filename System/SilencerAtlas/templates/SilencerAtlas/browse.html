@@ -1,0 +1,97 @@
+{% extends 'SilencerAtlas/home.html' %}
+{% block main_styles %}
+    {% include 'base/table-styles.html' %}
+    <link href="{% static 'css/plugs/searchMultipleSelect.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'SilencerAtlas/css/browse.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block main_content %}
+    <div id="mainContent" style="display: none">
+        <div class="d-flex justify-content-center col-12 pt-4 fs-3">
+            <div class="col-11 d-flex justify-content-center">
+                <div id="side" class="col-2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Data Source</h4>
+                        </div>
+                        <div id="source" class="list-group">
+                            <a v-for="source in sourcesSilencersCount" :id="source.value" href="#"
+                               @click="onChooseClick($event)"
+                               class="silencer_filter list-group-item d-flex w-100 justify-content-between">
+                                ${ source.label }
+                                <span class="badge bg-secondary rounded-pill d-flex justify-content-center align-items-center">
+                                ${ source.count }
+                            </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Species</h4>
+                        </div>
+                        <div id="species" class="list-group">
+                            <a v-for="species in speciesSilencersCount" :id="species.value" href="#"
+                               @click="onChooseClick($event)"
+                               class="silencer_filter list-group-item d-flex w-100 justify-content-between">
+                                ${ species.label }
+                                <span class="badge bg-secondary rounded-pill d-flex justify-content-center align-items-center">
+                                ${ species.count }
+                            </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">BioSample Type</h4>
+                        </div>
+                        <div id="bioSampleType" class="list-group">
+                            <a v-for="bioSampleType in bioSampleTypesSilencersCount" :id="bioSampleType.value" href="#"
+                               @click="onChooseClick($event)"
+                               class="silencer_filter list-group-item d-flex w-100 justify-content-between">
+                                ${ bioSampleType.label }
+                                <span class="badge bg-secondary rounded-pill d-flex justify-content-center align-items-center">
+                                ${ bioSampleType.count }
+                            </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Tissue Type</h4>
+                        </div>
+                        <div id="tissueTypeSelect" class="mySelect list-group" style="width: 100%"></div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">BioSample Name
+                                <span style="float: right;"
+                                      class="badge bg-secondary rounded-pill d-flex justify-content-center align-items-center">
+                                    ${bioSampleNameChosenSpan}
+                            </span>
+                            </h4>
+                        </div>
+                        <div id="bioSampleNameSelect" class="mySelect list-group" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="col-10 px-4">
+                    <table id="samplesSilencersTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_scripts %}
+    <script>
+        {#侧边栏需要的数据#}
+        var allSilencersCount = {{ all_silencers_count|safe }};
+        var sourcesSilencersCount ={{ sources_silencers_count|safe }};
+        var speciesSilencersCount ={{ species_silencers_count|safe }};
+        var bioSampleTypesSilencersCount ={{ bio_sample_types_silencers_count|safe }};
+        var tissueTypesSelectData ={{ tissue_types_select_data|safe }};
+        var bioSampleNamesSelectData ={{ bio_sample_names_select_data | safe }};
+    </script>
+    {% include 'base/table-scripts.html' %}
+    {% include 'base/vue.html' %}
+    <script src="{% static 'js/plugs/searchMultipleSelect.js' %}"></script>
+    <script src="{% static 'SilencerAtlas/js/browse.js' %}"></script>
+{% endblock %}

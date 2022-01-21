@@ -1,0 +1,79 @@
+{% extends 'SilencerAtlas/home.html' %}
+{% block main_styles %}
+
+{% endblock %}
+{% block main_content %}
+    <div id="mainContent" style="display: none">
+        <div class="d-flex justify-content-center pt-4 fs-3">
+            <div class="col-10 d-flex flex-column p-4 fs-3">
+                <h2>Download</h2>
+                <div class="pt-5">
+                    <table class="table table-striped table-bordered table-hover table-responsive caption-top"
+                           style="table-layout:fixed;word-break:break-all;">
+                        <caption>List of download content</caption>
+                        <thead class="table-light">
+                        <tr>
+                            <th>Omics</th>
+                            <th>Platform</th>
+                            <th style="width: 50%">Datasets</th>
+                            <th>Download</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">Genetics</th>
+                            <td>Gene</td>
+                            <td><u>Acute anterior uveitis,Age-related macular degeneration,Aplasia of lacrimal and
+                                salivary
+                                glands, Behcet's disease, Cataract, Chlamydia trachomatis seropositivity,
+                                Chorioretinopathy,
+                                Choroidal neovascularization, Corneal astigmatism, Diabetic macular edema, Diabetic
+                                retinopathy,
+                                Esotropia, Exfoliation syndrome, Fuchs' endothelial corneal dystrophy, Glaucoma, Graves
+                                disease,
+                                Hyperopia, Keratitis, Keratoconus, Lens.dislocation, Myopia, Progressive supranuclear
+                                palsy,
+                                Proliferative vitreoretinopathy, Pseudoexfoliation syndrome, Pterygium, Refractive
+                                astigmatism,
+                                Refractive error, Retinal degeneration, Retinal detachment, Retinitis pigmentosa,
+                                Retinopathy of
+                                prematurity, Strabismus, Uveal melanoma, Vogt-Koyanagi-Harada syndrome</u>
+                            </td>
+                            <td><a href="#">click here to download</a></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+                            <td>Variant</td>
+                            <td><u>Acute anterior uveitis,Age-related macular degeneration,Aplasia of lacrimal and
+                                salivary
+                                glands, Behcet's disease, Cataract, Chlamydia trachomatis seropositivity,
+                                Chorioretinopathy,
+                                Choroidal neovascularization, Corneal astigmatism, Diabetic macular edema, Diabetic
+                                retinopathy,
+                                Esotropia, Exfoliation syndrome, Fuchs' endothelial corneal dystrophy, Glaucoma, Graves
+                                disease,
+                                Hyperopia, Keratitis, Keratoconus, Lens.dislocation, Myopia, Progressive supranuclear
+                                palsy,
+                                Proliferative vitreoretinopathy, Pseudoexfoliation syndrome, Pterygium, Refractive
+                                astigmatism,
+                                Refractive error, Retinal degeneration, Retinal detachment, Retinitis pigmentosa,
+                                Retinopathy of
+                                prematurity, Strabismus, Uveal melanoma, Vogt-Koyanagi-Harada syndrome</u>
+                            </td>
+                            <td><a href="#">click here to download</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_scripts %}
+    <script>
+        $(function () {
+            endLoading();
+        })
+    </script>
+{% endblock %}

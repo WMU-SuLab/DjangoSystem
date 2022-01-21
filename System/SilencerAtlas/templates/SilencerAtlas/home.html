@@ -1,0 +1,247 @@
+{% extends 'frame/bootstrap5.html' %}
+{% block head %}
+    {% include 'SilencerAtlas/base/_meta.html' %}
+    {% block styles %}
+        {{ block.super }}
+        <link href="{% static 'SilencerAtlas/css/common.css' %}" rel="stylesheet">
+        <link href="{% static 'SilencerAtlas/css/navbar.css' %}" rel="stylesheet">
+        <link href="{% static 'SilencerAtlas/css/footer.css' %}" rel="stylesheet">
+        <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+        {% block main_styles %}
+        {% endblock %}
+    {% endblock %}
+{% endblock head %}
+{% block body %}
+    {% include 'SilencerAtlas/base/_navigator.html' %}
+    {% block content %}
+        <div id="loading" class="backdrop">
+            <div class="loader">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        {% block main_content %}
+            <div id="mainContent" style="display: none">
+                <div class="d-flex justify-content-center pt-5">
+                    <div class="col-10 d-flex flex-column fs-3">
+                        <div class="d-flex flex-column flex-sm-row">
+                            <div class="col d-flex flex-column justify-content-center p-4">
+                                <div id="homeQuickSearch" class="input-group mb-3">
+                                    <span class="input-group-text">Human</span>
+                                    {#                                    <button id="homeQuickSearchSelected" class="btn btn-outline-success dropdown-toggle"#}
+                                    {#                                            type="button"#}
+                                    {#                                            data-bs-toggle="dropdown" aria-expanded="false">Species#}
+                                    {#                                    </button>#}
+                                    {#                                    <ul id="homeQuickSearchSelect" class="dropdown-menu">#}
+                                    {#                                        <li><a class="dropdown-item" href="#">Species</a></li>#}
+                                    {#                                        <li><a class="dropdown-item" href="#">Source</a></li>#}
+                                    {#                                    </ul>#}
+                                    <input id="homeQuickSearchText" type="text" class="form-control"
+                                           placeholder="Gene e.g. TP53 or region e.g. chr1:435444:2534323"
+                                           aria-label="Text input with dropdown button">
+                                    <button class="btn btn-success" type="button" id="quickSearch">Quick Search</button>
+                                </div>
+                                <div id="homeCarouselCaptions" class="carousel carousel-dark slide text-black pt-5"
+                                     data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#homeCarouselCaptions"
+                                                data-bs-slide-to="0"
+                                                class="active"
+                                                aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#homeCarouselCaptions"
+                                                data-bs-slide-to="1"
+                                                aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#homeCarouselCaptions"
+                                                data-bs-slide-to="2"
+                                                aria-label="Slide 3"></button>
+                                    </div>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div style="margin-bottom: 100px">
+                                                <img src="{% static 'SilencerAtlas/images/su-lab-logo.png' %}"
+                                                     class="d-block w-100"
+                                                     alt="">
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div style="margin-bottom: 100px">
+                                                <img src="{% static 'SilencerAtlas/images/su-lab-logo.png' %}"
+                                                     class="d-block w-100"
+                                                     alt="">
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div style="margin-bottom: 100px">
+                                                <img src="{% static 'SilencerAtlas/images/su-lab-logo.png' %}"
+                                                     class="d-block w-100"
+                                                     alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#homeCarouselCaptions"
+                                            data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                            data-bs-target="#homeCarouselCaptions"
+                                            data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+
+                                </div>
+                            </div>
+                            <div class="col d-flex flex-column align-items-center p-4">
+                                <h2>What is Silencer ?</h2>
+                                <p class="content p-3">
+                                    Silencers are specialized genomic cis-regulatory DNA elements that reduce the
+                                    transcriptional activity of the associated target gene, instead of increasing it.
+                                    Like
+                                    enhancers, silencers would provide binding sites that recruit regulatory factors, in
+                                    this
+                                    case as transcriptional repressors. This indicates that silencers play a vital role
+                                    in
+                                    regulating gene expression, especially actively participating in silencing by
+                                    modifying
+                                    chromatin state or occluding activators, to establish cell-type-specific expression
+                                    patterns. Despite the importance of silencers in development and disease, they have
+                                    been
+                                    much less studied than enhancers.
+                                </p>
+                                <h2>What is SilencerAtlas ?</h2>
+                                <p class="content p-3">
+                                    Here, we developed a comprehensive elaborately curated silencer database
+                                    (SilencerAtlas,
+                                    http://www.silencer/), which aims to provide a resource for experimentally supported
+                                    and
+                                    computationally predicted silencers, and their detailed regulatory annotation.
+                                    Currently,
+                                    SilencerAtlas documents a total of XXX validated silencers and XXX putative
+                                    silencers
+                                    predicted based on high-throughput datasets (e.g., H3K27me3.H3K9me3, and H4K20me3)
+                                    for
+                                    XXX
+                                    cell lines and XXX tissues across X species, including human, mouse, fly, and XXX.
+                                    Furthermore, SilencerAtlas provides detailed genetic and epigenetic annotation for
+                                    in-depth
+                                    analyses of silencers, including XXX target genes, XXX transcription factor binding
+                                    sites
+                                    (TFBSs).XXX DNase I hypersensitivity sites (DHSs), XXX CRISPR/Cas9 target sites, XXX
+                                    expression quantitative trait locus(eQTLs).XXX common SNPs, XXX risk SNPs, and XXXLD
+                                    SNPs.
+                                    Therefore, SilencerAtlas can facilitate genomic research on silencers, and help
+                                    elucidate
+                                    potential biological effects in transcriptional regulation.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-center p-4">
+                            <h2>How can I use SilencerAtlas?</h2>
+                            <div class="d-flex flex-column flex-sm-row justify-content-between">
+                                <p class="content p-3">
+                                    <a href="#"><i class="icon-paper-clip"></i> Browse sample information</a>:
+                                    The 'Data-Browse' page is an interactive and alphanumerically sortable table that
+                                    allows
+                                    users to instantly search for samples and customize filters using 'Data sources',
+                                    'Bio
+                                    Sample type', 'Tissue type' and 'Bio Sample name'. To view silencers for a given
+                                    sample,
+                                    users click on 'Sample ID'.
+                                </p>
+                                <p class="content p-3">
+                                    <a href="#"><i class="icon-paper-clip"></i> Query silencer</a>:
+                                    Based on the tissue query, users can query the silencer for all samples of a
+                                    particular
+                                    type
+                                    of tissue. In the gene-based query, users can query a gene of interest and
+                                    SilencerAtlas
+                                    will return all silencers that match the silencer-gene relationship for all samples.
+                                    In
+                                    the
+                                    sample-based advanced query, users determine the scope of the silencer query by
+                                    determining
+                                    the sample and genome location for the results of interest.
+                                </p>
+                                <p class="content p-3">
+                                    <a href="#"><i class="icon-paper-clip"></i> Silencer details</a>:
+                                    In addition to general information about the silencer, SilencerAtlas provides
+                                    detailed
+                                    annotation information including TFBSs, DHSs, CRISPR/Cas9 target sites, eQTLs,
+                                    common
+                                    SNPs,
+                                    risk SNPs, and LD SNPs.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-center p-4">
+                            <h2><i class="fas fa-chart-bar"></i>Statistics</h2>
+                            <div class="col-12 d-flex flex-column flex-sm-row justify-content-lg-center p-4">
+                                <div class="col p-4">
+                                    <div class="col p-4 d-flex flex-column" style="max-height: 500px;overflow: auto;">
+                                        <h2 class="align-self-center">Publications</h2>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">An item</li>
+                                            <li class="list-group-item">A second item</li>
+                                            <li class="list-group-item">A third item</li>
+                                            <li class="list-group-item">A fourth item</li>
+                                            <li class="list-group-item">And a fifth one</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col p-4 d-flex flex-column" style="max-height: 500px;overflow: auto;">
+                                        <h2 class="align-self-center">News and Updates</h2>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">An item</li>
+                                            <li class="list-group-item">A second item</li>
+                                            <li class="list-group-item">A third item</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col p-4 align-self-center">
+                                    <div id="TFChIPSeqStatisticsTable" class="row"
+                                         style="min-height: 500px;min-width: 500px"></div>
+                                </div>
+                                <div class="col p-4 d-flex flex-column align-items-center">
+                                    <div class="col-12">
+                                        <script type="text/javascript"
+                                                src="//rf.revolvermaps.com/0/0/6.js?i=5r0hew9ys4z&amp;m=7&amp;c=ff0000&amp;cr1=ffffff&amp;f=times_new_roman&amp;l=1&amp;bv=50"
+                                                async="async"></script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    {% endblock content %}
+    {% block footer %}
+        {% include "SilencerAtlas/base/_foot.html" %}
+    {% endblock footer %}
+    {% block scripts %}
+        {{ block.super }}
+        <script>
+            var app_prefix = '/silencer_atlas';
+            var app_page_prefix = app_prefix;
+            var api_prefix = '/api';
+            var data_prefix = '/data';
+            var utils_prefix = '/utils';
+            var v1_0_prefix = '/v1_0';
+            var app_api_prefix = app_prefix + api_prefix;
+            var app_api_data_prefix = app_api_prefix + data_prefix;
+            var app_api_utils_prefix = app_api_prefix + utils_prefix;
+            var app_api_data_v1_0_prefix = app_api_data_prefix + v1_0_prefix;
+            var app_api_utils_v1_0_prefix = app_api_utils_prefix + v1_0_prefix;
+            var search_page_prefix='{% url 'SilencerAtlas:page:search' %}';
+        </script>
+        <script src="{% static 'SilencerAtlas/js/utils.js' %}"></script>
+        {% block main_scripts %}
+            {% include 'base/echarts.html' %}
+            <script src="{% static 'SilencerAtlas/js/home.js' %}"></script>
+        {% endblock %}
+    {% endblock %}
+{% endblock body %}

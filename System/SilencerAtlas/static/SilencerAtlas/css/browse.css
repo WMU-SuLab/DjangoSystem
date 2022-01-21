@@ -1,0 +1,54 @@
+/*panel的样式*/
+.panel {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+
+}
+
+.panel-default {
+    border-color: #ddd;
+}
+
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border: 1px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.panel .panel-heading h4 {
+    font-size: 1.9rem;
+    margin-bottom: 0;
+}
+
+.panel-default > .panel-heading {
+    color: #fff;
+    background-color: #0D423A;
+    border-color: #ddd;
+}
+
+.panel .list-group-item {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.panel .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    z-index: 2;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.form-control{
+    font-size: 1.5rem;
+}

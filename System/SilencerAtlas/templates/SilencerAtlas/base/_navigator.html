@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-xxl navbar-dark bg-success p-0">
+    <div class="container-fluid">
+        <a class="navbar-brand navbar-logo fs-1" href="#">SilencerAtlas: An atlas of silencer across X species</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item p-3 {% if menu == 'home' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:home' %}"><i class="fas fa-home"></i>Home</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'browse' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:browse' %}"><i class="fas fa-list"></i>Browse</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'search' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:search' %}"><i class="fas fa-search"></i>Search</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'analysis' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:analysis' %}"><i class="fas fa-chart-bar"></i>Analysis</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'genome_browse' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:genome_browse' %}"><i class="far fa-window-maximize"></i>Genome
+                        Browse</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'statistics' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:statistics' %}"><i class="fas fa-chart-pie"></i>Statistics</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'download' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:download' %}"><i
+                            class="fas fa-cloud-download-alt"></i>Download</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'help' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:help' %}"><i class="far fa-question-circle"></i>Help</a>
+                </li>
+                <li class="nav-item p-3 {% if menu == 'contact' %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'SilencerAtlas:page:contact' %}"><i class="far fa-address-book"></i>Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

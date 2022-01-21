@@ -14,12 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import path,include
 
 admin.site.site_title = '用户权限管理'
 admin.site.site_header = '用户权限管理'
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
     # 注意，不是末尾函数(如include)最后都要加上'/'，但空字符千万也别加'/'
+    path('silencer_atlas/', include('SilencerAtlas.views', namespace='SilencerAtlas')),
+    # 用户权限管理
+    path('admin/', admin.site.urls, name='admin'),
+    # 增加密码重置功能
+    path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='admin_password_reset', ),
+    path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done', ),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
 ]

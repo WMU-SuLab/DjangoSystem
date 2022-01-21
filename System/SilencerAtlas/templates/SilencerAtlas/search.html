@@ -1,0 +1,345 @@
+{% extends 'SilencerAtlas/home.html' %}
+{% block main_styles %}
+    {% include 'base/table-styles.html' %}
+    <link href="{% static 'css/plugs/searchSelect.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'SilencerAtlas/css/search.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block main_content %}
+    <div id="mainContent" style="display: none">
+        <div class="d-flex flex-column justify-content-start align-items-center pt-4 fs-3">
+            <div id="searchForms" class="col-10">
+                <nav>
+                    <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                        <button class="nav-link text-secondary active " id="searchByRegion-tab" data-bs-toggle="tab"
+                                data-bs-target="#searchByRegion"
+                                type="button" role="tab" aria-controls="nav-home" aria-selected="true">Search by region
+                        </button>
+                        <button class="nav-link text-secondary" id="searchByGene-tab" data-bs-toggle="tab"
+                                data-bs-target="#searchByGene"
+                                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Search by
+                            gene
+                        </button>
+                        <button class="nav-link text-secondary" id="searchByTF-tab" data-bs-toggle="tab"
+                                data-bs-target="#searchByTF"
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Search by TF
+                        </button>
+                        <button class="nav-link text-secondary" id="searchBySNP-tab" data-bs-toggle="tab"
+                                data-bs-target="#searchBySNP"
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Search by SNP
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="searchByRegion" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <form id="searchByRegionForm" class="needs-validation g-3">
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByRegionFormSpeciesSelect" class="col-4 col-form-label">
+                                        Species:
+                                    </label>
+                                    <div class="col-8">
+                                        <select id="searchByRegionFormSpeciesSelect" name="species" class="form-select">
+                                            {% for key,value in species %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByRegionFormBioSampleTypeSelect" class="col-4 col-form-label">
+                                        BioSample Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <select id="searchByRegionFormBioSampleTypeSelect" name="bioSampleType"
+                                                class="form-select">
+                                            {% for key,value in bio_sample_types %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByRegionFormTissueTypeSearchSelect" class="col-4 col-form-label">
+                                        Tissue Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <div id="searchByRegionFormTissueTypeSearchSelect" name="tissueType"></div>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByRegionFormRegionInput" class="col-4 col-form-label">
+                                        Region:
+                                    </label>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" id="searchByRegionFormRegionInput"
+                                               autocomplete="off"
+                                               name="region" placeholder="e.g. chr1:5353130-5353206">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formButtonGroup mb-3 d-flex justify-content-center">
+                                <button id="searchByRegionFormExample" type="button" class="btn btn-primary m-3">
+                                    Example
+                                </button>
+                                <button id="searchByRegionFormSubmit" type="submit" class="btn btn-primary m-3">
+                                    Search
+                                </button>
+                                <button type="reset" class="btn btn-secondary m-3">reset</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="searchByGene" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <form id="searchByGeneForm" class="needs-validation g-3">
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByGeneFormSpeciesSelect"
+                                           class="col-4 col-form-label">Species:</label>
+                                    <div class="col-8">
+                                        <select id="searchByGeneFormSpeciesSelect" name="species" class="form-select">
+                                            {% for key,value in bio_sample_types %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByGeneFormBioSampleTypeSelect" class="col-4 col-form-label">
+                                        BioSample Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <select id="searchByGeneFormBioSampleTypeSelect" name="bioSampleType"
+                                                class="form-select">
+                                            {% for key,value in bio_sample_types %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByGeneFormTissueTypeSearchSelect" class="col-4 col-form-label">
+                                        Tissue Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <div id="searchByGeneFormTissueTypeSearchSelect" name="tissueType"></div>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByGeneFormStrategySelect"
+                                           class="col-4 col-form-label">Strategies:</label>
+                                    <div class="col-8">
+                                        <select id="searchByGeneFormStrategySelect" name="strategy" class="form-select"
+                                                required>
+                                            {% for key,value in strategies %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByGeneFormGeneSearchSelect" class="col-4 col-form-label">
+                                        Gene:
+                                    </label>
+                                    <div class="col-8">
+                                        <div id="searchByGeneFormGeneSearchSelect" name="gene"></div>
+                                    </div>
+                                </div>
+                                <div class="col row"></div>
+                            </div>
+                            <div class="formButtonGroup mb-3 d-flex justify-content-center">
+                                <button id="searchByGeneFormExample" type="button" class="btn btn-primary m-3">
+                                    Example
+                                </button>
+                                <button id="searchByGeneFormSubmit" type="submit" class="btn btn-primary m-3">
+                                    Search
+                                </button>
+                                <button type="reset" class="btn btn-secondary m-3">reset</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="searchByTF" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        <form id="searchByTFForm" class="needs-validation g-3" novalidate>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByTFFormSpeciesSelect"
+                                           class="col-4 col-form-label">Species:</label>
+                                    <div class="col-8">
+                                        <select id="searchByTFFormSpeciesSelect" name="species" class="form-select">
+                                            {% for key,value in species %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByTFFormBioSampleTypeSelect" class="col-4 col-form-label">
+                                        BioSample Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <select id="searchByTFFormBioSampleTypeSelect" name="bioSampleType"
+                                                class="form-select">
+                                            {% for key,value in bio_sample_types %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchByTFFormTissueTypeSearchSelect" class="col-4 col-form-label">
+                                        Tissue Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <div id="searchByTFFormTissueTypeSearchSelect" name="tissueType"></div>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchByTFFormTranscriptionFactorSearchSelect"
+                                           class="col-4 col-form-label">TF:</label>
+                                    <div class="col-8">
+                                        <div id="searchByTFFormTranscriptionFactorSearchSelect"
+                                             name="transcriptionFactor"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="formButtonGroup mb-3 d-flex justify-content-center">
+                                <button id="searchByTFFormExample" type="button" class="btn btn-primary m-3">
+                                    Example
+                                </button>
+                                <button id="searchByTFFormSubmit" type="submit" class="btn btn-primary m-3">
+                                    Search
+                                </button>
+                                <button type="reset" class="btn btn-secondary m-3">reset</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="searchBySNP" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        <form id="searchBySNPForm" class="needs-validation g-3" novalidate>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchBySNPFormSpeciesSelect"
+                                           class="col-4 col-form-label">Species:</label>
+                                    <div class="col-8">
+                                        <select id="searchBySNPFormSpeciesSelect" name="species" class="form-select"
+                                                required>
+                                            {% for key,value in species %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchBySNPFormBioSampleTypeSelect" class="col-4 col-form-label">
+                                        BioSample Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <select id="searchBySNPFormBioSampleTypeSelect" name="bioSampleType"
+                                                class="form-select" required>
+                                            {% for key,value in bio_sample_types %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchBySNPFormTissueTypeSearchSelect" class="col-4 col-form-label">
+                                        Tissue Type:
+                                    </label>
+                                    <div class="col-8">
+                                        <div id="searchBySNPFormTissueTypeSearchSelect" name="tissueType"></div>
+                                    </div>
+                                </div>
+                                <div class="col row">
+                                    <label for="searchBySNPFormVariantSelect"
+                                           class="col-4 col-form-label">Variants:</label>
+                                    <div class="col-8">
+                                        <select id="searchBySNPFormVariantSelect" name="variant" class="form-select"
+                                                required>
+                                            {% for key,value in variants %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col row">
+                                    <label for="searchBySNPFormRsIdSearchSelect"
+                                           class="col-4 col-form-label">SNP:</label>
+                                    <div class="col-8">
+                                        <div id="searchBySNPFormRsIdSearchSelect" name="rsId"></div>
+                                    </div>
+                                </div>
+                                <div class="col row"></div>
+                            </div>
+                            <div class="formButtonGroup mb-3 d-flex justify-content-center">
+                                <button id="searchBySNPFormExample" type="button" class="btn btn-primary m-3">
+                                    Example
+                                </button>
+                                <button id="searchBySNPFormSubmit" type="submit" class="btn btn-primary m-3">
+                                    Search
+                                </button>
+                                <button type="reset" class="btn btn-secondary m-3">reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-10 tableContent">
+                <table id="silencerTable"></table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_scripts %}
+    <script>
+        var tissueTypes ={{ tissue_types|safe }};
+        var tissueTypesSelectData = tissueTypes.map((item) => {
+            return {'id': item, 'value': item};
+        })
+        var searchByRegionTissueTypesSearchSelect;
+        var searchByGeneTissueTypesSearchSelect;
+        var searchByTFTissueTypesSearchSelect;
+        var searchBySNPTissueTypesSearchSelect;
+
+        var genes ={{ genes|safe }};
+        var genesSelectData = genes.map((item) => {
+            return {'id': item, 'value': item};
+        })
+        var geneSearchSelect;
+
+        var transcriptionFactors ={{ transcription_factors|safe }};
+        var transcriptionFactorsSelectData = transcriptionFactors.map((item) => {
+            return {'id': item, 'value': item};
+        })
+        var transcriptionFactorSearchSelect;
+
+        var rsIds ={{ rs_ids|safe }};
+        var rsIdsSelectData = rsIds.map((item) => {
+            return {'id': item, 'value': item};
+        })
+        var rsIdSearchSelect;
+
+        var silencerTable;
+        var formData;
+        var tableData = [];
+
+    </script>
+    {% include 'base/table-scripts.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+{#    <script src="{% static 'js/plugs/jquery.validate.min.js' %}"></script>#}
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
+{#    <script src="{% static 'js/plugs/additional-methods.min.js' %}"></script>#}
+    <script src="{% static 'js/plugs/searchSelect.js' %}"></script>
+    <script src="{% static 'SilencerAtlas/js/search.js' %}"></script>
+{% endblock %}

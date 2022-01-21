@@ -1,0 +1,20 @@
+{% extends 'SilencerAtlas/home.html' %}
+{% block main_styles %}
+{% endblock %}
+{% block main_content %}
+    <div id="mainContent" style="display: none">
+        <div class="d-flex justify-content-center pt-4 fs-3">
+            <div id="igv" class="col-10"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_scripts %}
+    {#    <script src="https://cdn.jsdelivr.net/npm/igv@2.10.4/dist/igv.min.js"></script>#}
+    <script>
+    var getIgvReference=app_api_data_v1_0_prefix+'/get_igv_reference';
+    var getIgvTracks=app_api_data_v1_0_prefix+'/get_igv_tracks';
+    </script>
+    <script src="{% static 'js/plugs/igv.min.js' %}"></script>
+    <script src="{% static 'SilencerAtlas/js/genomeBrowse.js' %}"></script>
+{% endblock %}
