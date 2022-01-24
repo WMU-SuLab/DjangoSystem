@@ -30,7 +30,7 @@ class Silencer(Base):
         ('unknown', 'unknown')
     ]
 
-    silencer_id = models.CharField(max_length=128,db_index=True, verbose_name='沉默子id')
+    silencer_id = models.CharField(max_length=128,unique=True,db_index=True, verbose_name='沉默子id')
     silencer_name=models.CharField(max_length=128,null=True,blank=True,db_index=True, verbose_name='沉默子名称')
     # OneToOneField类似于 ForeignKey 与 unique=True
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='沉默子区域', related_name='silencer')

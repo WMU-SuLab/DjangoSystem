@@ -25,7 +25,7 @@ from SilencerAtlas.libs.lists import recognition_factors_value_list
 def silencer_details(request, silencer_id):
     page = 'silencer_details'
 
-    silencer = Silencer.objects.filter(recognition_factors__name__in=recognition_factors_value_list).annotate(
+    silencer = Silencer.objects.annotate(
         recognition_factors_group_concat=GroupConcat(
             'silencerrecognitionfactors__recognition_factor__name', distinct=True),
     ).prefetch_related('sample','region').get(id=silencer_id)

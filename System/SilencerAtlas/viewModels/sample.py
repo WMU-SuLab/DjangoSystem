@@ -15,6 +15,10 @@ __auth__ = 'diklios'
 
 from SilencerAtlas.models.silencer import Silencer
 
+def filter_samples_any(samples,bio_sample_name):
+    for sample in samples:
+        if sample.bio_sample_name==bio_sample_name:
+            return sample
 
 # def bio_samples_classify_count(search_field, field_list):
 #     # filter_by = {search_field + '__in': lower_underline_list(field_list)}

@@ -14,6 +14,12 @@
 __auth__ = 'diklios'
 
 
+def filter_regions_any(regions, chromosome, start, end):
+    for region in regions:
+        if region.chromosome == chromosome and region.start == start and region.end == end:
+            return region
+
+
 def divide_region(region: str):
     """
     :param region: str类型，通用的格式为chr:start-end
@@ -21,7 +27,7 @@ def divide_region(region: str):
     """
     chromosome, locus = region.split(':')
     start, end = locus.split('-')
-    return chromosome, start, end
+    return chromosome.lower(), start, end
 
 
 def generate_region(chromosome, start, end):

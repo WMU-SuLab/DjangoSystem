@@ -28,7 +28,7 @@ class RecognitionFactor(Base):
         ('h3k79me3', 'H3K79me3'),
         ('unknown', 'unknown'),
     ]
-    name = models.CharField(max_length=32, choices=RECOGNITION_FACTOR_ITEMS, default='unknown', db_index=True,
+    name = models.CharField(max_length=32, choices=RECOGNITION_FACTOR_ITEMS,unique=True, default='unknown', db_index=True,
                             verbose_name='识别因子名称')
 
     class Meta(Base.Meta):

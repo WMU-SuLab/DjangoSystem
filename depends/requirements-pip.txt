@@ -10,16 +10,22 @@ colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1602866480
 cryptography @ file:///D:/bld/cryptography_1639699517190/work
 Django @ file:///home/conda/feedstock_root/build_artifacts/django_1638897748254/work
 django-cors-headers @ file:///home/conda/feedstock_root/build_artifacts/django-cors-headers_1638740536582/work
+django-hashid-field==3.3.3
+django-jinja==2.10.0
+django-mysql==4.3.0
 django-simpleui==2022.1
 docopt==0.6.2
-et-xmlfile==1.1.0
+et-xmlfile==1.0.1
+hashids==1.3.1
 idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1609836280497/work
 isort @ file:///home/conda/feedstock_root/build_artifacts/isort_1636447814597/work
 Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1636510082894/work
 lazy-object-proxy @ file:///D:/bld/lazy-object-proxy_1639599315457/work
 MarkupSafe @ file:///D:/bld/markupsafe_1635833738092/work
 mccabe==0.6.1
+numpy==1.22.1
 openpyxl @ file:///home/conda/feedstock_root/build_artifacts/openpyxl_1632332968451/work
+pandas==1.3.5
 pipreqs==0.4.10
 platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1630400214373/work
 pretty-errors @ file:///home/conda/feedstock_root/build_artifacts/pretty_errors_1638034747243/work
@@ -28,6 +34,7 @@ pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_16362571
 pylint @ file:///home/conda/feedstock_root/build_artifacts/pylint_1638563695852/work
 pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1633192417276/work
 PySocks @ file:///D:/bld/pysocks_1635862594204/work
+python-dateutil==2.8.2
 python-dotenv @ file:///home/conda/feedstock_root/build_artifacts/python-dotenv_1636649191224/work
 pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1633452062248/work
 requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1637771257551/work

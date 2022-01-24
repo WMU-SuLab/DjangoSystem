@@ -18,6 +18,10 @@ from django.db.models import Q
 from SilencerAtlas.libs.lists import unknown_value_list, recognition_factors_value_list
 from SilencerAtlas.models.silencer import Silencer
 
+def filter_silencers_any(silencers,silencer_id):
+    for silencer in silencers:
+        if silencer.silencer_id==silencer_id:
+            return silencer
 
 def filtered_unknown_silencers():
     return Silencer.objects.all().distinct().exclude(
@@ -26,7 +30,7 @@ def filtered_unknown_silencers():
         Q(sample__bio_sample_type__in=unknown_value_list) |
         Q(sample__tissue_type__in=unknown_value_list) |
         Q(sample__bio_sample_name__in=unknown_value_list)
-    ).filter(recognition_factors__name__in=recognition_factors_value_list)
+    )
 
 
 def filtered_sample_chosen_silencers(data):

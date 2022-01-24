@@ -15,16 +15,19 @@ __auth__ = 'diklios'
 
 # 测试完成后请删除所有代码
 import time
+
+import pandas as pd
+
 start = time.perf_counter()
 
 # count = 0
-# with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\esophagus_squamous_epithelium.integrate.txt',
+# with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\esophagus_muscularis_mucosa.integrate.txt',
 #           'r') as f, \
-#         open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\\2.txt', 'w') as w:
+#         open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\\1.txt', 'w') as w:
 #     head = f.readline()
 #     rows = f.readlines()
-#     header = ['silencer_id', 'silencer_name', 'chr', 'start', 'end', 'score', 'strand', 'bio_sample_name', '',
-#               'bio_sample_type']
+#     header = ['silencer_id', 'silencer_name', 'chr', 'start', 'end', 'score', 'strand', 'bio_sample_name', 'tissue_cell_type',
+#               'bio_sample_type','species','source','target_genes','recognition_factors','samples_recognition_factors_z_score']
 #     new_rows = ['\t'.join(header) + '\n']
 #     for row in rows:
 #         cols = row.strip().split('\t')
@@ -38,4 +41,8 @@ start = time.perf_counter()
 #             ';esophagus_squamous_epithelium-h3k27me3-1:' + cols[14], ]
 #         new_rows.append('\t'.join(new_cols) + '\n')
 #     w.writelines(new_rows)
+
+for df in pd.read_csv('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\\1.txt',sep='\t',chunksize=1000):
+    s=df['silencer_id']
+    print(s[0])
 print(f'{time.perf_counter() - start}')

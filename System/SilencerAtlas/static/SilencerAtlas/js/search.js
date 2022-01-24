@@ -291,24 +291,25 @@ function initTable() {
 
 function initSearchTextResult() {
     var queryArgs = getQueryArgs();
-    if (!isEmptyObject(queryArgs) ) {
+    if (!isEmptyObject(queryArgs)) {
         var searchText = queryArgs.searchText;
         if (searchText.includes(':') && searchText.includes('-')) {
             formData = {'region': searchText};
+        } else if (searchText.includes('_')) {
+            $("#searchBySNP-tab").click();
+            formData = {'rsId': searchText};
         } else {
             $("#searchByGene-tab").click();
             formData = {'gene': searchText};
         }
-        initTable();
     }
+    initTable();
 }
 
 $(function () {
     initSelects();
     initExamples();
     initForms();
-    initTable();
     initSearchTextResult();
     endLoading();
-
 });

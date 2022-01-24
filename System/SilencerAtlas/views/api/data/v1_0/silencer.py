@@ -36,7 +36,7 @@ def get_silencers(request):
     data = json.loads(request.body.decode('utf-8'))
     print(data)
     source = data.get('source', '')
-    species = data.get('species', '').lower()
+    species = data.get('species', '')
     bio_sample_type = data.get('bioSampleType', '')
     tissue_type = data.get('tissueType', '')
     # 按区域查询
@@ -68,10 +68,12 @@ def get_silencers(request):
         silencers = silencers.filter(silencergenes__gene__name__icontains=gene)
     if strategy :
         silencers = silencers.filter(silencergenes__strategy=strategy)
-    elif transcription_factor:
+    if transcription_factor:
         silencers = silencers.filter(silencertfbs__transcription_factor__name__icontains=transcription_factor)
-    elif rs_id and variant:
-        silencers = silencers.filter( silencersnps__snp__rs_id__icontains=rs_id,silencersnps__variant=variant)
+    if rs_id:
+        silencers = silencers.filter(silencersnps__snp__rs_id__icontains=rs_id)
+    if variant:
+        silencers = silencers.filter(silencersnps__variant=variant)
 
     # 根据查询条件过滤
     # 构建表格属性
@@ -197,9 +199,10 @@ def get_silencer_by_id(request, silencer_id):
 
     # Signal In Specific Bio Samples
     signal_in_this_bio_sample = []
-    silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.prefetch_related('recognition_factor').filter(
+    silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.prefetch_related('silencer','recognition_factor').filter(
         silencer__silencer_id=silencer_id,
-        bio_sample_name=silencer.sample.bio_sample_name,
+        bio_sample_name__in=list(
+            {silencer.sample.bio_sample_name, '_'.join(silencer.sample.bio_sample_name.split(' '))})
     ).exclude(recognition_factor__name__in=unknown_value_list)
     signal_in_this_bio_sample_row = {'bio_sample_name': silencer.sample.bio_sample_name, }
     recognition_factors_list = []
@@ -218,9 +221,9 @@ def get_silencer_by_id(request, silencer_id):
     for other_bio_sample_name in other_bio_sample_names:
         signal_in_other_bio_samples_row = {'bio_sample_name': other_bio_sample_name, }
         recognition_factors_list = []
-        silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.filter(
+        silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.prefetch_related('silencer','recognition_factor').filter(
             silencer__silencer_id=silencer_id,
-            bio_sample_name=other_bio_sample_name,
+            bio_sample_name__in=list({other_bio_sample_name, '_'.join(other_bio_sample_name.split(' '))})
         ).exclude(recognition_factor__name__in=unknown_value_list)
         for silencer_sample_recognition_factor in silencer_sample_recognition_factors:
             signal_in_other_bio_samples_row[
@@ -243,12 +246,18 @@ def get_silencer_by_id(request, silencer_id):
         row = {
             'strategies_algorithm': silencer_gene.strategy,
             'gene_name': silencer_gene.gene.name,
-            'genomic_loci': silencer_gene.gene.region.loci
         }
-        if silencer_gene.gene.strand=='+':
-            row['distance']=min(abs(silencer_gene.gene.region.start-silencer.region.start),abs(silencer_gene.gene.region.start-silencer.region.end))
+        if silencer_gene.gene.region:
+            row['genomic_loci']=silencer_gene.gene.region.loci
+            if silencer_gene.gene.strand == '+':
+                row['distance'] = min(abs(silencer_gene.gene.region.start - silencer.region.start),
+                                      abs(silencer_gene.gene.region.start - silencer.region.end))
+            else:
+                row['distance'] = min(abs(silencer_gene.gene.region.end - silencer.region.start),
+                                      abs(silencer_gene.gene.region.end - silencer.region.end))
         else:
-            row['distance']=min(abs(silencer_gene.gene.region.end-silencer.region.start),abs(silencer_gene.gene.region.end-silencer.region.end))
+            row['genomic_loci']='no data'
+            row['distance']='no data'
         putative_target_genes_table_data.append(row)
     # 图
     genes_strategies = {}
