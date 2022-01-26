@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path,include
+from django.urls import path, include
+# 导入server服务
+# from django.views.static import serve
+
+# from ManageSys.settings.base import STATIC_ROOT
 
 admin.site.site_title = '用户权限管理'
 admin.site.site_header = '用户权限管理'
@@ -30,4 +34,6 @@ urlpatterns = [
     path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done', ),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
+    # 自己提供静态资源服务，生产环境，static静态文件代理
+    # path('/static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
 ]

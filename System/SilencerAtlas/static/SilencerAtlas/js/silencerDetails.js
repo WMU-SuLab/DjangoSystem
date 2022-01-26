@@ -252,7 +252,9 @@ const AssociatedGeneExpression = {
     data() {
         return {
             bulkChart: null,
-            singleChart: null,
+            bulkDataMethod: 'linear',
+            // singleChart: null,
+
         }
     },
     computed: {
@@ -289,9 +291,9 @@ const AssociatedGeneExpression = {
                     }
                 },
                 grid: {
-                    left: '10%',
-                    right: '10%',
-                    bottom: '15%'
+                    left: '5%',
+                    right: '5%',
+                    bottom: '35%'
                 },
                 xAxis: {
                     type: 'category',
@@ -302,7 +304,11 @@ const AssociatedGeneExpression = {
                     },
                     splitLine: {
                         show: false
-                    }
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 300
+                    },
                 },
                 yAxis: {
                     type: 'value',
@@ -395,30 +401,36 @@ const AssociatedGeneExpression = {
     },
     methods: {
         changeToLasso() {
-            var newSource = []
-            this.bulkData.source = this.bulkData.source.map(function (arr) {
-                var newArr = [];
-                arr.forEach(function (item) {
-                    newArr.push(Math.log2(item));
-                })
-                newSource.push(newArr);
-                return newArr;
-            });
-            this.bulkData.source = newSource;
-            this.bulkChart.setOption(this.bulkChartOptions);
+            if (this.bulkDataMethod !== 'lasso') {
+                this.bulkDataMethod = 'lasso';
+                var newSource = []
+                this.bulkData.source = this.bulkData.source.map(function (arr) {
+                    var newArr = [];
+                    arr.forEach(function (item) {
+                        newArr.push(Math.log2(item));
+                    })
+                    newSource.push(newArr);
+                    return newArr;
+                });
+                this.bulkData.source = newSource;
+                this.bulkChart.setOption(this.bulkChartOptions);
+            }
         },
         changeToLinear() {
-            var newSource = []
-            this.bulkData.source = this.bulkData.source.map(function (arr) {
-                var newArr = [];
-                arr.forEach(function (item) {
-                    newArr.push(Math.pow(2, item));
+            if (this.bulkDataMethod !== 'linear') {
+                this.bulkDataMethod = 'linear';
+                var newSource = []
+                this.bulkData.source = this.bulkData.source.map(function (arr) {
+                    var newArr = [];
+                    arr.forEach(function (item) {
+                        newArr.push(Math.pow(2, item));
+                    });
+                    newSource.push(newArr);
+                    return newArr;
                 });
-                newSource.push(newArr);
-                return newArr;
-            });
-            this.bulkData.source = newSource;
-            this.bulkChart.setOption(this.bulkChartOptions);
+                this.bulkData.source = newSource;
+                this.bulkChart.setOption(this.bulkChartOptions);
+            }
         },
         tissueSortAsc() {
             arraySortedIndex(this.bulkData.names, 'asc');
@@ -468,7 +480,7 @@ const AssociatedGeneExpression = {
         },
         initEcharts() {
             this.bulkChart = echarts.init(document.getElementById('bulk_gene_expression_' + this.geneName), null, {
-                height: "500",
+                height: "600",
             });
             this.bulkChart.setOption(this.bulkChartOptions);
             // this.singleChart = echarts.init(document.getElementById('single_gene_expression_' + this.geneName), null, {

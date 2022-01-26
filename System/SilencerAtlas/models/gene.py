@@ -62,11 +62,11 @@ class GeneExpression(models.Model):
     """
     gene=models.ForeignKey(Gene, on_delete=models.CASCADE, related_name='gene_expressions', verbose_name='基因')
     bio_sample_name=models.CharField(max_length=128, null=False, blank=False,db_index=True, verbose_name='样本名')
-    expression_value=models.JSONField(default=list, null=True,blank=True,verbose_name='表达情况')
+    expression_value=models.JSONField(default=list,null=True,blank=True, verbose_name='表达情况')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '基因表达'
-        unique_together=(('gene','bio_sample_name','expression_value'),)
+        unique_together=(('gene','bio_sample_name',),)
 
     def __str__(self):
         return f'<Gene expression: {self.gene}-{self.bio_sample_name}:{self.expression_value}>'

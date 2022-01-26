@@ -7,10 +7,11 @@ name = "pypi"
 pipreqs = "*"
 python-dotenv = "*"
 requests = "*"
-pandas="*"
+pandas = "*"
 jinja2 = "*"
 django = "*"
 django-mysql = "*"
+pymysql = "*"
 django-hashid-field = "*"
 django-rest-framework = "*"
 django-jinja = "*"
@@ -18,8 +19,10 @@ django-simpleui = "*"
 django-cors-headers = "*"
 django-sslserver = "*"
 openpyxl = "*"
+gevent = "*"
 waitress = { version = "*", sys_platform = "== 'win32'" }
 gunicorn = { version = "*", sys_platform = "!= 'win32'" }
+supervisor = "*"
 
 [dev-packages]
 autopep8 = "*"

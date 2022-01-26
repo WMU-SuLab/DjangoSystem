@@ -281,16 +281,19 @@ def get_silencer_by_id(request, silencer_id):
     # Associated Gene Expression
     associated_gene_expressions = []
     for silencer_gene in silencer_genes:
-        associated_gene_expression={'gene_name':silencer_gene.gene.name}
+        if any([item.get('gene_name','')==silencer_gene.gene.name for item in associated_gene_expressions]):
+            continue
         gene_expressions=GeneExpression.objects.filter(gene=silencer_gene.gene)
         source=[]
         names=[]
         for gene_expression in gene_expressions:
-            source.append(gene_expression.expression)
+            source.append(gene_expression.expression_value)
             names.append(gene_expression.bio_sample_name)
-        bulk_data={'source':source,'names':names}
-        associated_gene_expression['bulk_data']=bulk_data
-        associated_gene_expressions.append(associated_gene_expression)
+        if source and names:
+            associated_gene_expression={'gene_name':silencer_gene.gene.name}
+            bulk_data={'source':source,'names':names}
+            associated_gene_expression['bulk_data']=bulk_data
+            associated_gene_expressions.append(associated_gene_expression)
 
     # Nearby Genomic Features
     # Cell / Tissue Type Specificity

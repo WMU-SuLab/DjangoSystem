@@ -27,9 +27,13 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'Auth',
         'USER': 'root',
-        'PASSWORD': 'wmu-sulab',
+        # 'PASSWORD': 'wmu-sulab',
+        'PASSWORD': 'laobatai981218',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        },
         'TEST': {
-            'NAME': 'SilencerAtlasTest'
+            'NAME': 'AuthTest'
         }
     },
     'SilencerAtlas': {
@@ -38,7 +42,11 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'SilencerAtlas',
         'USER': 'root',
-        'PASSWORD': 'wmu-sulab',
+        # 'PASSWORD': 'wmu-sulab',
+        'PASSWORD': 'laobatai981218',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        },
         'TEST': {
             'NAME': 'SilencerAtlasTest'
         }

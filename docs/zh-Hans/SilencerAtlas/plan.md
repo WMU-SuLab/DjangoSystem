@@ -13,7 +13,8 @@
 - [x] 数据库重构
 - [x] 数据库脚本重构
 - [ ] 优化有外键关系的数据管理页面，使得二者或三者可以同时编辑
-- [x] gunicorn
+- [ ] gunicorn
+- [ ] NGINX
 - [ ] 补全SNP、TFBs相关的数据
 - [ ] 数据库迁移
 
@@ -21,12 +22,12 @@
 
 - [x] 根据新模型重写所有页面
 - [x] knockout.js替换为vue.js
+- [ ] 修复基因表达部分的echarts
 - [ ] silencer details 界面剩余部分
 
 ### 被搁置的计划
 
 - [ ] 开发文档和说明
-- [ ] NGINX
 - [ ] 使用django-rest-framework
 
 ### 一些想法

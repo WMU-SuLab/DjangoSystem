@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 # 测试完成后请删除所有代码
 import time
 
-import pandas as pd
+# import pandas as pd
 
 start = time.perf_counter()
 
@@ -41,8 +41,27 @@ start = time.perf_counter()
 #             ';esophagus_squamous_epithelium-h3k27me3-1:' + cols[14], ]
 #         new_rows.append('\t'.join(new_cols) + '\n')
 #     w.writelines(new_rows)
+# genes=pd.read_csv('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\Homo_sapiens.GRCh38.95.gene.bed',sep='\t',names=['chr','start','end','strand','enm','name','type'])['name'].tolist()
+# print(len(genes))
+# genes2=[]
+# for df in pd.read_csv('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_tpm.gct',sep='\t',chunksize=10000,skiprows=2):
+#     genes2+=df['Description'].tolist()
+# gene1_2=set(genes)-set(genes2)
+# gene2_1=set(genes2)-set(genes)
+# with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/gene_use_have.txt','w') as w:
+#     w.write(str(len(gene1_2))+'\n')
+#     w.writelines([row+'\n' for row in list(gene1_2)])
+# with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/gene_have_use.txt','w') as w:
+#     w.write(str(len(gene2_1))+'\n')
+#     w.writelines([row+'\n' for row in list(gene2_1)])
 
-for df in pd.read_csv('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs\\1.txt',sep='\t',chunksize=1000):
-    s=df['silencer_id']
-    print(s[0])
+# with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/1.txt', 'r') as f1, open(
+#         'D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/2.txt', 'r') as f2, open(
+#         'D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/all.txt', 'w') as w:
+#     w.write(f1.readline())
+#     f2.readline()
+#     w.writelines(f1.readlines())
+#     w.writelines(f2.readlines())
+
+
 print(f'{time.perf_counter() - start}')

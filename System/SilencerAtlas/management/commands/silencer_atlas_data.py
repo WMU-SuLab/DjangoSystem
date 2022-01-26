@@ -107,7 +107,8 @@ def init_database_data(dir_path):
     print('import recognition factors data')
     RecognitionFactor.objects.bulk_create([
         RecognitionFactor(name=name)
-        for name in recognition_factors.keys()], ignore_conflicts=True)
+        for name in recognition_factors.keys()], batch_size=1000,
+        ignore_conflicts=True)
     # 初始化基因数据
     print('import gene data')
     genes_df = pd.read_csv(os.path.join(dir_path, 'Homo_sapiens.GRCh38.95.gene.bed'),
@@ -117,14 +118,16 @@ def init_database_data(dir_path):
         chromosome='chr' + row['chr'],
         start=row['start'],
         end=row['end'],
-    ) for index, row in regions_df.iterrows()], ignore_conflicts=True)
+    ) for index, row in regions_df.iterrows()], batch_size=1000,
+        ignore_conflicts=True)
     Gene.objects.bulk_create([Gene(
         name=row['gene_symbol'],
         ensembl_id=row['ensembl_id'],
         region=Region.objects.get(chromosome='chr' + row['chr'], start=row['start'], end=row['end']),
         strand=row['strand'],
         bio_type=row['bio_type']
-    ) for index, row in genes_df.iterrows()], ignore_conflicts=True)
+    ) for index, row in genes_df.iterrows()], batch_size=1000,
+        ignore_conflicts=True)
     # 初始化基因样本数据
     print('import gene expressions data')
     # 样本名称对应表
@@ -141,7 +144,8 @@ def init_database_data(dir_path):
         gene_expressions_count += 1
         print(f'read gene_expressions {(gene_expressions_count - 1) * 1000 + 1}-{gene_expressions_count * 1000}')
         gene_names = gene_sample_expressions_df['Description'].tolist()
-        Gene.objects.bulk_create([Gene(name=name) for name in gene_names], ignore_conflicts=True)
+        print('bulk create gene')
+        Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=1000, ignore_conflicts=True)
         genes = Gene.objects.filter(name__in=gene_names)
         gene_samples = {}
         for index, row in gene_sample_expressions_df.iterrows():
@@ -152,6 +156,7 @@ def init_database_data(dir_path):
                 else:
                     sample_expression[samples_name[col_name]] = [value]
             gene_samples[row['Description']] = sample_expression
+        print('bulk create gene expressions')
         GeneExpression.objects.bulk_create(
             [GeneExpression(
                 gene=filter_genes_any(genes, gene_name),
@@ -159,6 +164,7 @@ def init_database_data(dir_path):
                 expression_value=value,
             ) for gene_name, sample_expression in gene_samples.items() for bio_sample_name, value in
                 sample_expression.items()],
+            batch_size=1000,
             ignore_conflicts=True
         )
     # 初始化snp数据
@@ -182,7 +188,7 @@ def update_database_data(file_path):
             chromosome=row['chr'].lower(),
             start=row['start'],
             end=row['end'],
-        ) for index, row in df.iterrows()], ignore_conflicts=True)
+        ) for index, row in df.iterrows()], batch_size=1000, ignore_conflicts=True)
         regions = Region.objects.filter(chromosome__in=chromosomes, start__in=starts, end__in=ends)
         # 构建样本数据
         print('building samples')
@@ -201,7 +207,7 @@ def update_database_data(file_path):
             bio_sample_type=row['bio_sample_type'].lower(),
             species=row.get('species', 'human').lower(),
             source=row.get('source', 'encode').lower(),
-        ) for index, row in samples_df.iterrows()], ignore_conflicts=True)
+        ) for index, row in samples_df.iterrows()], batch_size=1000, ignore_conflicts=True)
         bio_sample_names = [row['bio_sample_name'] for index, row in samples_df.iterrows()]
         samples = Sample.objects.filter(bio_sample_name__in=bio_sample_names)
         # 构建silencer基础数据
@@ -213,7 +219,7 @@ def update_database_data(file_path):
             strand=row.get('strand', '.'),
             score=row.get('score', 0),
             sample=filter_samples_any(samples, bio_sample_name=row['bio_sample_name']),
-        ) for index, row in df.iterrows()], ignore_conflicts=True)
+        ) for index, row in df.iterrows()], batch_size=1000, ignore_conflicts=True)
         silencer_ids = [row['silencer_id'] for index, row in df.iterrows()]
         print('deleting silencers related data')
         silencers = Silencer.objects.filter(silencer_id__in=silencer_ids)
@@ -229,21 +235,21 @@ def update_database_data(file_path):
             silencer_genes = df['target_genes']
             gene_names = [gene_symbol for index, value in silencer_genes.items() for gene_symbol, strategy in
                           map(lambda item: item.split(':'), value.split(';'))]
-            Gene.objects.bulk_create([Gene(name=name) for name in gene_names], ignore_conflicts=True)
+            Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=1000, ignore_conflicts=True)
             genes = Gene.objects.filter(name__in=gene_names)
             SilencerGenes.objects.bulk_create([SilencerGenes(
                 silencer=filter_silencers_any(silencers, silencer_id=silencer_ids[index]),
                 gene=filter_genes_any(genes, name=gene_symbol),
                 strategy=strategy.lower()
             ) for index, value in silencer_genes.items()
-                for gene_symbol, strategy in map(lambda item: item.split(':'), value.split(';'))])
+                for gene_symbol, strategy in map(lambda item: item.split(':'), value.split(';'))], batch_size=1000)
         # 构建TFBs数据
         if 'TFBs' in df.columns:
             print('building TFBs')
             silencer_tfbs = df['TFBs']
             gene_names = [gene_symbol for index, value in silencer_tfbs.items() for gene_symbol in
                           map(lambda item: item.split('~')[0], value.split(';'))]
-            Gene.objects.bulk_create([Gene(name=name) for name in gene_names], ignore_conflicts=True)
+            Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=1000, ignore_conflicts=True)
             genes = Gene.objects.filter(name__in=gene_names)
             locations = []
             chromosomes = []
@@ -258,7 +264,7 @@ def update_database_data(file_path):
                     locations.append(binding_site)
             Region.objects.bulk_create(
                 [Region(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
-                ignore_conflicts=True)
+                batch_size=1000, ignore_conflicts=True)
             regions = Region.objects.filter(chromosome__in=chromosomes, start__in=starts, end__in=ends)
             SilencerTFBs.objects.bulk_create([SilencerTFBs(
                 silencer=filter_silencers_any(silencers, silencer_id=silencer_ids[index]),
@@ -267,21 +273,22 @@ def update_database_data(file_path):
                                                 end=binding_site[2]),
             ) for index, value in silencer_tfbs.items()
                 for gene_symbol, binding_site in
-                map(lambda item: (item.split('~')[0], divide_region(item.split('~')[1])), value.split(';'))])
+                map(lambda item: (item.split('~')[0], divide_region(item.split('~')[1])), value.split(';'))],
+                batch_size=1000, )
         # 构建SNPs数据
         if 'SNPs' in df.columns:
             print('building SNPs')
             silencer_snps = df['SNPs']
             rs_ids = [rs_id for index, value in silencer_snps.items()
                       for rs_id, variant in map(lambda item: item.split(':'), value.split(';'))]
-            SNP.objects.bulk_create([SNP(rs_id=rs_id) for rs_id in rs_ids], ignore_conflicts=True)
+            SNP.objects.bulk_create([SNP(rs_id=rs_id) for rs_id in rs_ids], batch_size=1000, ignore_conflicts=True)
             snps = SNP.objects.filter(rs_id__in=rs_ids)
             SilencerSNPs.objects.bulk_create([SilencerSNPs(
                 silencer=filter_silencers_any(silencers, silencer_id=silencer_ids[index]),
                 snp=filter_snps_any(snps, rs_id=rs_id),
                 variant=variant.lower(),
             ) for index, value in silencer_snps.items()
-                for rs_id, variant in map(lambda item: item.split(':'), value.split(';'))])
+                for rs_id, variant in map(lambda item: item.split(':'), value.split(';'))], batch_size=1000, )
         # 构建Recognition Factors数据
         if 'recognition_factors' in df.columns:
             print('building recognition factors')
@@ -291,7 +298,8 @@ def update_database_data(file_path):
                 silencer=filter_silencers_any(silencers, silencer_id=silencer_ids[index]),
                 recognition_factor=filter_recognition_factors_any(recognition_factors_all,
                                                                   name=recognition_factor.lower())
-            ) for index, value in silencer_recognition_factors.items() for recognition_factor in value.split(';')])
+            ) for index, value in silencer_recognition_factors.items() for recognition_factor in value.split(';')],
+                batch_size=1000, )
         if 'samples_recognition_factors_z_score' in df.columns:
             print('building sample recognition factors z_score')
             silencer_sample_recognition_factors = df['samples_recognition_factors_z_score']
@@ -305,7 +313,8 @@ def update_database_data(file_path):
                 recognized=bool(recognized),
             ) for index, value in silencer_sample_recognition_factors.items() for
                 bio_sample_name, recognition_factor, recognized, z_score in
-                map(lambda item: (*item.split(':')[0].split('-'), item.split(':')[1]), value.split(';'))])
+                map(lambda item: (*item.split(':')[0].split('-'), item.split(':')[1]), value.split(';'))],
+                batch_size=1000, )
         # 构建Cas9s数据
         if 'Cas9s' in df.columns:
             print('building Cas9s')
@@ -322,13 +331,13 @@ def update_database_data(file_path):
                     locations.append((chromosome, start, end))
             Region.objects.bulk_create(
                 [Region(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
-                ignore_conflicts=True)
+                batch_size=1000, ignore_conflicts=True)
             regions = Region.objects.filter(chromosome__in=chromosomes, start__in=starts, end__in=ends)
             SilencerCas9s.objects.bulk_create([SilencerCas9s(
                 silencer=filter_silencers_any(silencers, silencer_id=silencer_ids[index]),
                 region=filter_regions_any(regions, chromosome, start, end)
             ) for index, value in silencer_cas9s.items() for chromosome, start, end in
-                map(lambda item: divide_region(item), value.split(';'))])
+                map(lambda item: divide_region(item), value.split(';'))], batch_size=1000, )
     print('更新数据完成')
 
 
