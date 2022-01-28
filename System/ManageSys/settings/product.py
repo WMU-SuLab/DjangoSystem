@@ -25,15 +25,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'Auth',
+        'NAME': 'DjangoAuth',
         'USER': 'root',
-        # 'PASSWORD': 'wmu-sulab',
+        # 'PASSWORD': 'WMU-sulab-2022',
         'PASSWORD': 'laobatai981218',
         'OPTIONS': {
             'charset': 'utf8mb4'
         },
         'TEST': {
-            'NAME': 'AuthTest'
+            'NAME': 'DjangoAuthTest'
         }
     },
     'SilencerAtlas': {
@@ -42,7 +42,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'SilencerAtlas',
         'USER': 'root',
-        # 'PASSWORD': 'wmu-sulab',
+        # 'PASSWORD': 'WMU-sulab-2022',
         'PASSWORD': 'laobatai981218',
         'OPTIONS': {
             'charset': 'utf8mb4'

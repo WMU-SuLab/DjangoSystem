@@ -23,7 +23,7 @@ bind = '0.0.0.0:5000'
 # 监听队列
 backlog = 512
 # gunicorn要切换到的目的工作目录
-chdir = BASE_DIR
+chdir = str(BASE_DIR)
 # 超时
 timeout = 30
 # 设置守护进程(linux有效)
