@@ -10,7 +10,10 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
+from dotenv import load_dotenv
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ManageSys.settings')
+load_dotenv('.env')
+env = os.environ.get('DJANGO_ENV', 'develop')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'ManageSys.settings.{env}')
 
 application = get_asgi_application()
