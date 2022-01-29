@@ -93,7 +93,7 @@ class JSONMiddleware(MiddlewareMixin):
 
 
     def __call__(self, request):
-        if 'application/json' in request.META.get('CONTENT_TYPE'):
+        if 'application/json' in request.META.get('CONTENT_TYPE',''):
             try:
                 data = json.loads(request.body.decode('utf-8'))
                 request.json = data

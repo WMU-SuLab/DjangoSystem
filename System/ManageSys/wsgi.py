@@ -12,7 +12,7 @@ import os
 from django.core.wsgi import get_wsgi_application
 from dotenv import load_dotenv
 
-load_dotenv('.env')
+load_dotenv('../.env')
 env = os.environ.get('DJANGO_ENV', 'develop')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'ManageSys.settings.{env}')
 
