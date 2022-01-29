@@ -310,6 +310,8 @@ $(function () {
     initSelects();
     initExamples();
     initForms();
-    initSearchTextResult();
-    endLoading();
+    setTimeout(function () {
+        initSearchTextResult();
+        endLoading();
+    }, 2000);
 });
