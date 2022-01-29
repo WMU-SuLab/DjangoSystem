@@ -204,6 +204,7 @@ STATIC_URL = '/static/'
 # 用于指定的静态资源所在的目录
 # 由于多个同名文件会产生混淆，所以需要在app的static文件夹下面再建一个与app同名的文件夹，而所有公用的文件则不需要添加前缀
 # 如果出现了STATICFILES_DIRS包含STATIC_ROOT，在逻辑上就出现了我把自己打包到自己里面，这是行不通的。
+# STATICFILES_DIRS配置的是不在应用下static文件夹内的静态资源的文件夹，所以如果是放在static下的，就不用配置，否则会重复，报错：found another file with the destination path
 STATICFILES_DIRS = [
     # 不知道为什么pycharm非得不加BASE_DIR才能在模板中提示静态资源。神奇的是django竟然不加BASE_DIR也能识别出来正确的路径
     'static_dev',
@@ -211,7 +212,7 @@ STATICFILES_DIRS = [
     # BASE_DIR / 'static_dev',
     # 老版写法
     # os.path.join(BASE_DIR, 'static_dev'),
-    'SilencerAtlas/static',
+    # 'SilencerAtlas/static',
     # BASE_DIR / 'SilencerAtlas/static'
     # os.path.join(BASE_DIR, 'SilencerAtlas', 'static'),
 ]

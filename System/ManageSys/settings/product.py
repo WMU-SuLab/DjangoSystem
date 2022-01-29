@@ -27,8 +27,8 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'DjangoAuth',
         'USER': 'root',
-        # 'PASSWORD': 'WMU-sulab-2022',
-        'PASSWORD': 'laobatai981218',
+        'PASSWORD': 'WMU-sulab-2022',
+        # 'PASSWORD': 'laobatai981218',
         'OPTIONS': {
             'charset': 'utf8mb4'
         },
@@ -42,8 +42,8 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'SilencerAtlas',
         'USER': 'root',
-        # 'PASSWORD': 'WMU-sulab-2022',
-        'PASSWORD': 'laobatai981218',
+        'PASSWORD': 'WMU-sulab-2022',
+        # 'PASSWORD': 'laobatai981218',
         'OPTIONS': {
             'charset': 'utf8mb4'
         },
