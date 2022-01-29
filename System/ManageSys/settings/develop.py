@@ -57,8 +57,8 @@ LOGGING = {
 DATABASES = {
     'default': {
         # 这个数据库是默认的sqlite数据库，测试用的数据库默认是存放于内存中
-        # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'django_auth.sqlite3'),
     },
     'SilencerAtlas': {
