@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'simpleui',
     'django_mysql',
+    # 'gunicorn',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

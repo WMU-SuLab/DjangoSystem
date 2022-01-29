@@ -8,12 +8,12 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
 from dotenv import load_dotenv
 
-load_dotenv('../.env')
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../.env"))
 env = os.environ.get('DJANGO_ENV', 'develop')
+print(env)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'ManageSys.settings.{env}')
 
 application = get_wsgi_application()

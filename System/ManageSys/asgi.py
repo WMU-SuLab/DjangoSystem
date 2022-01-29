@@ -12,7 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 from dotenv import load_dotenv
 
-load_dotenv('../.env')
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../.env"))
 env = os.environ.get('DJANGO_ENV', 'develop')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'ManageSys.settings.{env}')
 
