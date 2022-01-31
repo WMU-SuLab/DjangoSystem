@@ -20,7 +20,7 @@ from . import BASE_DIR
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e'
-HASHID_FIELD_SALT=os.environ.get('HASHID_FIELD_SALT','hashids salt secret key')
+HASHID_FIELD_SALT=os.environ.get('HASHID_FIELD_SALT','wmu su-lab hashids salt secret key')
 ALLOWED_HOSTS = ['*']
 
 # Application definition

@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 from django.shortcuts import render
 
 from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types, strategies, variants
+from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.gene import Gene
 from SilencerAtlas.models.sample import Sample
 from SilencerAtlas.models.silencer import SilencerTFBs
@@ -24,14 +25,10 @@ from SilencerAtlas.models.snp import SNP
 
 def search(request):
     page = 'search'
-    tissue_types = list(Sample.objects.all().values_list('tissue_type', flat=True).distinct().exclude(
-        tissue_type__in=['', 'unknown']))
-    genes = list(
-        Gene.objects.all().values_list('name', flat=True).distinct().exclude(name__in=['', 'unknown']))
-    transcription_factors = list(
-        SilencerTFBs.objects.all().values_list('transcription_factor__name', flat=True).distinct().exclude(
-            transcription_factor__name__in=['', 'unknown']))
-    rs_ids = list(SNP.objects.all().values_list('rs_id', flat=True).distinct().exclude(rs_id__in=['', 'unknown']))
+    # tissue_types = list(Sample.objects.distinct().exclude(tissue_type__in=unknown_value_list)[:20].values_list('tissue_type', flat=True))
+    # genes = list(Gene.objects.distinct().exclude(name__in=unknown_value_list,region=None)[:20].values_list('name', flat=True))
+    # transcription_factors = list(SilencerTFBs.objects.distinct().exclude(transcription_factor__name__in=unknown_value_list)[:20].values_list('transcription_factor__name', flat=True))
+    # rs_ids = list(SNP.objects.distinct().exclude(rs_id__in=unknown_value_list)[:20].values_list('rs_id', flat=True))
     return render(request, 'SilencerAtlas/search.html', context={
         'title': page,
         'menu': page,
@@ -39,10 +36,10 @@ def search(request):
         'sources': sources.items(),
         'species': species.items(),
         'bio_sample_types': bio_sample_types.items(),
-        'tissue_types': tissue_types,
-        'genes': genes,
+        # 'tissue_types': tissue_types,
+        # 'genes': genes,
         'strategies': strategies.items(),
-        'transcription_factors': transcription_factors,
-        'rs_ids': rs_ids,
+        # 'transcription_factors': transcription_factors,
+        # 'rs_ids': rs_ids,
         'variants': variants.items(),
     })

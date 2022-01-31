@@ -1,15 +1,116 @@
 var page_silencer_details_by_id = app_page_prefix + '/silencer_details/';
 var api_get_silencers = app_api_data_v1_0_prefix + '/get_silencers';
+var api_get_tissue_types = app_api_data_v1_0_prefix + '/get_tissue_types';
+var api_get_genes = app_api_data_v1_0_prefix + '/get_genes';
+var api_get_snps = app_api_data_v1_0_prefix + '/get_snps';
+var api_get_transcription_factors = app_api_data_v1_0_prefix + '/get_transcription_factors';
 
 
 function initSelects() {
-    searchByRegionTissueTypesSearchSelect = new searchSelect('#searchByRegionFormTissueTypeSearchSelect', tissueTypesSelectData);
-    searchByGeneTissueTypesSearchSelect = new searchSelect('#searchByGeneFormTissueTypeSearchSelect', tissueTypesSelectData);
-    geneSearchSelect = new searchSelect('#searchByGeneFormGeneSearchSelect', genesSelectData);
-    searchByTFTissueTypesSearchSelect = new searchSelect('#searchByTFFormTissueTypeSearchSelect', tissueTypesSelectData);
-    transcriptionFactorSearchSelect = new searchSelect('#searchByTFFormTranscriptionFactorSearchSelect', transcriptionFactorsSelectData);
-    searchBySNPTissueTypesSearchSelect = new searchSelect('#searchBySNPFormTissueTypeSearchSelect', tissueTypesSelectData);
-    rsIdSearchSelect = new searchSelect('#searchBySNPFormRsIdSearchSelect', rsIdsSelectData);
+    // if (tissueTypesSelectData.length !== 0) {
+    //     searchByRegionTissueTypesSearchSelect = new searchSelect('#searchByRegionFormTissueTypeSearchSelect', tissueTypesSelectData);
+    //     searchByGeneTissueTypesSearchSelect = new searchSelect('#searchByGeneFormTissueTypeSearchSelect', tissueTypesSelectData);
+    //     searchByTFTissueTypesSearchSelect = new searchSelect('#searchByTFFormTissueTypeSearchSelect', tissueTypesSelectData);
+    //     searchBySNPTissueTypesSearchSelect = new searchSelect('#searchBySNPFormTissueTypeSearchSelect', tissueTypesSelectData);
+    //     console.log('init tissue type');
+    // }
+    // if (genesSelectData.length !== 0) {
+    //     // geneSearchSelect = new searchSelect('#searchByGeneFormGeneSearchSelect', genesSelectData);
+    //     console.log('init genes');
+    // }
+    // if (transcriptionFactorsSelectData.length !== 0) {
+    //     transcriptionFactorSearchSelect = new searchSelect('#searchByTFFormTranscriptionFactorSearchSelect', transcriptionFactorsSelectData);
+    //     console.log('init transcription factors');
+    // }
+    // if (rsIdsSelectData.length !== 0) {
+    //     rsIdSearchSelect = new searchSelect('#searchBySNPFormRsIdSearchSelect', rsIdsSelectData);
+    //     console.log('init rsIds');
+    // }
+    searchByRegionTissueTypesSearchSelect = new searchSelect('searchByRegionFormTissueTypeSearchSelect', {
+        mode: 'server',
+        url: api_get_tissue_types,
+        name: 'tissueType',
+        placeholder:'tissue type',
+        limit: 100,
+        onDataChange: function (data) {
+            regionTissueTypes = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    searchByGeneTissueTypesSearchSelect = new searchSelect('searchByGeneFormTissueTypeSearchSelect', {
+        mode: 'server',
+        url: api_get_tissue_types,
+        name: 'tissueType',
+        placeholder:'tissue type',
+        limit: 100,
+        onDataChange: function (data) {
+            geneTissueTypes = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    searchBySNPTissueTypesSearchSelect = new searchSelect('searchBySNPFormTissueTypeSearchSelect', {
+        mode: 'server',
+        url: api_get_tissue_types,
+        name: 'tissueType',
+        placeholder:'tissue type',
+        limit: 100,
+        onDataChange: function (data) {
+            SNPTissueTypes = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    searchByTFTissueTypesSearchSelect = new searchSelect('searchByTFFormTissueTypeSearchSelect', {
+        mode: 'server',
+        url: api_get_tissue_types,
+        name: 'tissueType',
+        placeholder:'tissue type',
+        limit: 100,
+        onDataChange: function (data) {
+            TFTissueTypes = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    geneSearchSelect = new searchSelect('searchByGeneFormGeneSearchSelect', {
+        mode: 'server',
+        url: api_get_genes,
+        name: 'gene',
+        placeholder:'gene symbol',
+        limit: 100,
+        onDataChange: function (data) {
+            genes = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    transcriptionFactorSearchSelect = new searchSelect('searchByTFFormTranscriptionFactorSearchSelect', {
+        mode: 'server',
+        url: api_get_transcription_factors,
+        name: 'transcriptionFactor',
+        placeholder:'transcription factor',
+        limit: 100,
+        onDataChange: function (data) {
+            transcriptionFactors = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+    rsIdSearchSelect = new searchSelect('searchBySNPFormRsIdSearchSelect', {
+        mode: 'server',
+        url: api_get_snps,
+        name: 'rsId',
+        placeholder:'rs_id',
+        limit: 100,
+        onDataChange: function (data) {
+            rsIds = data.map((item) => {
+                return item.value;
+            });
+        }
+    });
+
     $(".form-select").addClass('fs-3');
     $(".form-control").addClass('fs-3');
     $(".formButtonGroup button").addClass('fs-3');
@@ -25,7 +126,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByRegionFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByRegionFormTissueTypeSearchSelect").val(tissueTypes[0]);
+        $("#searchByRegionFormTissueTypeSearchSelect").val(regionTissueTypes[0]);
         $("#searchByRegionFormRegionInput").val('chr1:5353130-5353206');
     });
     $("#searchByGeneFormExample").on('click', function () {
@@ -37,7 +138,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByGeneFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByGeneFormTissueTypeSearchSelect").val(tissueTypes[0]);
+        $("#searchByGeneFormTissueTypeSearchSelect").val(geneTissueTypes[0]);
         $("#searchByGeneFormStrategySelect option[selected='selected']").each(function () {
             $(this).removeAttr('selected');
         });
@@ -53,7 +154,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByTFFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByTFFormTissueTypeSearchSelect").val(tissueTypes[0]);
+        $("#searchByTFFormTissueTypeSearchSelect").val(TFTissueTypes[0]);
         $("#searchByTFFormTFSearchSelect").val(transcriptionFactors[0]);
     });
     $("#searchBySNPFormExample").on('click', function () {
@@ -65,7 +166,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchBySNPFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchBySNPFormTissueTypeSearchSelect").val(tissueTypes[0]);
+        $("#searchBySNPFormTissueTypeSearchSelect").val(SNPTissueTypes[0]);
         $("#searchBySNPFormVariantSelect option[selected='selected']").each(function () {
             $(this).removeAttr('selected');
         });
@@ -86,6 +187,7 @@ $.validator.addMethod("validateRegion", function (value, element) {
 
 $.validator.addMethod('inTissueTypes', function (value, element) {
     if (value) {
+        const tissueTypes = regionTissueTypes.concat(geneTissueTypes, TFTissueTypes, SNPTissueTypes);
         return tissueTypes.indexOf(value) !== -1;
     } else {
         return null
@@ -310,8 +412,6 @@ $(function () {
     initSelects();
     initExamples();
     initForms();
-    setTimeout(function () {
-        initSearchTextResult();
-        endLoading();
-    }, 2000);
+    initSearchTextResult();
+    endLoading();
 });

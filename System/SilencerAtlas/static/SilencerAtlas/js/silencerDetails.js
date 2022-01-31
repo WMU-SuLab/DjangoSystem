@@ -181,11 +181,11 @@ const AssociatedGeneExpression = {
                     <div class="d-flex flex-row align-items-center py-3">
                         <span class="me-2 fs-5">Tissue Sort</span>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="scale" :id="'tissue_sort_asc_'+geneName"
+                            <input type="radio" class="btn-check" name="tissueSort" :id="'tissue_sort_asc_'+geneName"
                                    autocomplete="off" checked>
                             <label class="btn btn-outline-secondary" :for="'tissue_sort_asc_'+geneName" @click="tissueSortAsc()">ASC</label>
 
-                            <input type="radio" class="btn-check" name="scale" :id="'tissue_sort_desc_'+geneName"
+                            <input type="radio" class="btn-check" name="tissueSort" :id="'tissue_sort_desc_'+geneName"
                                    autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'tissue_sort_desc_'+geneName" @click="tissueSortDesc()">DESC</label>
                         </div>
@@ -193,11 +193,11 @@ const AssociatedGeneExpression = {
                     <div class="d-flex flex-row align-items-center py-3">
                         <span class="me-2 fs-5">Median Sort</span>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="scale" :id="'median_sort_asc_'+geneName"
+                            <input type="radio" class="btn-check" name="medianSort" :id="'median_sort_asc_'+geneName"
                                    autocomplete="off" checked>
                             <label class="btn btn-outline-secondary" :for="'median_sort_asc_'+geneName" @click="medianSortAsc()">ASC</label>
 
-                            <input type="radio" class="btn-check" name="scale" :id="'median_sort_desc_'+geneName"
+                            <input type="radio" class="btn-check" name="medianSort" :id="'median_sort_desc_'+geneName"
                                    autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'median_sort_desc_'+geneName" @click="medianSortDesc()">DESC</label>
                         </div>
@@ -413,6 +413,7 @@ const AssociatedGeneExpression = {
                     return newArr;
                 });
                 this.bulkData.source = newSource;
+                this.bulkChart.clear();
                 this.bulkChart.setOption(this.bulkChartOptions);
             }
         },
@@ -429,6 +430,7 @@ const AssociatedGeneExpression = {
                     return newArr;
                 });
                 this.bulkData.source = newSource;
+                this.bulkChart.clear();
                 this.bulkChart.setOption(this.bulkChartOptions);
             }
         },

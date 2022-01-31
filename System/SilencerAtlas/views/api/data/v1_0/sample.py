@@ -15,18 +15,35 @@ __auth__ = 'diklios'
 
 import json
 
-from django.db.models import Q, Prefetch,F
 from django.core.paginator import Paginator
+from django.db.models import Q, F
 from django.views.decorators.http import require_POST, require_GET
 from django_mysql.models import GroupConcat
 
-
-from SilencerAtlas.models.recognition_factor import RecognitionFactor
-from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.models.silencer import Silencer
-from SilencerAtlas.viewModels.silencer import filtered_sample_chosen_silencers
 from SilencerAtlas.libs.lists import unknown_value_list
+from SilencerAtlas.models.sample import Sample
+from SilencerAtlas.viewModels.silencer import filtered_sample_chosen_silencers
 from utils.response import JsonResponse
+
+
+@require_POST
+def get_tissue_types(request):
+    search_text = request.json.get('searchText', '')
+    limit = request.json.get('limit', 10)
+    page = request.json.get('page', 1)
+    samples = Sample.objects.distinct().exclude(tissue_type__in=unknown_value_list)
+    if search_text:
+        samples = samples.filter(tissue_type__icontains=search_text)
+    count = samples.count()
+    if count > page * limit:
+        more = True
+    else:
+        more = False
+    tissue_types = list(samples[:limit * page].values_list('tissue_type', flat=True))
+    return JsonResponse({
+        'selects': [{'value': tissue_type, 'text': tissue_type} for tissue_type in tissue_types],
+        'more': more,
+    })
 
 
 @require_POST
@@ -104,9 +121,9 @@ def get_sample_by_id(request, sample_id):
 def get_sample_silencers(request):
     data: dict = request.json
     print(data)
-    silencers=filtered_sample_chosen_silencers(data)
+    silencers = filtered_sample_chosen_silencers(data)
     # 构建表格属性
-    silencers=silencers.annotate(
+    silencers = silencers.annotate(
         chromosome=F('region__chromosome'),
         start=F('region__start'),
         end=F('region__end'),
@@ -126,8 +143,8 @@ def get_sample_silencers(request):
         if silencer_id:
             silencers = silencers.filter(silencer_id__icontains=silencer_id)
         loci = filters.get('loci', '')
-        chromosome,start_end=loci.split(':')
-        start,end=start_end.split('-')
+        chromosome, start_end = loci.split(':')
+        start, end = start_end.split('-')
         if chromosome:
             silencers = silencers.filter(chromosome__icontains=chromosome)
         if start:
@@ -140,7 +157,7 @@ def get_sample_silencers(request):
                 recognition_factors_group_concat__icontains=recognition_factors_group_concat)
         species = filters.get('species', '')
         if species:
-            silencers=silencers.filter(species__icontains=species)
+            silencers = silencers.filter(species__icontains=species)
         tissue_type = filters.get('tissue_type', '')
         if tissue_type:
             silencers = silencers.filter(tissue_type__icontains=tissue_type)
@@ -180,7 +197,7 @@ def get_sample_silencers(request):
         elif sort_order in ['desc', 'descending']:
             silencers = silencers.order_by(*{'-' + order_name})
     # 再分页
-    silencers = silencers.prefetch_related('region','sample')
+    silencers = silencers.prefetch_related('region', 'sample')
     page_size = data.get('pageSize', 10)
     current_page = data.get('currentPage', 1)
     silencers_paginator = Paginator(silencers, page_size)
@@ -200,7 +217,6 @@ def get_sample_silencers(request):
         'total': total,
         'rows': rows,
     })
-
 
 
 @require_GET

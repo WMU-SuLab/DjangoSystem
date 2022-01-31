@@ -66,7 +66,7 @@
                                         Tissue Type:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByRegionFormTissueTypeSearchSelect" name="tissueType"></div>
+                                        <div id="searchByRegionFormTissueTypeSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -125,7 +125,7 @@
                                         Tissue Type:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByGeneFormTissueTypeSearchSelect" name="tissueType"></div>
+                                        <div id="searchByGeneFormTissueTypeSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -147,7 +147,7 @@
                                         Gene:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByGeneFormGeneSearchSelect" name="gene"></div>
+                                        <div id="searchByGeneFormGeneSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row"></div>
@@ -197,7 +197,7 @@
                                         Tissue Type:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByTFFormTissueTypeSearchSelect" name="tissueType"></div>
+                                        <div id="searchByTFFormTissueTypeSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -255,7 +255,7 @@
                                         Tissue Type:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchBySNPFormTissueTypeSearchSelect" name="tissueType"></div>
+                                        <div id="searchBySNPFormTissueTypeSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -276,7 +276,7 @@
                                     <label for="searchBySNPFormRsIdSearchSelect"
                                            class="col-4 col-form-label">SNP:</label>
                                     <div class="col-8">
-                                        <div id="searchBySNPFormRsIdSearchSelect" name="rsId"></div>
+                                        <div id="searchBySNPFormRsIdSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row"></div>
@@ -303,31 +303,38 @@
 
 {% block main_scripts %}
     <script>
-        var tissueTypes ={{ tissue_types|safe }};
+        {% comment %}var tissueTypes ={{ tissue_types|safe }};
         var tissueTypesSelectData = tissueTypes.map((item) => {
             return {'id': item, 'value': item};
-        })
+        }){% endcomment %}
+        var regionTissueTypes;
         var searchByRegionTissueTypesSearchSelect;
+        var geneTissueTypes;
         var searchByGeneTissueTypesSearchSelect;
+        var TFTissueTypes;
         var searchByTFTissueTypesSearchSelect;
+        var SNPTissueTypes;
         var searchBySNPTissueTypesSearchSelect;
 
-        var genes ={{ genes|safe }};
-        var genesSelectData = genes.map((item) => {
+        {#var genes ={{ genes|safe }};#}
+        var genes;
+        {% comment %}var genesSelectData = genes.map((item) => {
             return {'id': item, 'value': item};
-        })
+        }){% endcomment %}
         var geneSearchSelect;
 
-        var transcriptionFactors ={{ transcription_factors|safe }};
-        var transcriptionFactorsSelectData = transcriptionFactors.map((item) => {
+        {#var transcriptionFactors ={{ transcription_factors|safe }};#}
+        var transcriptionFactors;
+        {% comment %} var transcriptionFactorsSelectData = transcriptionFactors.map((item) => {
             return {'id': item, 'value': item};
-        })
+        }){% endcomment %}
         var transcriptionFactorSearchSelect;
 
-        var rsIds ={{ rs_ids|safe }};
-        var rsIdsSelectData = rsIds.map((item) => {
+        {#var rsIds ={{ rs_ids|safe }};#}
+        var rsIds;
+        {% comment %}var rsIdsSelectData = rsIds.map((item) => {
             return {'id': item, 'value': item};
-        })
+        }){% endcomment %}
         var rsIdSearchSelect;
 
         var silencerTable;
@@ -337,9 +344,9 @@
     </script>
     {% include 'base/table-scripts.html' %}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-{#    <script src="{% static 'js/plugs/jquery.validate.min.js' %}"></script>#}
+    {#    <script src="{% static 'js/plugs/jquery.validate.min.js' %}"></script>#}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
-{#    <script src="{% static 'js/plugs/additional-methods.min.js' %}"></script>#}
+    {#    <script src="{% static 'js/plugs/additional-methods.min.js' %}"></script>#}
     <script src="{% static 'js/plugs/searchSelect.js' %}"></script>
     <script src="{% static 'SilencerAtlas/js/search.js' %}"></script>
 {% endblock %}
