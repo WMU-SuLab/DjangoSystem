@@ -13,10 +13,9 @@
 """
 __auth__ = 'diklios'
 
-from django.views.decorators.http import require_POST
-
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.gene import Gene
+from django.views.decorators.http import require_POST
 from utils.response import JsonResponse
 
 
@@ -33,7 +32,12 @@ def get_genes(request):
         more = True
     else:
         more = False
-    names = list(genes[:limit * page].values_list('name', flat=True))
+    if page == 1:
+        names = list(genes[:page * limit].values_list('name', flat=True))
+    elif page > 1:
+        names = list(genes[(page - 1) * limit:page * limit].values_list('name', flat=True))
+    else:
+        names = []
     return JsonResponse({
         'selects': [{'value': name, 'text': name} for name in names],
         'more': more,

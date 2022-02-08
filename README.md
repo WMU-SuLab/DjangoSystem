@@ -10,6 +10,8 @@
 
 - 基于 Django 的后台管理系统
   - 可以整合多个数据库和应用，在一个服务器上运行
+  - 目前整合的应用有：
+    - [Silencer Atlas](docs/zh-Hans/SilencerAtlas/README.md)
 
 ## 版权
 

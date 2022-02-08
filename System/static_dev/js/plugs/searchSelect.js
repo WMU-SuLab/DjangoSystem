@@ -57,6 +57,7 @@ class searchSelect {
         }
         this.url = config.url || "";
         this.more = false;
+        this.moreData = [];
         this.page = 1;
         if (this.mode === "server" && this.url === "") {
             console.error("url error");
@@ -65,7 +66,7 @@ class searchSelect {
         this.limit = config.limit || 20;
         this.init();
         this.onDataChange = config.onDataChange || function (value) {
-            console.log(value)
+            console.log(value);
         };
         return this.dom;
     }
@@ -87,14 +88,14 @@ class searchSelect {
         that.isLoading = false;
     }
 
-    searchServer(value, that, first=false, type = 'init') {
+    searchServer(value, that, first = false, type = 'init') {
         let url = that.url;
         let data = {
             searchText: value,
             limit: that.limit || 20,
         };
-        if (type) that.page+=1;
-        data.page=that.page;
+        if (type) that.page += 1;
+        data.page = that.page;
         fetch(url, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
@@ -104,13 +105,16 @@ class searchSelect {
         }).then((res) => {
             if (type === 'init') {
                 that.data = res.data.selects;
-                that.page=1;
+                that.page = 1;
+                that.more = res.data.more;
+                that.initSelects();
             } else if (type === 'add') {
                 that.data = that.data.concat(res.data.selects);
+                that.moreData = res.data.selects;
+                that.more = res.data.more;
+                that.addSelects();
             }
-            that.more = res.data.more;
             that.onDataChange(that.data);
-            that.initSelects();
             that.isLoading = false;
             if (first) that.hideSelects();
         });
@@ -150,15 +154,22 @@ class searchSelect {
         that.dom.appendChild(input);
     }
 
-    initSelects() {
+    appendMoreOptions() {
         let that = this;
-        if (that.selects) that.selects.remove();
-        let selects = document.createElement("ul");
-        selects.setAttribute("class", "drawer searchSelect");
-        selects.style.display = "block";
-        that.selects = selects;
-        that.dom.appendChild(that.selects);
-        const options = that.data || [];
+        if (that.more) {
+            let option = document.createElement("li");
+            option.setAttribute("class", "item");
+            option.innerHTML = that.limit * that.page + ' results, click to show more';
+            option.addEventListener('click', (e) => {
+                that.searchServer(that.input.value, that, false, 'add');
+            })
+            that.moreOption=option;
+            that.selects.appendChild(option);
+        }
+    }
+
+    appendOptions(options) {
+        let that = this;
         if (options.length === 0) {
             let none = document.createElement("li");
             none.setAttribute("class", "none");
@@ -178,16 +189,27 @@ class searchSelect {
                 });
                 that.selects.appendChild(option);
             });
-            if (that.more) {
-                let option = document.createElement("li");
-                option.setAttribute("class", "item");
-                option.innerHTML = that.limit*that.page + ' results, click to show more';
-                option.addEventListener('click', (e) => {
-                    that.searchServer(that.input.value, that, false, 'add');
-                })
-                that.selects.appendChild(option);
-            }
+            that.appendMoreOptions();
         }
+    }
+
+    initSelects() {
+        let that = this;
+        if (that.selects) that.selects.remove();
+        let selects = document.createElement("ul");
+        selects.setAttribute("class", "drawer searchSelect");
+        selects.style.display = "block";
+        that.selects = selects;
+        that.dom.appendChild(that.selects);
+        const options = that.data || [];
+        that.appendOptions(options);
+    }
+
+    addSelects() {
+        let that = this;
+        const options = that.moreData;
+        that.moreOption.remove();
+        that.appendOptions(options);
     }
 
     hideSelects() {

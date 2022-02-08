@@ -38,6 +38,6 @@ threads = 3
 loglevel = 'info'
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
 # 访问日志文件
-accesslog = os.path.join(BASE_DIR, "django_backend_access.log")
+accesslog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "access.log")
 # 错误日志文件
-errorlog = os.path.join(BASE_DIR, "django_backend_error.log")
+errorlog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "error.log")

@@ -13,10 +13,9 @@
 """
 __auth__ = 'diklios'
 
-from django.views.decorators.http import require_POST
-
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.silencer import SilencerTFBs
+from django.views.decorators.http import require_POST
 from utils.response import JsonResponse
 
 
@@ -33,8 +32,15 @@ def get_transcription_factors(request):
         more = True
     else:
         more = False
-    transcription_factor_names = list(
-        transcription_factors[:limit * page].values_list('transcription_factor__name', flat=True))
+    if page == 1:
+        transcription_factor_names = list(
+            transcription_factors[:page * limit].values_list('transcription_factor__name', flat=True))
+    elif page > 1:
+        transcription_factor_names = list(
+            transcription_factors[(page - 1) * limit: page * limit].values_list('transcription_factor__name',
+                                                                                flat=True))
+    else:
+        transcription_factor_names = []
     return JsonResponse({
         'selects': [{'value': transcription_factor_name, 'text': transcription_factor_name} for
                     transcription_factor_name in transcription_factor_names],

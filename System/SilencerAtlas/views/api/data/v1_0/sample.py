@@ -14,15 +14,13 @@
 __auth__ = 'diklios'
 
 import json
-
+from SilencerAtlas.libs.lists import unknown_value_list
+from SilencerAtlas.models.sample import Sample
+from SilencerAtlas.viewModels.silencer import filtered_sample_chosen_silencers
 from django.core.paginator import Paginator
 from django.db.models import Q, F
 from django.views.decorators.http import require_POST, require_GET
 from django_mysql.models import GroupConcat
-
-from SilencerAtlas.libs.lists import unknown_value_list
-from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.viewModels.silencer import filtered_sample_chosen_silencers
 from utils.response import JsonResponse
 
 
@@ -39,7 +37,12 @@ def get_tissue_types(request):
         more = True
     else:
         more = False
-    tissue_types = list(samples[:limit * page].values_list('tissue_type', flat=True))
+    if page == 1:
+        tissue_types = list(samples[:page * limit].values_list('tissue_type', flat=True))
+    elif page > 1:
+        tissue_types = list(samples[(page - 1) * limit:page * limit].values_list('tissue_type', flat=True))
+    else:
+        tissue_types = []
     return JsonResponse({
         'selects': [{'value': tissue_type, 'text': tissue_type} for tissue_type in tissue_types],
         'more': more,

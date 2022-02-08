@@ -13,10 +13,9 @@
 """
 __auth__ = 'diklios'
 
-from django.views.decorators.http import require_POST
-
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.snp import SNP
+from django.views.decorators.http import require_POST
 from utils.response import JsonResponse
 
 
@@ -33,7 +32,12 @@ def get_snps(request):
         more = True
     else:
         more = False
-    rs_ids = list(snps[:limit * page].values_list('rs_id', flat=True))
+    if page == 1:
+        rs_ids = list(snps[:page * limit].values_list('rs_id', flat=True))
+    elif page > 1:
+        rs_ids = list(snps[(page - 1) * limit:page * limit].values_list('rs_id', flat=True))
+    else:
+        rs_ids = []
     return JsonResponse({
         'selects': [{'value': rs_id, 'text': rs_id} for rs_id in rs_ids],
         'more': more,
