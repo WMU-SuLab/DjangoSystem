@@ -62,11 +62,11 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col row">
-                                    <label for="searchByRegionFormTissueTypeSearchSelect" class="col-4 col-form-label">
-                                        Tissue Type:
+                                    <label for="searchByRegionFormBioSampleNameSearchSelect" class="col-4 col-form-label">
+                                        Bio Sample Name:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByRegionFormTissueTypeSearchSelect"></div>
+                                        <div id="searchByRegionFormBioSampleNameSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -121,11 +121,11 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col row">
-                                    <label for="searchByGeneFormTissueTypeSearchSelect" class="col-4 col-form-label">
-                                        Tissue Type:
+                                    <label for="searchByGeneFormBioSampleNameSearchSelect" class="col-4 col-form-label">
+                                        Bio Sample Name:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByGeneFormTissueTypeSearchSelect"></div>
+                                        <div id="searchByGeneFormBioSampleNameSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -193,11 +193,11 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col row">
-                                    <label for="searchByTFFormTissueTypeSearchSelect" class="col-4 col-form-label">
-                                        Tissue Type:
+                                    <label for="searchByTFFormBioSampleNameSearchSelect" class="col-4 col-form-label">
+                                        Bio Sample Name:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchByTFFormTissueTypeSearchSelect"></div>
+                                        <div id="searchByTFFormBioSampleNameSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -251,11 +251,11 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col row">
-                                    <label for="searchBySNPFormTissueTypeSearchSelect" class="col-4 col-form-label">
-                                        Tissue Type:
+                                    <label for="searchBySNPFormBioSampleNameSearchSelect" class="col-4 col-form-label">
+                                        Bio Sample Name:
                                     </label>
                                     <div class="col-8">
-                                        <div id="searchBySNPFormTissueTypeSearchSelect"></div>
+                                        <div id="searchBySNPFormBioSampleNameSearchSelect"></div>
                                     </div>
                                 </div>
                                 <div class="col row">
@@ -303,18 +303,14 @@
 
 {% block main_scripts %}
     <script>
-        {% comment %}var tissueTypes ={{ tissue_types|safe }};
-        var tissueTypesSelectData = tissueTypes.map((item) => {
-            return {'id': item, 'value': item};
-        }){% endcomment %}
-        var regionTissueTypes;
-        var searchByRegionTissueTypesSearchSelect;
-        var geneTissueTypes;
-        var searchByGeneTissueTypesSearchSelect;
-        var TFTissueTypes;
-        var searchByTFTissueTypesSearchSelect;
-        var SNPTissueTypes;
-        var searchBySNPTissueTypesSearchSelect;
+        var regionBioSampleNames;
+        var searchByRegionBioSampleNamesSearchSelect;
+        var geneBioSampleNames;
+        var searchByGeneBioSampleNamesSearchSelect;
+        var TFBioSampleNames;
+        var searchByTFBioSampleNamesSearchSelect;
+        var SNPBioSampleNames;
+        var searchBySNPBioSampleNamesSearchSelect;
 
         {#var genes ={{ genes|safe }};#}
         var genes;

@@ -16,18 +16,18 @@ __auth__ = 'diklios'
 from django.urls import path
 
 from .genome_browse import get_igv_reference, get_igv_tracks, get_igv_file_data
-from .sample import get_tissue_types, get_samples, get_sample_by_id, get_sample_silencers_by_id,get_sample_silencers
+from .sample import get_bio_sample_names,get_tissue_types, get_sample_by_id, get_sample_silencers_by_id,get_sample_silencers
 from .silencer import get_silencers, get_silencer_by_id
 from .gene import get_genes
 from .snp import get_snps
 from .transcription_factor import get_transcription_factors
 
 urlpatterns = [
+    path('get_bio_sample_names',get_bio_sample_names,name='get_bio_sample_names'),
     path('get_tissue_types',get_tissue_types,name='get_tissue_types'),
     path('get_genes',get_genes,name='get_genes'),
     path('get_snps',get_snps,name='get_snps'),
     path('get_transcription_factors', get_transcription_factors, name='get_transcription_factors'),
-    path('get_samples', get_samples, name='get_samples'),
     path('get_sample_by_id/<str:sample_id>', get_sample_by_id, name='get_sample_by_id'),
     path('get_sample_silencers', get_sample_silencers, name='get_sample_silencers'),
     path('get_silencers', get_silencers, name='get_silencers'),

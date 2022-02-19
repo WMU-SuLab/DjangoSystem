@@ -20,7 +20,7 @@ from . import BASE_DIR
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e'
-HASHID_FIELD_SALT=os.environ.get('HASHID_FIELD_SALT','wmu su-lab hashids salt secret key')
+HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'wmu su-lab hashids salt secret key')
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -49,11 +49,20 @@ DATABASE_APPS_MAPPING = {
     'SilencerAtlas': 'SilencerAtlas',
 }
 
-DATABASE_ROUTERS = ['ManageSys.database_router.DatabaseRouter']
+# 如果缓存使用数据库，则指定缓存表存放到的数据库
+CACHE_DATABASE = 'default'
+
+DATABASE_ROUTERS = [
+    # 使用多个数据库缓存表作为缓存时候需要添加的路由，需要放在一般的路由之前
+    'ManageSys.database_router.CacheRouter',
+    'ManageSys.database_router.DatabaseRouter',
+]
 
 MIDDLEWARE = [
     # 'SilencerAtlas.middlewares.TimeItMiddleware',
     'SilencerAtlas.middlewares.JSONMiddleware',
+    # CACHE MIDDLEWARE 顺序：https://docs.djangoproject.com/zh-hans/4.0/topics/cache/#the-per-site-cache
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
@@ -62,6 +71,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 缓存整个站点
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
+
 ]
 
 # 自定义项目入口url是哪个文件
@@ -256,3 +268,9 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
     'Pragma',
 )
+
+# 以下是自己定义的项目中需要用到的配置
+# genome文件位置
+GENOME_DIR_PATH=os.path.join(BASE_DIR,'SilencerAtlas','libs','genome')
+# 数据库限制查询数量
+MODEL_TOTAL_LIMIT=1000

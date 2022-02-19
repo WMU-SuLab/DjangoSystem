@@ -12,16 +12,24 @@ function initSignalInSpecificBioSamplesTables(tablesData) {
         }, {
             'field': 'h3k27me3',
             'title': 'H3K27me3 Z-score',
+        },{
+            'field': 'h3k9me1',
+            'title': 'H3K9me1 Z-score',
+        }, {
+            'field': 'h3k9me2',
+            'title': 'H3K9me2 Z-score',
         }, {
             'field': 'h3k9me3',
             'title': 'H3K9me3 Z-score',
-        }, {
-            'field': 'h3k79me3',
-            'title': 'H3K79me3 Z-score'
-        }, {
-            'field': 'h4k20me1',
-            'title': 'H4K20me1 Z-score'
-        }, {
+        },
+        // {
+        //     'field': 'h3k79me3',
+        //     'title': 'H3K79me3 Z-score'
+        // }, {
+        //     'field': 'h4k20me1',
+        //     'title': 'H4K20me1 Z-score'
+        // },
+        {
             'field': 'recognition_factors',
             'title': 'Recognition Factors'
         }
@@ -49,13 +57,16 @@ function initPutativeTargetGenesTable(data) {
                 'title': 'Strategies/Algorithm',
             }, {
                 'field': 'gene_name',
-                'title': 'Gene Name',
+                'title': 'Gene Symbol',
+            }, {
+                'field': 'gene_ensembl_id',
+                'title': 'Ensembl',
             }, {
                 'field': 'genomic_loci',
                 'title': 'Genomic Loci',
             }, {
-                'field': 'distance',
-                'title': 'Distance',
+                'field': 'distance_to_TSS',
+                'title': 'Distance To TSS',
             }
         ],
         data: data
@@ -169,23 +180,22 @@ const AssociatedGeneExpression = {
                     <div class="d-flex flex-row align-items-center py-3">
                         <span class="me-2 fs-5">SCALE</span>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="scale" :id="'lasso_'+geneName"
+                            <input type="radio" class="btn-check" :name="'scale_'+geneName" :id="'linear_'+geneName"
                                    autocomplete="off" checked>
-                            <label class="btn btn-outline-secondary" :for="'lasso_'+geneName" @click="changeToLasso()">Lasso</label>
-
-                            <input type="radio" class="btn-check" name="scale" :id="'linear_'+geneName"
-                                   autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'linear_'+geneName" @click="changeToLinear()">Linear</label>
+                            <input type="radio" class="btn-check" :name="'scale_'+geneName" :id="'lasso_'+geneName"
+                                   autocomplete="off">
+                            <label class="btn btn-outline-secondary" :for="'lasso_'+geneName" @click="changeToLasso()">Lasso</label>
                         </div>
                     </div>
                     <div class="d-flex flex-row align-items-center py-3">
                         <span class="me-2 fs-5">Tissue Sort</span>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="tissueSort" :id="'tissue_sort_asc_'+geneName"
-                                   autocomplete="off" checked>
+                            <input type="radio" class="btn-check" :name="'tissueSort_'+geneName" :id="'tissue_sort_asc_'+geneName"
+                                   autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'tissue_sort_asc_'+geneName" @click="tissueSortAsc()">ASC</label>
 
-                            <input type="radio" class="btn-check" name="tissueSort" :id="'tissue_sort_desc_'+geneName"
+                            <input type="radio" class="btn-check" :name="'tissueSort_'+geneName"  :id="'tissue_sort_desc_'+geneName"
                                    autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'tissue_sort_desc_'+geneName" @click="tissueSortDesc()">DESC</label>
                         </div>
@@ -193,11 +203,11 @@ const AssociatedGeneExpression = {
                     <div class="d-flex flex-row align-items-center py-3">
                         <span class="me-2 fs-5">Median Sort</span>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="medianSort" :id="'median_sort_asc_'+geneName"
-                                   autocomplete="off" checked>
+                            <input type="radio" class="btn-check" :name="'medianSort_'+geneName" :id="'median_sort_asc_'+geneName"
+                                   autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'median_sort_asc_'+geneName" @click="medianSortAsc()">ASC</label>
 
-                            <input type="radio" class="btn-check" name="medianSort" :id="'median_sort_desc_'+geneName"
+                            <input type="radio" class="btn-check" :name="'medianSort_'+geneName" :id="'median_sort_desc_'+geneName"
                                    autocomplete="off">
                             <label class="btn btn-outline-secondary" :for="'median_sort_desc_'+geneName" @click="medianSortDesc()">DESC</label>
                         </div>
@@ -535,16 +545,17 @@ function getSilencer() {
         dataType: 'json',
         success: function (res, status) {
             // console.log(res);
+            endLoading();
             initSignalInSpecificBioSamplesTables(res.data.signal_in_specific_bio_samples_tables_data);
             initPutativeTargetGenes(res.data.putative_target_genes.table_data, res.data.putative_target_genes.network_data);
-            initAssociatedGeneExpression(res.data.associated_gene_expressions)
-        }, error: function (error, status) {
-            // console.log(error);
-        }
+            initAssociatedGeneExpression(res.data.associated_gene_expressions);
+        }, error: function (error) {
+            console.log(error);
+            endLoading();
+        },
     });
 }
 
 $(function () {
     getSilencer();
-    endLoading();
 });

@@ -16,19 +16,12 @@ __auth__ = 'diklios'
 from django.db import models
 
 from .base import Base
+from SilencerAtlas.libs.model_choices import unknown,recognition_factors
 
 
 class RecognitionFactor(Base):
-    RECOGNITION_FACTOR_ITEMS = [
-        ('h3k27me3', 'H3K27me3'),
-        ('h3k9me1', 'H3K9me1'),
-        ('h3k9me2', 'H3K9me2'),
-        ('h3k9me3', 'H3K9me3'),
-        ('h4k20me1', 'H4K20me1'),
-        ('h3k79me3', 'H3K79me3'),
-        ('unknown', 'unknown'),
-    ]
-    name = models.CharField(max_length=32, choices=RECOGNITION_FACTOR_ITEMS,unique=True, default='unknown', db_index=True,
+    RECOGNITION_FACTOR_ITEMS = [(key,value) for key,value in recognition_factors.items()|unknown.items()]
+    name = models.CharField(max_length=32, choices=RECOGNITION_FACTOR_ITEMS,unique=True, default='--', db_index=True,
                             verbose_name='识别因子名称')
 
     class Meta(Base.Meta):

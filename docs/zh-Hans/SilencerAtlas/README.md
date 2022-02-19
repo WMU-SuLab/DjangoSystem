@@ -31,6 +31,10 @@
 
 ## 项目启动（需要先激活虚拟环境）
 
+- 配置环境变量
+    - `Django-backend/System`文件夹下创建`.env`文件
+    - 配置`DJANGO_ENV`:`develop`或者`product`
+    - 配置`HASHID_FIELD_SALT`:任意值
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`

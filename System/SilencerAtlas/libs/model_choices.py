@@ -14,7 +14,10 @@
 __auth__ = 'diklios'
 # 主要用于页面的快速展示
 unknown = {
-    'unknown': 'unknown'
+    '':'',
+    'unknown': 'unknown',
+    '-':'-',
+    '--':'--',
 }
 sources = {
     'encode': 'ENCODE',
@@ -27,9 +30,9 @@ species = {
 }
 bio_sample_types = {
     'tissue': 'Tissue',
-    'cell_line': 'Cell Line',
+    'cellline': 'Cell Line',
     'primary_cell': 'Primary Cell',
-    'vitro': 'In vitro differentiated cells',
+    'diff_cell': 'In vitro differentiated cells',
 }
 recognition_factors = {
     'h3k9me1': 'H3K9me1',
@@ -40,16 +43,25 @@ recognition_factors = {
     'h4k20me1': 'H4K20me1',
 }
 strategies = {
-    'closest': 'Closest',
-    'overlap': 'Overlap',
-    'abc_model': 'ABC Model'
+    # 'closest': 'Closest',
+    # 'overlap': 'Overlap',
+    # 'abc_model': 'ABC Model'
+    'spacial_overlap':'Spatial Overlap',
+    'physical_nearest':'Physical Nearest',
+    'homer_nearest':'HOMER Nearest',
 }
 variants = {
     'eQTL': 'eQTL',
     'risk_snp': 'Risk SNP'
 }
-gene_strand = {
-    '+': 'positive',
-    '-': 'negative',
-    '.': 'needless',
+strand = {
+    # 正链
+    # '+': 'positive',
+    '+': '+',
+    # 负链
+    # '-': 'negative',
+    '-': '-',
+    # 不需要指定
+    # '.': 'needless',
+    '.': '.',
 }

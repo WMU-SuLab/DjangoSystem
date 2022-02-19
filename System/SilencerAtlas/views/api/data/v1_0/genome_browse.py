@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from SilencerAtlas.utils import ranged_data_response
 
 
@@ -52,7 +52,6 @@ def get_igv_tracks(request):
     """
     暂时是bw文件，后续可以集成其他格式
     """
-    # file_dir = os.path.join(settings.BASE_DIR, 'SilencerAtlasPage/static/SilencerAtlasPage/genome/self/bw')
     # files = os.listdir(file_dir)
     # tracks = [{
     #     "name": file.split('.')[0],
@@ -68,12 +67,11 @@ def get_igv_tracks(request):
     #         {"color": 'red', "dotted": False, "y": 5}
     #     ]
     # } for file in files]
-    # get_igv_file_data_url=reverse('SilencerAtlas:api:data:v1_0:get_igv_file_data')
-    get_igv_file_data_url='/silencer_atlas/api/data/v1_0/get_igv_file_data/'
+    get_igv_file_data_url=reverse('SilencerAtlas:api:data:v1_0:get_igv_file_data',args=['test_file_path']).replace('test_file_path','')
     tracks = [
         {
             "name": "ENCSR952BJX",
-            "url": get_igv_file_data_url+"bw/ENCSR952BJX.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR952BJX.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -83,7 +81,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR024JJL",
-            "url": get_igv_file_data_url+"bw/ENCSR024JJL.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR024JJL.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -93,7 +91,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR049FUB",
-            "url": get_igv_file_data_url+"bw/ENCSR049FUB.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR049FUB.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -103,7 +101,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR057BFO",
-            "url": get_igv_file_data_url+"bw/ENCSR057BFO.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR057BFO.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -113,7 +111,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR177CGN",
-            "url": get_igv_file_data_url+"bw/ENCSR177CGN.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR177CGN.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -123,7 +121,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR188HXK",
-            "url": get_igv_file_data_url+"bw/ENCSR188HXK.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR188HXK.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -133,7 +131,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR200AFX",
-            "url": get_igv_file_data_url+"bw/ENCSR200AFX.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR200AFX.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",
@@ -143,7 +141,7 @@ def get_igv_tracks(request):
         },
         {
             "name": "ENCSR543UBL",
-            "url": get_igv_file_data_url+"bw/ENCSR543UBL.subtract.bw",
+            "url": get_igv_file_data_url+"self/bw/ENCSR543UBL.subtract.bw",
             "type": "wig",
             "format": "bigwig",
             "sourceType": "file",

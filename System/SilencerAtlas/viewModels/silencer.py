@@ -15,16 +15,22 @@ __auth__ = 'diklios'
 
 from django.db.models import Q
 
-from SilencerAtlas.libs.lists import unknown_value_list, recognition_factors_value_list
+from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.silencer import Silencer
 
-def filter_silencers_any(silencers,silencer_id):
+
+def to_silencers_dict(silencers):
+    return {silencer.silencer_id: silencer for silencer in silencers}
+
+
+def filter_silencers_any(silencers, silencer_id):
     for silencer in silencers:
-        if silencer.silencer_id==silencer_id:
+        if silencer.silencer_id == silencer_id:
             return silencer
 
+
 def filtered_unknown_silencers():
-    return Silencer.objects.all().distinct().exclude(
+    return Silencer.objects.exclude(
         Q(sample__source__in=unknown_value_list) |
         Q(sample__species__in=unknown_value_list) |
         Q(sample__bio_sample_type__in=unknown_value_list) |
@@ -39,7 +45,7 @@ def filtered_sample_chosen_silencers(data):
     bio_sample_types_chosen = data.get('bioSampleTypesChosen', [])
     tissue_types_chosen = data.get('tissueTypesChosen', [])
     bio_sample_names_chosen = data.get('bioSamplesNamesChosen', [])
-    silencers = filtered_unknown_silencers()
+    silencers = Silencer.objects.all()
     if sources_chosen:
         silencers = silencers.filter(sample__source__in=sources_chosen)
     if species_chosen:
@@ -57,17 +63,14 @@ def filter_zero_count(fields_count):
     return list(filter(lambda x: x.get('count', 0) != 0, fields_count))
 
 
-def silencers_classify_count(search_field: str, field_values: dict, silencers=None):
-    fields_count = []
-    if not silencers:
+def silencers_classify_count(search_field: str, field_values: dict, have_silencers=False, silencers=None):
+    # 这样是因为用silencers判断会从数据库中读取silencers，非常慢
+    if not have_silencers:
         silencers = Silencer.objects.all()
-    for field_key, field_value in field_values.items():
-        filter_by = {'sample__' + search_field: field_key}
-        filtered_silencers = silencers.filter(**filter_by)
-        silencers_count = filtered_silencers.count()
-        fields_count.append({'value': field_key, 'label': field_value, 'count': silencers_count})
-    return fields_count
+    return [{'value': field_key, 'label': field_value,
+             'count': silencers.filter(**{'sample__' + search_field: field_key}).count()} for field_key, field_value in
+            field_values.items()]
 
 
-def silencers_classify_count_filter_zero(search_field: str, field_values: dict, silencers=None):
-    return filter_zero_count(silencers_classify_count(search_field, field_values, silencers))
+def silencers_classify_count_filter_zero(search_field: str, field_values: dict, have_silencers=False, silencers=None):
+    return filter_zero_count(silencers_classify_count(search_field, field_values, have_silencers, silencers))

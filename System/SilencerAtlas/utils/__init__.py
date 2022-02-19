@@ -28,16 +28,17 @@ def ranged_data_response(range_header, relative_path):
     """
     用于根据igv.js的range切分文件，否则文件太大的时候响应会非常慢
     """
-    path = os.path.join(settings.BASE_DIR, 'SilencerAtlas/static/SilencerAtlas/genome/self', relative_path)
+    genome_dir_path=settings.GENOME_DIR_PATH
+    file_path = os.path.join(genome_dir_path, relative_path)
     if not range_header:
         return None
     match = re.search(r'(\d+)-(\d*)', range_header)
     if not match:
         return "Error: unexpected range header syntax: {}".format(range_header)
-    size = os.path.getsize(path)
+    size = os.path.getsize(file_path)
     offset = int(match.group(1))
     length = int(match.group(2) or size) - offset + 1
-    with open(path, 'rb') as f:
+    with open(file_path, 'rb') as f:
         f.seek(offset)
         data = f.read(length)
     response = HttpResponse(data, status=206, content_type='application/octet-stream')

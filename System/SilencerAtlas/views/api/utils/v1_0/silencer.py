@@ -43,7 +43,7 @@ def get_silencer(request, silencer_id):
                 'source': silencer.sample.source,
             },
             'target_genes': [{
-                'gene_name': silencer_gene.gene.name,
+                'gene_name': silencer_gene.gene_name,
                 'strategy': silencer_gene.stratrgy,
                 # 'sample_expression': [{
                 #     'bio_sample_name': gene_expression.bio_sample_name,

@@ -13,32 +13,13 @@
 """
 __auth__ = 'diklios'
 
-from SilencerAtlas.libs.lists import unknown_value_list
-from SilencerAtlas.models.snp import SNP
 from django.views.decorators.http import require_POST
+
+from SilencerAtlas.models.snp import SNP
+from SilencerAtlas.viewModels import handle_search_select
 from utils.response import JsonResponse
 
 
 @require_POST
 def get_snps(request):
-    search_text = request.json.get('searchText', '')
-    limit = request.json.get('limit', 10)
-    page = request.json.get('page', 1)
-    snps = SNP.objects.distinct().exclude(rs_id__in=unknown_value_list)
-    if search_text:
-        snps = snps.filter(rs_id__icontains=search_text)
-    count = snps.count()
-    if count > page * limit:
-        more = True
-    else:
-        more = False
-    if page == 1:
-        rs_ids = list(snps[:page * limit].values_list('rs_id', flat=True))
-    elif page > 1:
-        rs_ids = list(snps[(page - 1) * limit:page * limit].values_list('rs_id', flat=True))
-    else:
-        rs_ids = []
-    return JsonResponse({
-        'selects': [{'value': rs_id, 'text': rs_id} for rs_id in rs_ids],
-        'more': more,
-    })
+    return JsonResponse(handle_search_select(request.json, SNP, 'rs_id'))

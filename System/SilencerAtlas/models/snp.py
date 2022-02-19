@@ -21,16 +21,17 @@ from .region import Region
 
 # Single Nucleotide Polymorphism
 class SNP(Base):
-    rs_id = models.CharField(max_length=128, verbose_name='reference SNP id')
+    rs_id = models.CharField(max_length=128, db_index=True, verbose_name='reference SNP id')
 
     @property
     def snp_id(self):
         return self.rs_id
+
     @snp_id.setter
     def snp_id(self, value):
         self.rs_id = value
 
-    region = models.OneToOneField(Region, on_delete=models.CASCADE, verbose_name='位点',related_name='snp')
+    region = models.OneToOneField(Region, on_delete=models.CASCADE, verbose_name='位点', related_name='snp')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '单核苷酸多态性'

@@ -16,18 +16,14 @@ __auth__ = 'diklios'
 from django.db import models
 
 from .base import Base
+from SilencerAtlas.libs.model_choices import unknown,species
 
 
 class Region(Base):
     """
     一个基因区域或者位点（左开右闭）
     """
-    SPECIES_ITEMS = [
-        ('human', 'Human'),
-        ('mouse', 'Mouse'),
-        ('other', 'Other'),
-        ('unknown', 'unknown'),
-    ]
+    SPECIES_ITEMS = [(key,value) for key,value in species.items()|unknown.items()]
     # 由于区域位置用的太多，所以必须重新设置为bigint
     id = models.BigAutoField(primary_key=True)
     chromosome = models.CharField(max_length=6, null=True, blank=True, db_index=True, default='chr1',

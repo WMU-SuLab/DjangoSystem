@@ -21,7 +21,7 @@ from .region import Region
 
 # DNase I hyper sensitivity sites
 class DHS(Base):
-    dhs_id = models.CharField(max_length=128, default='unknown', verbose_name='DHS id')
+    dhs_id = models.CharField(max_length=128, default='--', verbose_name='DHS id')
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='区域')
 
     class Meta(Base.Meta):

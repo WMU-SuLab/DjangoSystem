@@ -37,3 +37,20 @@
     * 优化searchSelect脚本
     * 完善SilencerAtlas说明文档
     * 添加supervisor配置文件
+* v0.3.0:2022-2-19
+    * 继续优化了searchSelect脚本，功能更强
+    * 修复了browse页面边距的问题
+    * 删除了tissue type相关的数据和展示
+    * 完成了更新silencer的预构建脚本
+        * 完成了更新silencer 信号和靶基因相关的脚本
+        * 成功测试了各项脚本
+        * 编写了在服务器上后台运行的shell脚本
+    * 修复了silencer details页面的排序和数据展示选择框的bug
+    * 重构了silencer target gene的数据库表结构
+        * 根据新的数据结构完成了silencer details相关靶基因展示页面的重写
+    * 完善了silencer details页面信号数据的展示
+    * 各项性能优化和代码优化，大幅度增加速度
+    * 完善表格数据展示的逻辑，最多选择前1000条展示
+    * 服务器迁移数据库数据文件
+    * 服务器迁移项目文件夹和需要导入的数据文件
+    * 完成服务器环境的迁移

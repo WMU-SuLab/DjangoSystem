@@ -1,75 +1,56 @@
 var page_silencer_details_by_id = app_page_prefix + '/silencer_details/';
 var api_get_silencers = app_api_data_v1_0_prefix + '/get_silencers';
-var api_get_tissue_types = app_api_data_v1_0_prefix + '/get_tissue_types';
+var api_get_bio_sample_names = app_api_data_v1_0_prefix + '/get_bio_sample_names';
 var api_get_genes = app_api_data_v1_0_prefix + '/get_genes';
 var api_get_snps = app_api_data_v1_0_prefix + '/get_snps';
 var api_get_transcription_factors = app_api_data_v1_0_prefix + '/get_transcription_factors';
 
 
 function initSelects() {
-    // if (tissueTypesSelectData.length !== 0) {
-    //     searchByRegionTissueTypesSearchSelect = new searchSelect('#searchByRegionFormTissueTypeSearchSelect', tissueTypesSelectData);
-    //     searchByGeneTissueTypesSearchSelect = new searchSelect('#searchByGeneFormTissueTypeSearchSelect', tissueTypesSelectData);
-    //     searchByTFTissueTypesSearchSelect = new searchSelect('#searchByTFFormTissueTypeSearchSelect', tissueTypesSelectData);
-    //     searchBySNPTissueTypesSearchSelect = new searchSelect('#searchBySNPFormTissueTypeSearchSelect', tissueTypesSelectData);
-    //     console.log('init tissue type');
-    // }
-    // if (genesSelectData.length !== 0) {
-    //     // geneSearchSelect = new searchSelect('#searchByGeneFormGeneSearchSelect', genesSelectData);
-    //     console.log('init genes');
-    // }
-    // if (transcriptionFactorsSelectData.length !== 0) {
-    //     transcriptionFactorSearchSelect = new searchSelect('#searchByTFFormTranscriptionFactorSearchSelect', transcriptionFactorsSelectData);
-    //     console.log('init transcription factors');
-    // }
-    // if (rsIdsSelectData.length !== 0) {
-    //     rsIdSearchSelect = new searchSelect('#searchBySNPFormRsIdSearchSelect', rsIdsSelectData);
-    //     console.log('init rsIds');
-    // }
-    searchByRegionTissueTypesSearchSelect = new searchSelect('searchByRegionFormTissueTypeSearchSelect', {
+    searchByRegionBioSampleNamesSearchSelect = new searchSelect('searchByRegionFormBioSampleNameSearchSelect', {
         mode: 'server',
-        url: api_get_tissue_types,
-        name: 'tissueType',
-        placeholder:'tissue type',
+        url: api_get_bio_sample_names,
+        name: 'bioSampleName',
+        placeholder:'bio sample name',
         limit: 100,
         onDataChange: function (data) {
-            regionTissueTypes = data.map((item) => {
+            regionBioSampleNames = data.map((item) => {
                 return item.value;
             });
         }
     });
-    searchByGeneTissueTypesSearchSelect = new searchSelect('searchByGeneFormTissueTypeSearchSelect', {
+    searchByGeneBioSampleNamesSearchSelect = new searchSelect('searchByGeneFormBioSampleNameSearchSelect', {
         mode: 'server',
-        url: api_get_tissue_types,
-        name: 'tissueType',
-        placeholder:'tissue type',
+        url: api_get_bio_sample_names,
+        name: 'bioSampleName',
+        placeholder:'bio sample name',
         limit: 100,
         onDataChange: function (data) {
-            geneTissueTypes = data.map((item) => {
+            geneBioSampleNames = data.map((item) => {
                 return item.value;
             });
         }
     });
-    searchBySNPTissueTypesSearchSelect = new searchSelect('searchBySNPFormTissueTypeSearchSelect', {
+    searchBySNPBioSampleNamesSearchSelect = new searchSelect('searchBySNPFormBioSampleNameSearchSelect', {
         mode: 'server',
-        url: api_get_tissue_types,
-        name: 'tissueType',
-        placeholder:'tissue type',
+        url: api_get_bio_sample_names,
+        name: 'bioSampleName',
+        placeholder:'bio sample name',
         limit: 100,
         onDataChange: function (data) {
-            SNPTissueTypes = data.map((item) => {
+            SNPBioSampleNames = data.map((item) => {
                 return item.value;
             });
         }
     });
-    searchByTFTissueTypesSearchSelect = new searchSelect('searchByTFFormTissueTypeSearchSelect', {
+    searchByTFBioSampleNamesSearchSelect = new searchSelect('searchByTFFormBioSampleNameSearchSelect', {
         mode: 'server',
-        url: api_get_tissue_types,
-        name: 'tissueType',
-        placeholder:'tissue type',
+        url: api_get_bio_sample_names,
+        name: 'bioSampleName',
+        placeholder:'bio sample name',
         limit: 100,
         onDataChange: function (data) {
-            TFTissueTypes = data.map((item) => {
+            TFBioSampleNames = data.map((item) => {
                 return item.value;
             });
         }
@@ -126,7 +107,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByRegionFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByRegionFormTissueTypeSearchSelect").val(regionTissueTypes[0]);
+        $("#searchByRegionFormBioSampleNameSearchSelect").val(regionBioSampleNames[0]);
         $("#searchByRegionFormRegionInput").val('chr1:5353130-5353206');
     });
     $("#searchByGeneFormExample").on('click', function () {
@@ -138,7 +119,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByGeneFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByGeneFormTissueTypeSearchSelect").val(geneTissueTypes[0]);
+        $("#searchByGeneFormBioSampleNameSearchSelect").val(geneBioSampleNames[0]);
         $("#searchByGeneFormStrategySelect option[selected='selected']").each(function () {
             $(this).removeAttr('selected');
         });
@@ -154,7 +135,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchByTFFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchByTFFormTissueTypeSearchSelect").val(TFTissueTypes[0]);
+        $("#searchByTFFormBioSampleNameSearchSelect").val(TFBioSampleNames[0]);
         $("#searchByTFFormTFSearchSelect").val(transcriptionFactors[0]);
     });
     $("#searchBySNPFormExample").on('click', function () {
@@ -166,7 +147,7 @@ function initExamples() {
             $(this).removeAttr('selected');
         });
         $("#searchBySNPFormBioSampleTypeSelect option:first").attr('selected', 'selected');
-        $("#searchBySNPFormTissueTypeSearchSelect").val(SNPTissueTypes[0]);
+        $("#searchBySNPFormBioSampleNameSearchSelect").val(SNPBioSampleNames[0]);
         $("#searchBySNPFormVariantSelect option[selected='selected']").each(function () {
             $(this).removeAttr('selected');
         });
@@ -185,14 +166,14 @@ $.validator.addMethod("validateRegion", function (value, element) {
     }
 }, "Please input valid region!e.g. chr1:5353130-5353206!");
 
-$.validator.addMethod('inTissueTypes', function (value, element) {
+$.validator.addMethod('inBioSampleNames', function (value, element) {
     if (value) {
-        const tissueTypes = regionTissueTypes.concat(geneTissueTypes, TFTissueTypes, SNPTissueTypes);
-        return tissueTypes.indexOf(value) !== -1;
+        const bioSampleNames = regionBioSampleNames.concat(geneBioSampleNames, TFBioSampleNames, SNPBioSampleNames);
+        return bioSampleNames.indexOf(value) !== -1;
     } else {
         return null
     }
-}, 'Please input tissue type in within the limits!')
+}, 'Please input bio sample name in within the limits!')
 
 $.validator.addMethod('inGenes', function (value, element) {
     if (value) {
@@ -200,7 +181,7 @@ $.validator.addMethod('inGenes', function (value, element) {
     } else {
         return null
     }
-}, 'Please input tissue type in within the limits!')
+}, 'Please input bio sample name in within the limits!')
 
 $.validator.addMethod('inTranscriptionFactors', function (value, element) {
     if (value) {
@@ -208,7 +189,7 @@ $.validator.addMethod('inTranscriptionFactors', function (value, element) {
     } else {
         return null
     }
-}, 'Please input tissue type in within the limits!')
+}, 'Please input bio sample name in within the limits!')
 
 $.validator.addMethod('inRsIds', function (value, element) {
     if (value) {
@@ -216,7 +197,7 @@ $.validator.addMethod('inRsIds', function (value, element) {
     } else {
         return null
     }
-}, 'Please input tissue type in within the limits!')
+}, 'Please input bio sample name in within the limits!')
 
 function initForms() {
     $("#searchByRegionForm").validate({
@@ -228,12 +209,12 @@ function initForms() {
                 },
                 validateRegion: true
             },
-            tissueType: {
+            bioSampleName: {
                 required: true,
                 normalizer: function (value) {
                     return $.trim(value);
                 },
-                inTissueTypes: true,
+                inBioSampleNames: true,
             }
         },
         submitHandler: function (form, event) {
@@ -245,12 +226,12 @@ function initForms() {
     });
     $("#searchByGeneForm").validate({
         rules: {
-            tissueType: {
+            bioSampleName: {
                 required: true,
                 normalizer: function (value) {
                     return $.trim(value);
                 },
-                inTissueTypes: true,
+                inBioSampleNames: true,
             },
             gene: {
                 required: true,
@@ -269,12 +250,12 @@ function initForms() {
     });
     $("#searchByTFForm").validate({
         rules: {
-            tissueType: {
+            bioSampleName: {
                 required: true,
                 normalizer: function (value) {
                     return $.trim(value);
                 },
-                inTissueTypes: true,
+                inBioSampleNames: true,
             },
             transcriptionFactor: {
                 required: true,
@@ -293,12 +274,12 @@ function initForms() {
     });
     $("#searchBySNPForm").validate({
         rules: {
-            tissueType: {
+            bioSampleName: {
                 required: true,
                 normalizer: function (value) {
                     return $.trim(value);
                 },
-                inTissueTypes: true,
+                inBioSampleNames: true,
             },
             rsId: {
                 required: true,
@@ -404,7 +385,7 @@ function initSearchTextResult() {
             $("#searchByGene-tab").click();
             formData = {'gene': searchText};
         }
-    }
+    }else formData={};
     initTable();
 }
 

@@ -13,6 +13,8 @@
 """
 __auth__ = 'diklios'
 
+def to_snps_dict(snps):
+    return {snp.rs_id: snp for snp in snps}
 
 def filter_snps_any(snps, rs_id):
     for snp in snps:

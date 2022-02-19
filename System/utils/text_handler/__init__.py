@@ -26,3 +26,23 @@ def lower_underline(text: str) -> str:
 
 def lower_underline_list(text_list: list) -> list:
     return [lower_underline(item) for item in text_list]
+
+
+def lower_text(text: str, upper: str, ) -> str:
+    """
+    :params upper_text:需要转换的字符串
+    :params lower_text:转换后的字符串
+    :return:
+    """
+    lower_map = str.maketrans(upper, upper.lower())
+    return text.translate(lower_map)
+
+
+def upper_text(text: str, lower: str) -> str:
+    """
+    :params lower_text:需要转换的字符串
+    :params upper_text:转换后的字符串
+    :return:
+    """
+    upper_map = str.maketrans(lower, lower.upper())
+    return text.translate(upper_map)

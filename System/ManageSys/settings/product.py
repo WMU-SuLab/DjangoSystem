@@ -45,8 +45,12 @@ DATABASES = {
         'PASSWORD': 'WMU-sulab-2022',
         # 'PASSWORD': 'laobatai981218',
         'OPTIONS': {
-            'charset': 'utf8mb4'
+            'charset': 'utf8mb4',
+            # 'timezone': 'Asia/Shanghai',
+            'timeout': 60,
         },
+        # gevent和多线程的时候不要用
+        # 'CONN_MAX_AGE': 36000,
         'TEST': {
             'NAME': 'DjangoAuthTest'
         }
@@ -60,8 +64,11 @@ DATABASES = {
         'PASSWORD': 'WMU-sulab-2022',
         # 'PASSWORD': 'laobatai981218',
         'OPTIONS': {
-            'charset': 'utf8mb4'
+            'charset': 'utf8mb4',
+            # 'timezone': 'Asia/Shanghai',
+            'timeout': 60,
         },
+        # 'CONN_MAX_AGE': 36000,
         'TEST': {
             'NAME': 'SilencerAtlasTest'
         }

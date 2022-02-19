@@ -13,8 +13,33 @@
 """
 __auth__ = 'diklios'
 
+import re
+
+from utils.text_handler import upper_text
+
+
+def to_recognition_factors_dict(recognition_factors):
+    return {recognition_factor.name: recognition_factor for recognition_factor in recognition_factors}
+
 
 def filter_recognition_factors_any(recognition_factors, name):
     for recognition_factor in recognition_factors:
         if recognition_factor.name == name:
             return recognition_factor
+
+
+def recognition_factors_upper(recognition_factor: str):
+    return upper_text(recognition_factor, 'hk')
+
+
+def recognition_factors_lower(recognition_factor: str):
+    return recognition_factor.lower()
+
+
+def recognition_factors_to_list(recognition_factors: str):
+    if 'only' in recognition_factors:
+        return recognition_factors.split(' ')[0]
+    elif 'not' in recognition_factors:
+        return ''
+    else:
+        return re.sub(' ', '', re.sub('[&,，；]', ';', recognition_factors))

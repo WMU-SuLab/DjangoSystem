@@ -32,3 +32,7 @@ def divide_region(region: str):
 
 def generate_region(chromosome, start, end):
     return f'{chromosome}:{start}-{end}'
+
+
+def to_regions_dict(regions):
+    return {generate_region(region.chromosome, region.start, region.end): region for region in regions}

@@ -13,7 +13,7 @@ $(function () {
         },
         data() {
             return {
-                allCount: allSilencersCount,
+                allSilencersCount: allSilencersCount,
                 chosenCount: 0,
                 sourcesSilencersCount: sourcesSilencersCount,
                 sourcesChosen: [],
@@ -21,29 +21,29 @@ $(function () {
                 speciesChosen: [],
                 bioSampleTypesSilencersCount: bioSampleTypesSilencersCount,
                 bioSampleTypesChosen: [],
-                tissueTypeSelect: null,
-                tissueTypesSelectData: tissueTypesSelectData,
-                tissueTypesChosen: [],
+                // tissueTypeSelect: null,
+                // tissueTypesSelectData: tissueTypesSelectData,
+                // tissueTypesChosen: [],
                 bioSampleNameSelect: null,
                 bioSampleNamesSelectData: bioSampleNamesSelectData,
                 bioSamplesNamesChosen: [],
                 samplesSilencersTable: null,
+                searching: false,
             }
         },
         computed: {
             bioSampleNameChosenSpan() {
-                return this.chosenCount + ' / ' + this.allCount;
+                return this.chosenCount + ' / ' + this.allSilencersCount;
             },
             chosenData() {
                 return {
                     'sourcesChosen': this.sourcesChosen || [],
                     'speciesChosen': this.speciesChosen || [],
                     'bioSampleTypesChosen': this.bioSampleTypesChosen || [],
-                    'tissueTypesChosen': this.tissueTypesChosen || [],
+                    // 'tissueTypesChosen': this.tissueTypesChosen || [],
                     // 'csrfmiddlewaretoken':csrf_token,
                 };
             },
-
         },
         watch: {},
         methods: {
@@ -61,23 +61,41 @@ $(function () {
                     return item.split(':')[0];
                 });
             },
-            initTissueTypeSelect(selects) {
-                const vueThis = this;
-                vueThis.tissueTypeSelect = $("#tissueTypeSelect");
-                vueThis.tissueTypeSelect.html('');
-                vueThis.bioSampleNameSelect = vueThis.tissueTypeSelect.mySelect({
-                    multi: true, //true为多选,false为单选
-                    selects: selects,
-                    onChange: function (res) { //选择框值变化返回结果
-                        vueThis.tissueTypesChosen = vueThis.getSelectDataValue(res);
-                        debounce(vueThis.onChosen(true), 500);
-                        debounce(vueThis.initSamplesSilencersTable(), 500);
-                    }
+            startSearching(){
+                console.log('startSearching');
+                this.searching = true;
+                let elements=document.querySelectorAll('.list-group .list-group-item');
+                elements.forEach(function(item){
+                    item.classList.add('disabled');
                 });
+                this.bioSampleNameSelect.attr('disabled', true);
             },
+            endSearching(){
+                console.log('endSearching');
+                this.searching = false;
+                let elements=document.querySelectorAll('.list-group .list-group-item');
+                elements.forEach(function(item){
+                    item.classList.remove('disabled');
+                });
+                this.bioSampleNameSelect.attr('disabled', false);
+            },
+            // initTissueTypeSelect(selects) {
+            //     const vueThis = this;
+            //     vueThis.tissueTypeSelect = $("#tissueTypeSelect");
+            //     vueThis.tissueTypeSelect.html('');
+            //     vueThis.bioSampleNameSelect = vueThis.tissueTypeSelect.mySelect({
+            //         multi: true, //true为多选,false为单选
+            //         selects: selects,
+            //         onChange: function (res) { //选择框值变化返回结果
+            //             vueThis.tissueTypesChosen = vueThis.getSelectDataValue(res);
+            //             debounce(vueThis.onChosen(true), 500);
+            //             debounce(vueThis.initSamplesSilencersTable(), 500);
+            //         }
+            //     });
+            // },
             initBioSampleNameSelect(selects) {
                 const vueThis = this;
-                vueThis.bioSampleNameSelect = $("#bioSampleNameSelect");
+                vueThis.bioSampleNameSelect=$("#bioSampleNameSelect");
                 vueThis.bioSampleNameSelect.html('');
                 vueThis.bioSampleNameSelect.mySelect({
                     multi: true, //true为多选,false为单选
@@ -88,7 +106,10 @@ $(function () {
                         vueThis.chosenCount = vueThis.getSelectDataCount(res);
                         vueThis.bioSamplesNamesChosen = vueThis.getSelectDataValue(res);
                         // console.log(res);
-                        debounce(vueThis.initSamplesSilencersTable(), 500);
+                        if (!this.searching) {
+                            vueThis.startSearching();
+                            debounce(vueThis.initSamplesSilencersTable(true), 500);
+                        }
                     }
                 });
             },
@@ -99,8 +120,11 @@ $(function () {
                 } else {
                     el.addClass('active');
                 }
-                debounce(this.onChosen(), 500);
-                debounce(this.initSamplesSilencersTable(), 500);
+                if (!this.searching) {
+                    this.startSearching();
+                    debounce(this.onChosen(false), 500);
+                    debounce(this.initSamplesSilencersTable(), 500);
+                }
             },
             onChosen(notRefreshBioSampleType) {
                 // 因为和JQuery一起用了，要保留一下this
@@ -114,7 +138,6 @@ $(function () {
                 let bioSampleTypesChosen = $.map($('#bioSampleType .active'), function (item) {
                     return $(item).attr('id');
                 });
-
                 vueThis.sourcesChosen = sourcesChosen;
                 vueThis.speciesChosen = speciesChosen;
                 vueThis.bioSampleTypesChosen = bioSampleTypesChosen;
@@ -127,28 +150,30 @@ $(function () {
                     success: function (result, status) {
                         if (result.success) {
                             if (notRefreshBioSampleType) {
-                                vueThis.bioSampleNamesSelectData = result.data.bio_sample_names_select_data;
-                                vueThis.initBioSampleNameSelect(result.data.bio_sample_names_select_data);
+                                vueThis.bioSampleNamesSelectData = result.data.bioSampleNamesSelectData;
+                                vueThis.initBioSampleNameSelect(result.data.bioSampleNamesSelectData);
                             } else {
-                                vueThis.allCount = result.data.all_silencers_count;
-                                vueThis.sourcesSilencersCount = result.data.sources_chosen_silencers_count;
-                                vueThis.speciesSilencersCount = result.data.species_chosen_silencers_count;
-                                vueThis.bioSampleTypesSilencersCount = result.data.bio_sample_types_chosen_silencers_count;
-                                vueThis.tissueTypesSelectData = result.data.tissue_types_select_data;
-                                vueThis.initTissueTypeSelect(result.data.tissue_types_select_data);
-                                vueThis.bioSampleNamesSelectData = result.data.bio_sample_names_select_data;
-                                vueThis.initBioSampleNameSelect(result.data.bio_sample_names_select_data);
+                                console.log(result.data);
+                                vueThis.allSilencersCount = result.data.allSilencersCount;
+                                vueThis.sourcesSilencersCount = result.data.sourcesSilencersCount;
+                                vueThis.speciesSilencersCount = result.data.speciesSilencersCount;
+                                vueThis.bioSampleTypesSilencersCount = result.data.bioSampleTypesSilencersCount;
+                                // vueThis.tissueTypesSelectData = result.data.tissue_types_select_data;
+                                // vueThis.initTissueTypeSelect(result.data.tissue_types_select_data);
+                                vueThis.bioSampleNamesSelectData = result.data.bioSampleNamesSelectData;
+                                vueThis.initBioSampleNameSelect(result.data.bioSampleNamesSelectData);
                             }
-
                         }
                     },
-                    error: function (result, status) {
-                        console.log(result);
+                    error: function (res, status) {
+                        console.log(res);
+                    },complete:function (res){
+                        vueThis.endSearching();
                     }
                 });
             },
-            initSamplesSilencersTable() {
-                this.samplesSilencersTable = initBootstrapTable({
+            initSamplesSilencersTable(controlSearch=false) {
+                let config={
                     dom: '#samplesSilencersTable',
                     columns: [
                         {
@@ -170,10 +195,10 @@ $(function () {
                             'field': 'bio_sample_type',
                             'title': 'BioSample Type',
                         },
-                        {
-                            'field': 'tissue_cell_type',
-                            'title': 'Tissue/Cell line Type',
-                        },
+                        // {
+                        //     'field': 'tissue_cell_type',
+                        //     'title': 'Tissue/Cell line Type',
+                        // },
                         {
                             'field': 'bio_sample_name',
                             'title': 'BioSample Name',
@@ -185,11 +210,14 @@ $(function () {
                     ],
                     url: api_get_samples_silencers,
                     uploadData: Object.assign({'bioSamplesNamesChosen': this.bioSamplesNamesChosen || [],}, this.chosenData,),
-                });
+
+                };
+                if (controlSearch) config.completeCallBack= this.endSearching;
+                this.samplesSilencersTable = initBootstrapTable(config);
             }
         },
         mounted() {
-            this.initTissueTypeSelect(this.tissueTypesSelectData);
+            // this.initTissueTypeSelect(this.tissueTypesSelectData);
             this.initBioSampleNameSelect(this.bioSampleNamesSelectData);
             this.initSamplesSilencersTable();
             endLoading();

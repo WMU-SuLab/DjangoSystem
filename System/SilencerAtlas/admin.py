@@ -205,14 +205,14 @@ silencer_atlas_site.register(Silencer, SilencerAdmin)
 
 
 class SilencerGenesAdmin(BaseAdmin):
-    list_display = ('silencer', 'gene', 'strategy')
+    list_display = ('silencer', 'gene_name', 'gene_ensembl_id','genomic_loci','strategy','sub_strategy','distance_to_TSS')
     list_filter = ('status', 'created_time', 'strategy')
-    search_fields = ['silencer', 'gene', 'strategy']
+    search_fields = ['silencer', 'gene_name', 'gene_ensembl_id','genomic_loci','strategy','sub_strategy','distance_to_TSS']
     fieldsets = (
         (None, {
             'fields': (
-                ('silencer', 'gene'),
-                ('strategy',),
+                ('silencer', 'gene_name', 'gene_ensembl_id','genomic_loci',),
+                ('strategy','sub_strategy','distance_to_TSS',),
                 ('remarks', 'remarks_json', 'status'),
             )
         }),

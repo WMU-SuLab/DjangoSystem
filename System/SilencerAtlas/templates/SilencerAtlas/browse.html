@@ -8,7 +8,7 @@
     <div id="mainContent" style="display: none">
         <div class="d-flex justify-content-center col-12 pt-4 fs-3">
             <div class="col-11 d-flex justify-content-center">
-                <div id="side" class="col-2">
+                <div id="side" class="col-3">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">Data Source</h4>
@@ -54,12 +54,12 @@
                             </a>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">Tissue Type</h4>
-                        </div>
-                        <div id="tissueTypeSelect" class="mySelect list-group" style="width: 100%"></div>
-                    </div>
+                    {#                    <div class="panel panel-default">#}
+                    {#                        <div class="panel-heading">#}
+                    {#                            <h4 class="panel-title">Tissue Type</h4>#}
+                    {#                        </div>#}
+                    {#                        <div id="tissueTypeSelect" class="mySelect list-group" style="width: 100%"></div>#}
+                    {#                    </div>#}
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">BioSample Name
@@ -72,7 +72,7 @@
                         <div id="bioSampleNameSelect" class="mySelect list-group" style="width: 100%"></div>
                     </div>
                 </div>
-                <div class="col-10 px-4">
+                <div class="col px-4">
                     <table id="samplesSilencersTable"></table>
                 </div>
             </div>
@@ -83,12 +83,12 @@
 {% block main_scripts %}
     <script>
         {#侧边栏需要的数据#}
-        var allSilencersCount = {{ all_silencers_count|safe }};
-        var sourcesSilencersCount ={{ sources_silencers_count|safe }};
-        var speciesSilencersCount ={{ species_silencers_count|safe }};
-        var bioSampleTypesSilencersCount ={{ bio_sample_types_silencers_count|safe }};
-        var tissueTypesSelectData ={{ tissue_types_select_data|safe }};
-        var bioSampleNamesSelectData ={{ bio_sample_names_select_data | safe }};
+        var allSilencersCount = {{ allSilencersCount|safe }};
+        var sourcesSilencersCount ={{ sourcesSilencersCount|safe }};
+        var speciesSilencersCount ={{ speciesSilencersCount|safe }};
+        var bioSampleTypesSilencersCount ={{ bioSampleTypesSilencersCount|safe }};
+        {#var tissueTypesSelectData ={{ tissueTypesSelectData|safe }};#}
+        var bioSampleNamesSelectData ={{ bioSampleNamesSelectData | safe }};
     </script>
     {% include 'base/table-scripts.html' %}
     {% include 'base/vue.html' %}

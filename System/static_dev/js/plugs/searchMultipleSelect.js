@@ -23,16 +23,19 @@ searchMultipleSelect.prototype = {
         const that = this;
         this.ele.find(".inputWrap").on("click", function (event) {
             event.stopPropagation();
-            if ($(event.target).is(that.ele.find('.inputWrap>input'))){
-                that.ele.find(".inputWrap>i").removeClass("fa-angle-down").addClass("fa-angle-up");
-                that.ele.find(".mySelect-option").animate({height: "400px", opacity: "1"}, "fast", "swing")
-            }else {
-                if (that.ele.find(".inputWrap>i").hasClass("fa-angle-down")) {
+            const disabled=that.ele.attr("disabled");
+            if (!disabled) {
+                if ($(event.target).is(that.ele.find('.inputWrap>input'))) {
                     that.ele.find(".inputWrap>i").removeClass("fa-angle-down").addClass("fa-angle-up");
-                    that.ele.find(".mySelect-option").animate({height: "400px", opacity: "1"}, "fast", "swing")
+                    that.ele.find(".mySelect-option").animate({height: "600px", opacity: "1"}, "fast", "swing")
                 } else {
-                    that.ele.find(".inputWrap>i").removeClass("fa-angle-up").addClass("fa-angle-down");
-                    that.ele.find(".mySelect-option").animate({height: "0", opacity: "0"}, "fast", "swing")
+                    if (that.ele.find(".inputWrap>i").hasClass("fa-angle-down")) {
+                        that.ele.find(".inputWrap>i").removeClass("fa-angle-down").addClass("fa-angle-up");
+                        that.ele.find(".mySelect-option").animate({height: "600px", opacity: "1"}, "fast", "swing")
+                    } else {
+                        that.ele.find(".inputWrap>i").removeClass("fa-angle-up").addClass("fa-angle-down");
+                        that.ele.find(".mySelect-option").animate({height: "0", opacity: "0"}, "fast", "swing")
+                    }
                 }
             }
         });
@@ -55,7 +58,7 @@ searchMultipleSelect.prototype = {
     initOption: function () {
         const that = this;
         //初始化输入框和option
-        this.ele.append('<div class="inputWrap"><ul></ul><input style="border: 0;min-height: 40px;padding-left: 10px;width: calc( 100% - 30px)" placeholder="search"><i class="fa fa-angle-down"></i></div>');
+        this.ele.append('<div class="inputWrap"><input style="border: 0;min-height: 40px;padding-left: 10px;width: calc( 100% - 30px)" placeholder="search"><i class="fa fa-angle-down"></i></div>');
         this.ele.append('<div class="mySelect-option"></div>');
         const selects=this.options.selects;
         for (let i = 0; i < selects.length; i++) {
@@ -160,7 +163,6 @@ searchMultipleSelect.prototype = {
                             $(this).addClass("selected")
                         }
                     }
-
                 })
             } else {
                 alert("参数必须是数组")

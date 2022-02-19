@@ -18,7 +18,7 @@ from django.db.models import Q
 from django_mysql.models import GroupConcat
 
 from SilencerAtlas.models.silencer import Silencer
-
+from SilencerAtlas.viewModels.recognition_factor import recognition_factors_upper
 from SilencerAtlas.libs.lists import recognition_factors_value_list
 
 @require_GET
@@ -32,15 +32,14 @@ def silencer_details(request, silencer_id):
     # 这里的sample和region其实可以优化为查询一次数据库，但是这样就要在一次查询中使用concat()拼接或者silencer对象中手动拼接字符串了，考虑到只有一个对象要查，就还可以接受
     details = {
         'silencer_id': silencer.silencer_id,
-        'species': silencer.sample.species,
-        'source': silencer.sample.source,
-        'bio_sample_type': silencer.sample.bio_sample_type,
-        'tissue_type': silencer.sample.tissue_type,
-        'bio_sample_name': silencer.sample.bio_sample_name,
-        'genomic_loci': silencer.region.loci,
-        'size': silencer.region.size,
-        'recognition_factors': silencer.recognition_factors_group_concat,
-        'normalized_signal': '',
+        'species': silencer.sample.species if silencer.sample else '',
+        'source': silencer.sample.source if silencer.sample else '',
+        'bio_sample_type': silencer.sample.bio_sample_type if silencer.sample else '',
+        # 'tissue_type': silencer.sample.tissue_type if silencer.sample else '',
+        'bio_sample_name': silencer.sample.bio_sample_name if silencer.sample else '',
+        'genomic_loci': silencer.region.loci if silencer.region else '',
+        'size': silencer.region.size if silencer.region else '',
+        'recognition_factors': recognition_factors_upper(silencer.recognition_factors_group_concat or '--'),
     }
     return render(request, 'SilencerAtlas/silencer_details.html', context={
         'title': page,

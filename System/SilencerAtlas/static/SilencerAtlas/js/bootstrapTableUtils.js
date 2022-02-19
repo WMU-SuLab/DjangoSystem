@@ -1,7 +1,24 @@
 // 可以直接调用bootstrap-table的工具函数实现PHP的sprintf函数
 var sprintf = $.fn.bootstrapTable.utils.sprintf;
 
-function initBootstrapTable({dom, columns, url = undefined,uploadData,sortPriority=[], data = undefined}) {
+function initBootstrapTable({
+                                dom,
+                                columns,
+                                url = undefined,
+                                uploadData,
+                                sortPriority = [],
+                                data = undefined,
+                                successCallBack = function (value) {
+                                    console.log(value);
+                                },
+                                errorCallBack = function (value) {
+                                    console.log(value);
+                                },
+                                completeCallBack = function () {
+                                },
+                            }) {
+    var total = 0;
+    var firstLoad = true;
     var config = {
         classes: "table table-bordered table-hover table-striped",
         // 是否分页
@@ -12,12 +29,20 @@ function initBootstrapTable({dom, columns, url = undefined,uploadData,sortPriori
         // 初始化加载第一页
         pageNumber: 1,
         // 单页记录数
-        pageSize: 10,
+        pageSize: 20,
         // 可选择单页记录数
-        pageList: ['1', '5', '10', '20', '50', '100', 'all'],
+        pageList: [
+            '1',
+            '5',
+            '10',
+            '20',
+            '50',
+            '100',
+            // 'all'
+        ],
         // 当前页信息
         formatShowingRows: function (pageFrom, pageTo, totalRows) {
-            return sprintf('Showing %s to %s of %s rows', pageFrom, pageTo, totalRows)
+            return sprintf('Showing %s to %s of %s rows.Can only view the first 1000 data!', pageFrom, pageTo, totalRows)
         },
         // 这个选项会在没数据的时候不显示分页的一些内容，最好设置为false关了
         smartDisplay: false,
@@ -53,7 +78,7 @@ function initBootstrapTable({dom, columns, url = undefined,uploadData,sortPriori
         // sortPriority: [
         //     {"sortName": "","sortOrder":"desc"},
         // ],
-        sortPriority:sortPriority,
+        sortPriority: sortPriority,
         // 添加打印功能
         showPrint: true,
         // 添加导出数据功能
@@ -80,17 +105,23 @@ function initBootstrapTable({dom, columns, url = undefined,uploadData,sortPriori
                 orderName: params.sortName,//需要排序的列
                 sortOrder: params.sortOrder,//升序或降序
                 multiSort: params.multiSort,//混合排序
+                total: total,
+                firstLoad: firstLoad,
             }, uploadData);
             return JSON.stringify(temp);
         },
         responseHandler: function (res) {
+            total = res.data.total;
+            firstLoad = res.data.firstLoad;
             return res.data;
         },
         onLoadSuccess: function (res) {  //加载成功时执行
-            // console.log(res);
+            successCallBack(res);
+            completeCallBack();
         },
         onLoadError: function (e) {  //加载失败时执行
-            console.log(e);
+            errorCallBack(e);
+            completeCallBack();
         },
         // 列属性
         columns: [{
