@@ -104,7 +104,7 @@ def init_database_data(dir_path):
     :return:
     """
     # 先初始化识别因子的数据
-    chunk_size = 10000
+    chunk_size = 1000
     batch_size = 1000
     if not dir_path:
         dir_path = os.path.join(settings.BASE_DIR, 'SilencerAtlas/libs')
