@@ -104,8 +104,8 @@ def init_database_data(dir_path):
     :return:
     """
     # 先初始化识别因子的数据
-    chunk_size = 100000
-    batch_size = 10000
+    chunk_size = 10000
+    batch_size = 1000
     if not dir_path:
         dir_path = os.path.join(settings.BASE_DIR, 'SilencerAtlas/libs')
     print('import recognition factors data')
@@ -208,7 +208,7 @@ def build_database_data():
 
 @print_accurate_execute_time
 def pre_update_database_data(file_path):
-    chunk_size = 100000
+    chunk_size = 10000
     batch_size = chunk_size
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size):
         silencer_ids = df['silencer_id'].to_list()
@@ -245,7 +245,7 @@ def pre_update_database_data(file_path):
 
 @print_accurate_execute_time
 def update_database_data(file_path):
-    chunk_size = 100000
+    chunk_size = 10000
     batch_size = chunk_size / 10
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size):
         # 构建区域数据

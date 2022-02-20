@@ -2,9 +2,7 @@
 
 ## 服务器
 
-- 项目文件夹：`~/Django-backend/`
-    - 即：`/home/wmu/Django-backend/`
-- 由于根目录下面的空间不够，故直接迁移资源文件夹到：`/data/Django-backend`
+- 由于根目录下面的空间不够，故项目文件夹放至：`/data/Django-backend/`
     - 项目静态资源文件夹：`/data/Django-backend/static/`
     - 项目媒体资源文件夹：`/data/Django-backend/media/`
     - SilencerAtlas 资源文件夹：`/data/Django-backend/SilencerAtlas/libs`
