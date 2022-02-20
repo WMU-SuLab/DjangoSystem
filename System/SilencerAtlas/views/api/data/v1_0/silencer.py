@@ -68,7 +68,7 @@ def get_silencers(request):
         silencers = silencers.filter(region__chromosome__icontains=chromosome, region__start__lte=int(end),
                                      region__end__gte=int(start))
     if gene:
-        silencers = silencers.filter(silencergenes__gene__name__icontains=gene)
+        silencers = silencers.filter(silencergenes__gene_name__icontains=gene)
     if strategy:
         silencers = silencers.filter(silencergenes__strategy=strategy)
     if transcription_factor:

@@ -23,8 +23,8 @@ from .region import Region
 class Gene(Base):
     STRAND_ITEMS = [(key, value) for key, value in strand.items() | unknown.items()]
     # 默认的'--'就是 unknown 的意思
-    name = models.CharField(max_length=128, db_index=True, default='--', verbose_name='基因名')
-    ensembl_id = models.CharField(max_length=128, unique=True, db_index=True, null=True, blank=True,
+    name = models.CharField(max_length=128, unique=True, db_index=True, default='--', verbose_name='基因名')
+    ensembl_id = models.CharField(max_length=128, unique=True, db_index=True, null=True, blank=True, default='--',
                                   verbose_name='Ensembl数据库id')
 
     @property
@@ -38,7 +38,7 @@ class Gene(Base):
     region = models.OneToOneField(Region, verbose_name='基因区域', null=True, blank=True, db_index=True,
                                   on_delete=models.RESTRICT,
                                   related_name='gene')
-    strand = models.CharField(max_length=10, null=True, blank=True, choices=STRAND_ITEMS, default='--',
+    strand = models.CharField(max_length=10, null=True, blank=True, choices=STRAND_ITEMS, default='.',
                               verbose_name='正/负链信息')
     bio_type = models.CharField(max_length=128, null=True, blank=True, default='DNA', verbose_name='基因类型')
 

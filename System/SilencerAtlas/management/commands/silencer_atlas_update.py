@@ -17,6 +17,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 
 from SilencerAtlas.models.recognition_factor import RecognitionFactor
+from SilencerAtlas.models.gene import Gene
 from SilencerAtlas.models.region import Region
 from SilencerAtlas.models.sample import Sample
 from SilencerAtlas.models.silencer import Silencer, SilencerRecognitionFactors, SilencerSampleRecognitionFactors, \
@@ -170,6 +171,7 @@ def update_target_genes(file_path):
         silencer_ids = df['silencerID'].to_list()
         silencers = list(Silencer.objects.filter(silencer_id__in=silencer_ids))
         silencer_target_genes_dict = {}
+        gene_names=[]
         for index, row in df.iterrows():
             strategies = {}
             for group in group_by_step(list(row[1:].iteritems()), step=4):
@@ -185,6 +187,7 @@ def update_target_genes(file_path):
                     elif strategy == 'homer':
                         strategies['homer_nearest'] = {'gene_name': group[2][1], 'gene_ensembl_id': group[1][1],
                                                        'genomic_loci': group[0][1], 'distance': group[3][1], }
+                    gene_names.append(group[2][1])
             silencer_target_genes_dict[row['silencerID']] = strategies
         SilencerGenes.objects.bulk_create([SilencerGenes(
             silencer=silencers[index % chunk_size],
@@ -196,6 +199,7 @@ def update_target_genes(file_path):
             distance_to_TSS=value['distance'],
         ) for index, silencers_item in enumerate(silencer_target_genes_dict.items())
             for strategy, value in silencers_item[1].items()], batch_size=batch_size, ignore_conflicts=True)
+        Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=batch_size, ignore_conflicts=True)
 
 
 class Command(BaseCommand):

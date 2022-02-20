@@ -12,7 +12,7 @@ function initSignalInSpecificBioSamplesTables(tablesData) {
         }, {
             'field': 'h3k27me3',
             'title': 'H3K27me3 Z-score',
-        },{
+        }, {
             'field': 'h3k9me1',
             'title': 'H3K9me1 Z-score',
         }, {
@@ -413,15 +413,18 @@ const AssociatedGeneExpression = {
         changeToLasso() {
             if (this.bulkDataMethod !== 'lasso') {
                 this.bulkDataMethod = 'lasso';
-                var newSource = []
+                var newSource = [];
+                console.log(this.bulkData.source);
                 this.bulkData.source = this.bulkData.source.map(function (arr) {
                     var newArr = [];
                     arr.forEach(function (item) {
-                        newArr.push(Math.log2(item));
+                        if (item <= 0.0001) newArr.push(item);
+                        else newArr.push(Math.log2(item));
                     })
                     newSource.push(newArr);
                     return newArr;
                 });
+                console.log(this.bulkData.source);
                 this.bulkData.source = newSource;
                 this.bulkChart.clear();
                 this.bulkChart.setOption(this.bulkChartOptions);
@@ -492,7 +495,7 @@ const AssociatedGeneExpression = {
         },
         initEcharts() {
             this.bulkChart = echarts.init(document.getElementById('bulk_gene_expression_' + this.geneName), null, {
-                height: "600",
+                height: "500",
             });
             this.bulkChart.setOption(this.bulkChartOptions);
             // this.singleChart = echarts.init(document.getElementById('single_gene_expression_' + this.geneName), null, {

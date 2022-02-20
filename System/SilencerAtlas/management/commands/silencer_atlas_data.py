@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 import os
+from collections import defaultdict
 
 import pandas as pd
 from django.conf import settings
@@ -147,18 +148,17 @@ def init_database_data(dir_path):
     for gene_sample_expressions_df in read_csv_n_lines_each_time_by_pandas_yield(
             os.path.join(dir_path, 'gene_expressions.gct'), sep='\t',
             chunk_size=chunk_size, skip_rows=2):
-        gene_names = gene_sample_expressions_df['Description'].tolist()
+        gene_names = gene_sample_expressions_df['Description'].drop_duplicates().tolist()
         print('bulk create gene')
         Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=batch_size, ignore_conflicts=True)
         genes = to_genes_dict(list(Gene.objects.filter(name__in=gene_names)))
         gene_samples = {}
         for index, row in gene_sample_expressions_df.iterrows():
-            sample_expression = {}
+            sample_expression = defaultdict(list)
             for col_name, value in row[2:].iteritems():
-                if sample_expression.get(samples_name[col_name], None):
-                    sample_expression[samples_name[col_name]].append(value)
-                else:
-                    sample_expression[samples_name[col_name]] = [value]
+                sample_name = samples_name[col_name]
+                if sample_expression.get(sample_name, None):
+                    sample_expression[sample_name].append(value)
             gene_samples[row['Description']] = sample_expression
         print('bulk create gene expressions')
         GeneExpression.objects.bulk_create(

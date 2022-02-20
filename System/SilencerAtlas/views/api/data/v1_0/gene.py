@@ -12,10 +12,11 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-import time
+
 from django.views.decorators.http import require_POST
 
 from SilencerAtlas.models.gene import Gene
+from SilencerAtlas.models.silencer import SilencerGenes
 from SilencerAtlas.viewModels import handle_search_select
 from utils.response import JsonResponse
 
@@ -23,3 +24,7 @@ from utils.response import JsonResponse
 @require_POST
 def get_genes(request):
     return JsonResponse(handle_search_select(request.json, Gene, 'name'))
+
+
+def get_silencer_target_genes(request):
+    return JsonResponse(handle_search_select(request.json, SilencerGenes, 'gene_name'))
