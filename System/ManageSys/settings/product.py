@@ -47,7 +47,7 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
             # 'timezone': 'Asia/Shanghai',
-            'timeout': 60,
+            # 'timeout': 60,
         },
         # gevent和多线程的时候不要用
         # 'CONN_MAX_AGE': 36000,
@@ -66,7 +66,7 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
             # 'timezone': 'Asia/Shanghai',
-            'timeout': 60,
+            # 'timeout': 60,
         },
         # 'CONN_MAX_AGE': 36000,
         'TEST': {
