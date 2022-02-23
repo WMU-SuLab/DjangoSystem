@@ -1,5 +1,9 @@
 # 开发文档
 
+## 注意事项
+
+- 以下配置大部分需要root权限，请自行切换权限或者在命令前面加上**sudo**
+
 ## 环境安装
 
 - 基础环境（基础环境安装请自行搜索，不同操作系统有不同安装方法）
@@ -67,8 +71,8 @@
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
 - 配置supervisor
     - 创建配置文件
-        - `cat Django-backend/logs/supervisor/access.log`
-        - `cat Django-backend/logs/supervisor/error.log`
+        - `touch Django-backend/logs/supervisor/access.log`
+        - `touch Django-backend/logs/supervisor/error.log`
     - 你可以选择使用默认的`/etc/supervisord.conf`和`/etc/supervisord.d`文件夹，或者像下面这样进行配置
     - 创建supervisor配置文件夹
         - `mkdir -p /etc/supervisor`
@@ -119,11 +123,14 @@
 - Supervisor
     - 启动Supervisor：supervisord -c /etc/supervisord.conf
         - 配置文件需要根据你设置的位置进行调整
+    - 关闭supervisor：supervisorctl shutdown
     - 查看所有进程的状态：supervisorctl status
     - 启动服务：supervisorctl start 服务名
     - 停止服务：supervisorctl stop 服务名
     - 重启服务：supervisorctl restart 服务名
     - 重载配置：supervisorctl update
     - 重新启动配置中的所有程序：supervisorctl reload
+    - 清空进程日志：supervisorctl clear 服务名
+    - 服务名可以使用all代替所有服务
     - 启动supervisor并加载默认配置文件：systemctl start supervisord.service
     - 将supervisor加入开机启动项：systemctl enable supervisord.service
