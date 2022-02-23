@@ -4,12 +4,13 @@ from django.conf import settings
 from django.contrib import admin, messages
 
 from ManageSys.multi_db import MultiDBModelAdmin
-from SilencerAtlas.models.gene import Gene, GeneExpression
+from SilencerAtlas.models.gene import Gene, GeneRegion, GeneExpression
 from SilencerAtlas.models.recognition_factor import RecognitionFactor
-from SilencerAtlas.models.region import Region
+from SilencerAtlas.models.region import CommonRegion
 from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.models.silencer import Silencer, SilencerGenes, SilencerTFBs, SilencerCas9s, SilencerSNPs, \
-    SilencerRecognitionFactors, SilencerSampleRecognitionFactors
+from SilencerAtlas.models.silencer import Silencer, SilencerGene, SilencerTranscriptionFactor, SilencerCas9, \
+    SilencerSNP, \
+    SilencerRecognitionFactor, SilencerSampleRecognitionFactor
 from SilencerAtlas.models.snp import SNP
 from utils.file_handler.table_handler.xlsx import generate_xlsx_file
 
@@ -63,9 +64,9 @@ class BaseAdmin(MultiDBModelAdmin):
     export_data_to_excel.short_description = '导出所选数据到excel'
 
 
-class RegionAdmin(BaseAdmin):
-    list_display = ('id', 'chr', 'start', 'end')
-    list_filter = ('status', 'created_time',)
+class CommonRegionAdmin(BaseAdmin):
+    list_display = ['id', 'chr', 'start', 'end']
+    list_filter = ['status', 'created_time', ]
     search_fields = ['chr', 'start', 'end']
     fieldsets = (
         (None, {
@@ -77,25 +78,25 @@ class RegionAdmin(BaseAdmin):
     )
 
 
-silencer_atlas_site.register(Region, RegionAdmin)
+silencer_atlas_site.register(CommonRegion, CommonRegionAdmin)
 
 
 # 注意，内联是在父模型（外键指定的模型）中编辑子模型
 class RegionInline(admin.TabularInline):
-    model = Region
+    model = CommonRegion
     extra = 0
     fields = ('chr', 'start', 'end')
 
 
 class GeneAdmin(BaseAdmin):
-    list_display = ('id', 'name', 'ensembl_id', 'region', 'strand', 'bio_type')
-    list_filter = ('status', 'created_time', 'strand', 'bio_type')
-    search_fields = ['name', 'ensembl_id', 'bio_type', 'region', 'strand']
+    list_display = ['id', 'name', 'ensembl_id', 'bio_type', 'strand', ]
+    list_filter = ['status', 'created_time', 'bio_type', 'strand', ]
+    search_fields = ['name', 'ensembl_id', 'bio_type', 'strand']
     fieldsets = (
         (None, {
             'fields': (
-                ('name', 'ensembl_id', 'bio_type'),
-                ('region', 'strand',),
+                ('name', 'ensembl_id',),
+                ('bio_type', 'strand',),
                 ('remarks', 'remarks_json', 'status'),
             )
         }),
@@ -105,26 +106,43 @@ class GeneAdmin(BaseAdmin):
 silencer_atlas_site.register(Gene, GeneAdmin)
 
 
-# class GeneExpressionAdmin(BaseAdmin):
-#     list_display = ('id', 'gene', 'bio_sample_name', 'expression_value')
-#     list_filter = ('status', 'created_time',)
-#     search_fields = ['gene', 'bio_sample_name', 'expression_value']
-#     fieldsets = (
-#         (None, {
-#             'fields': (
-#                 ('gene', 'bio_sample_name', 'expression_value',),
-#                 ('remarks', 'remarks_json', 'status'),
-#             )
-#         }),
-#     )
+class GeneRegionAdmin(BaseAdmin):
+    list_display = ['id', 'gene', 'region']
+    list_filter = ['status', 'created_time', ]
+    search_fields = ['gene', 'region']
+    fieldsets = (
+        (None, {
+            'fields': (
+                ('gene', 'region',),
+                ('remarks', 'remarks_json', 'status'),
+            )
+        }),
+    )
 
 
-# silencer_atlas_site.register(GeneExpression, GeneExpressionAdmin)
+silencer_atlas_site.register(GeneRegion, GeneRegionAdmin)
+
+
+class GeneExpressionAdmin(BaseAdmin):
+    list_display = ['id', 'gene_name', 'bio_sample_name', ]
+    # list_filter = ('status', 'created_time',)
+    search_fields = ['gene_name', 'bio_sample_name', ]
+    fieldsets = (
+        (None, {
+            'fields': (
+                ('gene_name', 'bio_sample_name', 'expression_value',),
+                # ('remarks', 'remarks_json', 'status'),
+            )
+        }),
+    )
+
+
+silencer_atlas_site.register(GeneExpression, GeneExpressionAdmin)
 
 
 class SNPAdmin(BaseAdmin):
-    list_display = ('id', 'rs_id', 'region',)
-    list_filter = ('status', 'created_time')
+    list_display = ['id', 'rs_id', 'region', ]
+    list_filter = ['status', 'created_time']
     search_fields = ['rs_id']
     fieldsets = (
         (None, {
@@ -141,8 +159,8 @@ silencer_atlas_site.register(SNP, SNPAdmin)
 
 
 class RecognitionFactorAdmin(BaseAdmin):
-    list_display = ('id', 'name')
-    list_filter = ('status', 'created_time', 'name')
+    list_display = ['id', 'name']
+    list_filter = ['status', 'created_time', 'name']
     search_fields = ['name']
     fieldsets = (
         (None, {
@@ -158,8 +176,8 @@ silencer_atlas_site.register(RecognitionFactor, RecognitionFactorAdmin)
 
 
 class SampleAdmin(BaseAdmin):
-    list_display = ('id', 'sample_id', 'bio_sample_name', 'tissue_type', 'bio_sample_type', 'species', 'source')
-    list_filter = ('status', 'created_time', 'tissue_type', 'bio_sample_type', 'species', 'source')
+    list_display = ['id', 'sample_id', 'bio_sample_name', 'tissue_type', 'bio_sample_type', 'species', 'source']
+    list_filter = ['status', 'created_time', 'tissue_type', 'bio_sample_type', 'species', 'source']
     search_fields = ['sample_id', 'bio_sample_name', 'tissue_type', 'bio_sample_type', 'species', 'source']
     fieldsets = (
         (None, {
@@ -177,11 +195,15 @@ silencer_atlas_site.register(Sample, SampleAdmin)
 
 class SilencerAdmin(BaseAdmin):
     # 设置list_display来控制哪些字段显示在变更页面的表格中
-    list_display = (
-        'id', 'silencer_id', 'region', 'score', 'strand',
-    )
+    list_display = [
+        'id',
+        'silencer_id',
+        'region',
+        'score',
+        'strand',
+    ]
     # 设置list_filter来激活管理更改列表页面右侧侧栏的过滤器
-    list_filter = ('status', 'created_time',)
+    list_filter = ['status', 'created_time', ]
     # 设置search_fields，在管理更改列表页面上启用搜索框
     search_fields = ['silencer_id', 'region', 'score', 'strand', ]
 
@@ -204,27 +226,47 @@ class SilencerAdmin(BaseAdmin):
 silencer_atlas_site.register(Silencer, SilencerAdmin)
 
 
-class SilencerGenesAdmin(BaseAdmin):
-    list_display = ('silencer', 'gene_name', 'gene_ensembl_id','genomic_loci','strategy','sub_strategy','distance_to_TSS')
-    list_filter = ('status', 'created_time', 'strategy')
-    search_fields = ['silencer', 'gene_name', 'gene_ensembl_id','genomic_loci','strategy','sub_strategy','distance_to_TSS']
+class SilencerGeneAdmin(BaseAdmin):
+    list_display = [
+        'silencer',
+        'gene_name',
+        'gene_ensembl_id',
+        'genomic_loci',
+        'strategy',
+        'sub_strategy',
+        'distance_to_TSS'
+    ]
+    list_filter = [
+        # 'status',
+        # 'created_time',
+        'strategy'
+    ]
+    search_fields = [
+        'silencer',
+        'gene_name',
+        'gene_ensembl_id',
+        'genomic_loci',
+        'strategy',
+        'sub_strategy',
+        'distance_to_TSS'
+    ]
     fieldsets = (
         (None, {
             'fields': (
-                ('silencer', 'gene_name', 'gene_ensembl_id','genomic_loci',),
-                ('strategy','sub_strategy','distance_to_TSS',),
-                ('remarks', 'remarks_json', 'status'),
+                ('silencer', 'gene_name', 'gene_ensembl_id', 'genomic_loci',),
+                ('strategy', 'sub_strategy', 'distance_to_TSS',),
+                # ('remarks', 'remarks_json', 'status'),
             )
         }),
     )
 
 
-silencer_atlas_site.register(SilencerGenes, SilencerGenesAdmin)
+silencer_atlas_site.register(SilencerGene, SilencerGeneAdmin)
 
 
-class SilencerTFBsAdmin(BaseAdmin):
-    list_display = ('silencer', 'transcription_factor', 'binding_site')
-    list_filter = ('status', 'created_time')
+class SilencerTranscriptionFactorAdmin(BaseAdmin):
+    list_display = ['silencer', 'transcription_factor', 'binding_site']
+    list_filter = ['status', 'created_time']
     search_fields = ['silencer', 'transcription_factor', 'binding_site']
     fieldsets = (
         (None, {
@@ -236,12 +278,12 @@ class SilencerTFBsAdmin(BaseAdmin):
     )
 
 
-silencer_atlas_site.register(SilencerTFBs, SilencerTFBsAdmin)
+silencer_atlas_site.register(SilencerTranscriptionFactor, SilencerTranscriptionFactorAdmin)
 
 
-class SilencerSNPsAdmin(BaseAdmin):
-    list_display = ('silencer', 'snp', 'variant')
-    list_filter = ('status', 'created_time', 'variant')
+class SilencerSNPAdmin(BaseAdmin):
+    list_display = ['silencer', 'snp', 'variant']
+    list_filter = ['status', 'created_time', 'variant']
     search_fields = ['silencer', 'snp', 'variant']
     fieldsets = (
         (None, {
@@ -254,12 +296,12 @@ class SilencerSNPsAdmin(BaseAdmin):
     )
 
 
-silencer_atlas_site.register(SilencerSNPs, SilencerSNPsAdmin)
+silencer_atlas_site.register(SilencerSNP, SilencerSNPAdmin)
 
 
-class SilencerCas9sAdmin(BaseAdmin):
-    list_display = ('silencer', 'region')
-    list_filter = ('status', 'created_time')
+class SilencerCas9Admin(BaseAdmin):
+    list_display = ['silencer', 'region']
+    list_filter = ['status', 'created_time']
     search_fields = ['silencer', 'region']
     fieldsets = (
         (None, {
@@ -271,12 +313,12 @@ class SilencerCas9sAdmin(BaseAdmin):
     )
 
 
-silencer_atlas_site.register(SilencerCas9s, SilencerCas9sAdmin)
+silencer_atlas_site.register(SilencerCas9, SilencerCas9Admin)
 
 
-class SilencerRecognitionFactorsAdmin(BaseAdmin):
-    list_display = ('silencer', 'recognition_factor',)
-    list_filter = ('status', 'created_time', 'recognition_factor')
+class SilencerRecognitionFactorAdmin(BaseAdmin):
+    list_display = ['silencer', 'recognition_factor', ]
+    list_filter = ['status', 'created_time', 'recognition_factor']
     search_fields = ['silencer', 'recognition_factor', ]
     fieldsets = (
         (None, {
@@ -288,22 +330,26 @@ class SilencerRecognitionFactorsAdmin(BaseAdmin):
     )
 
 
-silencer_atlas_site.register(SilencerRecognitionFactors, SilencerRecognitionFactorsAdmin)
+silencer_atlas_site.register(SilencerRecognitionFactor, SilencerRecognitionFactorAdmin)
 
 
-class SilencerSampleRecognitionFactorsAdmin(BaseAdmin):
-    list_display = ('silencer', 'recognition_factor', 'bio_sample_name', 'z_score', 'recognized')
-    list_filter = ('status', 'created_time', 'recognition_factor', 'bio_sample_name',)
+class SilencerSampleRecognitionFactorAdmin(BaseAdmin):
+    list_display = ['silencer', 'recognition_factor', 'bio_sample_name', 'z_score', 'recognized']
+    list_filter = [
+        # 'status', 'created_time',
+        'recognition_factor',
+        'bio_sample_name',
+    ]
     search_fields = ['silencer', 'recognition_factor', 'bio_sample_name', 'z_score', 'recognized']
     fieldsets = (
         (None, {
             'fields': (
-                ('silencer', 'recognition_factor','bio_sample_name',),
-                ( 'z_score', 'recognized',),
-                ('remarks', 'remarks_json', 'status'),
+                ('silencer', 'recognition_factor', 'bio_sample_name',),
+                ('z_score', 'recognized',),
+                # ('remarks', 'remarks_json', 'status'),
             )
         }),
     )
 
 
-silencer_atlas_site.register(SilencerSampleRecognitionFactors, SilencerSampleRecognitionFactorsAdmin)
+silencer_atlas_site.register(SilencerSampleRecognitionFactor, SilencerSampleRecognitionFactorAdmin)

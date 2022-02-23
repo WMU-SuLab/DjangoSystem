@@ -210,7 +210,6 @@ $(function () {
                     ],
                     url: api_get_samples_silencers,
                     uploadData: Object.assign({'bioSamplesNamesChosen': this.bioSamplesNamesChosen || [],}, this.chosenData,),
-
                 };
                 if (controlSearch) config.completeCallBack= this.endSearching;
                 this.samplesSilencersTable = initBootstrapTable(config);

@@ -12,100 +12,44 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
-import os
 from collections import defaultdict
+import os
 
 import pandas as pd
 from django.conf import settings
-from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types, recognition_factors, variants, \
-    strategies
-from SilencerAtlas.models.gene import Gene, GeneExpression
+from SilencerAtlas.libs.model_choices import recognition_factors
+from SilencerAtlas.models.gene import Gene, GeneRegion,GeneExpression
 from SilencerAtlas.models.recognition_factor import RecognitionFactor
-from SilencerAtlas.models.region import Region
+from SilencerAtlas.models.region import CommonRegion
 from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.models.silencer import Silencer, SilencerRecognitionFactors, SilencerSampleRecognitionFactors, \
-    SilencerSNPs, SilencerTFBs, \
-    SilencerGenes, SilencerCas9s
+from SilencerAtlas.models.silencer import Silencer, SilencerRecognitionFactor, SilencerSampleRecognitionFactor, \
+    SilencerSNP, SilencerTranscriptionFactor, \
+    SilencerGene, SilencerCas9
 from SilencerAtlas.models.snp import SNP
 from SilencerAtlas.viewModels.gene import to_genes_dict
-from SilencerAtlas.viewModels.recognition_factor import to_recognition_factors_dict, recognition_factors_to_list
+from SilencerAtlas.viewModels.recognition_factor import to_recognition_factors_dict
 from SilencerAtlas.viewModels.region import divide_region, generate_region, to_regions_dict
 from SilencerAtlas.viewModels.sample import to_samples_dict
 from SilencerAtlas.viewModels.snp import to_snps_dict
-from utils.file_handler.read import read_n_lines_each_time_yield
+from utils.command import BaseCommand
 from utils.file_handler.table_handler.csv import read_csv_n_lines_each_time_by_pandas_yield
 from utils.time import print_accurate_execute_time
 
 
 @print_accurate_execute_time
-def init_test_database_data():
+def init_database_data(dir_path, chunk_size=1000):
     """
-    只适合完全为空或者只运行过test的数据库，否则会出错
-    :return:
-    """
-    print('init test database data')
-    count = 0
-    for source_key in sources.keys():
-        for species_key in species.keys():
-            for bio_sample_type_key in bio_sample_types.keys():
-                count += 1
-                sample, sample_created = Sample.objects.get_or_create(
-                    sample_id='test_sample' + str(count),
-                    bio_sample_name='test_bio_sample_name' + str(count),
-                    tissue_type='test_type' + str(count),
-                    bio_sample_type=bio_sample_type_key,
-                    species=species_key,
-                    source=source_key
-                )
-                region, region_created = Region.objects.get_or_create(
-                    chromosome='silencer_fake_chr' + str(count),
-                    start=count * 10,
-                    end=999999999
-                )
-                silencer, silencer_created = Silencer.objects.get_or_create(
-                    silencer_id='test_silencer' + str(count),
-                    region=region,
-                    score=0, strand='+', sample=sample
-                )
-                for recognition_factor_key in recognition_factors.keys():
-                    recognition_factor, recognition_factor_created = RecognitionFactor.objects.get_or_create(
-                        name=recognition_factor_key
-                    )
-                    SilencerRecognitionFactors.objects.get_or_create(
-                        silencer=silencer,
-                        recognition_factor=recognition_factor,
-                    )
-                    SilencerSampleRecognitionFactors.objects.get_or_create(
-                        silencer=silencer,
-                        recognition_factor=recognition_factor,
-                        bio_sample_name=sample.bio_sample_name,
-                        z_score=1,
-                        recognized=True
-                    )
-                snp, snp_created = SNP.objects.get_or_create(rs_id='test_snp' + str(count), region=region)
-                for variant in variants.keys():
-                    SilencerSNPs.objects.get_or_create(silencer=silencer, snp=snp, variant=variant)
-                gene, gene_created = Gene.objects.get_or_create(name='test_gene' + str(count), region=region)
-                SilencerTFBs.objects.get_or_create(silencer=silencer, transcription_factor=gene, binding_site=region)
-                for strategy in strategies.keys():
-                    SilencerGenes.objects.get_or_create(silencer=silencer, gene=gene, strategy=strategy)
-                SilencerCas9s.objects.get_or_create(silencer=silencer, region=region)
-    print('测试数据初始化完成，如果要删除测试数据建议直接重建数据库，速度更快')
-
-
-@print_accurate_execute_time
-def init_database_data(dir_path):
-    """
-    初始化数据：包括识别因子数据，基因数据，snp数据，Cas9
+    测试花费时间：80分钟
+    初始化数据：包括识别因子数据，基因数据，基因表达数据，snp数据，Cas9
+    :param batch_size:
+    :param skip_rows:
+    :param chunk_size:
     :param dir_path:
     :return:
     """
     # 先初始化识别因子的数据
-    chunk_size = 1000
     batch_size = 1000
     if not dir_path:
         dir_path = os.path.join(settings.BASE_DIR, 'SilencerAtlas/libs')
@@ -117,24 +61,28 @@ def init_database_data(dir_path):
     print('import gene data')
     genes_df = pd.read_csv(os.path.join(dir_path, 'genes.bed'),
                            sep='\t', names=['chr', 'start', 'end', 'strand', 'ensembl_id', 'gene_symbol', 'bio_type'])
-    regions_df = genes_df[['chr', 'start', 'end', ]]
-    chromosomes = list(set(['chr' + row['chr'] for index, row in regions_df.iterrows()]))
-    starts = regions_df['start'].to_list()
-    ends = regions_df['end'].to_list()
-    Region.objects.bulk_create([Region(
-        chromosome='chr' + row['chr'],
+    print('build regions')
+    CommonRegion.objects.bulk_create([CommonRegion(
+        chromosome='chr'+row['chr'],
         start=row['start'],
-        end=row['end'],
-    ) for index, row in regions_df.iterrows()], batch_size=batch_size,
-        ignore_conflicts=True)
-    regions = to_regions_dict(
-        list(Region.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts) | Q(end__in=ends))))
+        end=row['end']
+    )for index,row in genes_df.iterrows()], batch_size=batch_size, ignore_conflicts=True)
+    chromosomes=('chr'+genes_df['chr'].drop_duplicates()).to_list()
+    starts=genes_df['start'].drop_duplicates().to_list()
+    ends=genes_df['end'].drop_duplicates().to_list()
+    regions=to_regions_dict(list(CommonRegion.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts)|Q(end__in=ends))))
+    print('build genes')
     Gene.objects.bulk_create([Gene(
         name=row['gene_symbol'],
         ensembl_id=row['ensembl_id'],
-        region=regions[generate_region(chromosome='chr' + row['chr'], start=row['start'], end=row['end'])],
         strand=row['strand'],
         bio_type=row['bio_type']
+    ) for index, row in genes_df.iterrows()], batch_size=batch_size, ignore_conflicts=True)
+    genes = to_genes_dict(list(Gene.objects.all()))
+    print('build gene regions')
+    GeneRegion.objects.bulk_create([GeneRegion(
+        gene=genes[row['gene_symbol']],
+        region=regions[generate_region(chromosome='chr' + row['chr'], start=row['start'], end=row['end'])]
     ) for index, row in genes_df.iterrows()], batch_size=batch_size, ignore_conflicts=True)
     # 初始化基因样本数据
     print('import gene expressions data')
@@ -149,28 +97,32 @@ def init_database_data(dir_path):
             os.path.join(dir_path, 'gene_expressions.gct'), sep='\t',
             chunk_size=chunk_size, skip_rows=2):
         gene_names = gene_sample_expressions_df['Description'].drop_duplicates().tolist()
+        bio_sample_names=[]
         print('bulk create gene')
-        Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=batch_size, ignore_conflicts=True)
-        genes = to_genes_dict(list(Gene.objects.filter(name__in=gene_names)))
-        gene_samples = {}
+        gene_sample_expressions = {}
         for index, row in gene_sample_expressions_df.iterrows():
+            gene_name=row['Description']
             sample_expression = defaultdict(list)
             for col_name, value in row[2:].iteritems():
-                sample_name = samples_name[col_name]
-                if sample_expression.get(sample_name, None):
-                    sample_expression[sample_name].append(value)
-            gene_samples[row['Description']] = sample_expression
+                bio_sample_name=samples_name[col_name]
+                bio_sample_names.append(bio_sample_name)
+                sample_expression[bio_sample_name].append(value)
+            gene_sample_expressions[gene_name] = sample_expression
         print('bulk create gene expressions')
         GeneExpression.objects.bulk_create(
             [GeneExpression(
-                gene=genes[gene_name],
+                gene_name=gene_name,
                 bio_sample_name=bio_sample_name,
-                expression_value=value,
-            ) for gene_name, sample_expression in gene_samples.items() for bio_sample_name, value in
+            ) for gene_name, sample_expression in gene_sample_expressions.items() for bio_sample_name, value in
                 sample_expression.items()],
             batch_size=batch_size,
             ignore_conflicts=True
         )
+        gene_expressions=GeneExpression.objects.filter(gene_name__in=gene_names,bio_sample_name__in=bio_sample_names)
+        for gene_expression in gene_expressions:
+            gene_expression.expression_value=gene_sample_expressions[gene_expression.gene_name][gene_expression.bio_sample_name]
+        GeneExpression.objects.bulk_update(gene_expressions, ['expression_value'], batch_size=batch_size)
+    # todo:补全剩余数据
     # 初始化snp数据
 
     # 初始化Cas9数据
@@ -179,43 +131,16 @@ def init_database_data(dir_path):
 
 
 @print_accurate_execute_time
-def build_database_data():
-    with open('D:\Coding\Python\Django-backend\System\SilencerAtlas\libs/silencers_all.txt', 'w') as w:
-        w.write('\t'.join(
-            ['silencer_id', 'chr', 'start', 'end', 'score', 'bio_sample_name', 'bio_sample_type', 'species', 'source',
-             'recognition_factors']) + '\n')
-        print('handle encode silencers')
-        for rows in read_n_lines_each_time_yield('D:/Server/1.ENCODE.rSilencers.Browse', 100000, skip_rows=1):
-            new_rows = []
-            for row in rows:
-                row = row.strip().split('\t')
-                chromosome, start, end = divide_region(row[2])
-                new_row = '\t'.join([row[0], chromosome, start, end, row[3], row[5], row[4], 'human', 'encode',
-                                     recognition_factors_to_list(row[6])]) + '\n'
-                new_rows.append(new_row)
-            w.writelines(new_rows)
-        print('handle roadmap silencers')
-        for rows in read_n_lines_each_time_yield('D:/Server/1.Roadmap.rSilencers.Browse', 100000, skip_rows=1):
-            new_rows = []
-            for row in rows:
-                row = row.strip().split('\t')
-                chromosome, start, end = divide_region(row[2])
-                new_row = '\t'.join([row[0], chromosome, start, end, row[3], row[5], row[4], 'human', 'roadmap',
-                                     recognition_factors_to_list(row[6])]) + '\n'
-                new_rows.append(new_row)
-            w.writelines(new_rows)
-
-
-@print_accurate_execute_time
-def pre_update_database_data(file_path):
-    chunk_size = 10000
-    batch_size = chunk_size
-    for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size):
+def pre_update_database_data(file_path, chunk_size=10000, skip_rows=0):
+    batch_size = 10000
+    for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
+                                                         skip_rows=skip_rows):
         silencer_ids = df['silencer_id'].to_list()
         print('building silencers')
         Silencer.objects.bulk_create([Silencer(
             silencer_id=silencer_id,
         ) for silencer_id in silencer_ids], batch_size=batch_size, ignore_conflicts=True)
+        print('building samples')
         columns = df.columns.to_list()
         if 'bio_sample_name' not in columns:
             print('no bio_sample_name')
@@ -224,16 +149,16 @@ def pre_update_database_data(file_path):
             {'sample_id', 'bio_sample_name', 'tissue_cell_type', 'bio_sample_type', 'species', 'source'} & set(columns))
         bio_sample_names = df['bio_sample_name'].drop_duplicates().to_list()
         samples_df = df[sample_column].drop_duplicates()
-        print('building samples')
         Sample.objects.bulk_create([Sample(
             bio_sample_name=bio_sample_name,
-        ) for bio_sample_name in bio_sample_names], batch_size=batch_size, ignore_conflicts=True)
+        ) for bio_sample_name in bio_sample_names], batch_size=batch_size,ignore_conflicts=True)
         samples = to_samples_dict(list(Sample.objects.filter(bio_sample_name__in=bio_sample_names)))
+        print('update samples')
         new_samples = []
         for index, row in samples_df.iterrows():
             sample = samples[row['bio_sample_name']]
             sample.sample_id = row.get('sample_id', '')
-            sample.tissue_type = row.get('tissue_cell_type', row['bio_sample_name'])
+            sample.tissue_type = row.get('tissue_type', row['bio_sample_name'])
             sample.bio_sample_type = row['bio_sample_type'].lower()
             sample.species = row.get('species', 'human').lower()
             sample.source = row.get('source', 'encode').lower()
@@ -244,22 +169,22 @@ def pre_update_database_data(file_path):
 
 
 @print_accurate_execute_time
-def update_database_data(file_path):
-    chunk_size = 10000
-    batch_size = chunk_size / 10
-    for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size):
+def update_database_data(file_path, chunk_size=10000, skip_rows=0):
+    batch_size = 1000
+    for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
+                                                         skip_rows=skip_rows):
         # 构建区域数据
         print('building regions')
-        chromosomes = [item.lower() for item in df['chr'].drop_duplicates().to_list()]
-        starts = df['start'].to_list()
-        ends = df['end'].to_list()
-        Region.objects.bulk_create([Region(
+        chromosomes = df['chr'].drop_duplicates().str.lower().to_list()
+        starts = df['start'].drop_duplicates().to_list()
+        ends = df['end'].drop_duplicates().to_list()
+        CommonRegion.objects.bulk_create([CommonRegion(
             chromosome=row['chr'].lower(),
             start=row['start'],
             end=row['end'],
         ) for index, row in df.iterrows()], batch_size=batch_size, ignore_conflicts=True)
         regions = to_regions_dict(
-            list(Region.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts) | Q(end__in=ends))))
+            list(CommonRegion.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts) | Q(end__in=ends))))
         bio_sample_names = df['bio_sample_name'].drop_duplicates().to_list()
         samples = to_samples_dict(list(Sample.objects.filter(bio_sample_name__in=bio_sample_names)))
         print('building silencers')
@@ -276,29 +201,33 @@ def update_database_data(file_path):
         Silencer.objects.bulk_update(silencers, ['silencer_name', 'strand', 'region', 'score', 'sample'],
                                      batch_size=batch_size)
         print('deleting silencers related data')
-        SilencerGenes.objects.filter(silencer__in=silencers).delete()
-        SilencerTFBs.objects.filter(silencer__in=silencers).delete()
-        SilencerSNPs.objects.filter(silencer__in=silencers).delete()
-        SilencerRecognitionFactors.objects.filter(silencer__in=silencers).delete()
-        SilencerSampleRecognitionFactors.objects.filter(silencer__in=silencers).delete()
-        SilencerCas9s.objects.filter(silencer__in=silencers).delete()
+        SilencerGene.objects.filter(silencer__in=silencers).delete()
+        SilencerTranscriptionFactor.objects.filter(silencer__in=silencers).delete()
+        SilencerSNP.objects.filter(silencer__in=silencers).delete()
+        SilencerRecognitionFactor.objects.filter(silencer__in=silencers).delete()
+        SilencerSampleRecognitionFactor.objects.filter(silencer__in=silencers).delete()
+        SilencerCas9.objects.filter(silencer__in=silencers).delete()
         # 构建靶基因数据
-        # todo:靶基因构建方式需要更改
         if 'target_genes' in df.columns:
             print('building target genes')
-            silencer_genes = df['target_genes']
-            gene_names = list(set([gene_symbol for index, value in silencer_genes.items() for gene_symbol, strategy in
-                                   map(lambda item: item.split(':'), value.split(';'))]))
-            Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=batch_size,
-                                     ignore_conflicts=True)
-            genes = to_genes_dict(list(Gene.objects.filter(name__in=gene_names)))
-            SilencerGenes.objects.bulk_create([SilencerGenes(
-                silencer=silencers[index % chunk_size],
-                gene_name=genes[gene_symbol],
-                strategy=strategy.lower()
-            ) for index, value in silencer_genes.items()
-                for gene_symbol, strategy in map(lambda item: item.split(':'), value.split(';')) if gene_symbol],
-                batch_size=1000)
+            target_genes = df['target_genes']
+            silencer_genes_to_create=[]
+            for index, value in target_genes.items():
+                silencer_genes=value.split(';')
+                for silencer_gene in silencer_genes:
+                    gene,strategies=silencer_gene.split(':')
+                    gene_name,gene_ensembl_id,genomic_loci,distance=gene.split('~')
+                    strategy,sub_strategy=strategies.split('.')
+                    silencer_genes_to_create.append(SilencerGene(
+                        silencer=silencers[index % chunk_size],
+                        gene_name=gene_name,
+                        gene_ensembl_id=gene_ensembl_id,
+                        genomic_loci=genomic_loci,
+                        distance_to_TSS=distance,
+                        strategy=strategy.lower(),
+                        sub_strategy=sub_strategy,
+                    ))
+            SilencerGene.objects.bulk_create(silencer_genes_to_create,batch_size=1000, ignore_conflicts=True)
         # 构建TFBs数据
         if 'TFBs' in df.columns:
             print('building TFBs')
@@ -320,12 +249,13 @@ def update_database_data(file_path):
                     ends.append(binding_site[2])
                     locations.append(binding_site)
             chromosomes = list(set(chromosomes))
-            Region.objects.bulk_create(
-                [Region(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
+            CommonRegion.objects.bulk_create(
+                [CommonRegion(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
                 batch_size=batch_size, ignore_conflicts=True)
             regions = to_regions_dict(
-                list(Region.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts) | Q(end__in=ends))))
-            SilencerTFBs.objects.bulk_create([SilencerTFBs(
+                list(CommonRegion.objects.filter(chromosome__in=chromosomes).filter(
+                    Q(start__in=starts) | Q(end__in=ends))))
+            SilencerTranscriptionFactor.objects.bulk_create([SilencerTranscriptionFactor(
                 silencer=silencers[index % chunk_size],
                 transcription_factor=genes[gene_symbol],
                 binding_site=regions[generate_region(binding_site[0], binding_site[1], binding_site[2])],
@@ -342,7 +272,7 @@ def update_database_data(file_path):
             SNP.objects.bulk_create([SNP(rs_id=rs_id) for rs_id in rs_ids], batch_size=batch_size,
                                     ignore_conflicts=True)
             snps = to_snps_dict(list(SNP.objects.filter(rs_id__in=rs_ids)))
-            SilencerSNPs.objects.bulk_create([SilencerSNPs(
+            SilencerSNP.objects.bulk_create([SilencerSNP(
                 silencer=silencers[index % chunk_size],
                 snp=snps[rs_id],
                 variant=variant.lower(),
@@ -354,7 +284,7 @@ def update_database_data(file_path):
             print('building recognition factors')
             silencer_recognition_factors = df['recognition_factors']
             recognition_factors_all = to_recognition_factors_dict(list(RecognitionFactor.objects.all()))
-            SilencerRecognitionFactors.objects.bulk_create([SilencerRecognitionFactors(
+            SilencerRecognitionFactor.objects.bulk_create([SilencerRecognitionFactor(
                 silencer=silencers[index % chunk_size],
                 recognition_factor=recognition_factors_all[recognition_factor.lower()],
             ) for index, value in silencer_recognition_factors.items() for recognition_factor in value.split(';')],
@@ -363,7 +293,7 @@ def update_database_data(file_path):
             print('building sample recognition factors z_score')
             silencer_sample_recognition_factors = df['samples_recognition_factors_z_score']
             recognition_factors_all = to_recognition_factors_dict(list(RecognitionFactor.objects.all()))
-            SilencerSampleRecognitionFactors.objects.bulk_create([SilencerSampleRecognitionFactors(
+            SilencerSampleRecognitionFactor.objects.bulk_create([SilencerSampleRecognitionFactor(
                 silencer=silencers[index % chunk_size],
                 recognition_factor=recognition_factors_all[recognition_factor.lower()],
                 bio_sample_name=bio_sample_name,
@@ -388,12 +318,13 @@ def update_database_data(file_path):
                     ends.append(end)
                     locations.append((chromosome, start, end))
             chromosomes = list(set(chromosomes))
-            Region.objects.bulk_create(
-                [Region(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
+            CommonRegion.objects.bulk_create(
+                [CommonRegion(chromosome=chromosome, start=start, end=end) for chromosome, start, end in locations],
                 batch_size=batch_size, ignore_conflicts=True)
             regions = to_regions_dict(
-                list(Region.objects.filter(chromosome__in=chromosomes).filter(Q(start__in=starts) | Q(end__in=ends))))
-            SilencerCas9s.objects.bulk_create([SilencerCas9s(
+                list(CommonRegion.objects.filter(chromosome__in=chromosomes).filter(
+                    Q(start__in=starts) | Q(end__in=ends))))
+            SilencerCas9.objects.bulk_create([SilencerCas9(
                 silencer=silencers[index % chunk_size],
                 region=regions[generate_region(chromosome, start, end)],
             ) for index, value in silencer_cas9s.items() for chromosome, start, end in
@@ -426,6 +357,7 @@ def delete_database_data_all():
 
 @print_accurate_execute_time
 def export_database_data(file_path):
+    # todo:导出数据等待数据库全部完成后在重新调整
     silencers = Silencer.objects.prefetch_related(
         'region',
         'sample',
@@ -506,9 +438,7 @@ class Command(BaseCommand):
     help = 'silencer atlas database command'
 
     def add_arguments(self, parser):
-        parser.add_argument('-t', '--test', action='store_true', help='init database for testing')
         parser.add_argument('-i', '--init', action='store_true', help='init database base data')
-        parser.add_argument('-b', '--build', action='store_true', help='build silencers')
         parser.add_argument('-p', '--pre_update', action='store_true', help='pre update silencers handler')
         parser.add_argument('-u', '--update', action='store_true', help='update rows in database')
         parser.add_argument('-d', '--delete', action='store_true',
@@ -516,20 +446,12 @@ class Command(BaseCommand):
         parser.add_argument('-de', '--exclude', action='store_true', help='delete rows in database by exclude method')
         parser.add_argument('-da', '--delete_all', action='store_true', help='delete all rows in database')
         parser.add_argument('-e', '--export', action='store_true', help='export database to json')
-        parser.add_argument('-f', '--file_path', type=str, help='data file path')
-        parser.add_argument('-dir', '--dir_path', type=str,
-                            help='init data directory path,default is SilencerAtlas/libs')
+        super(Command, self).add_arguments(parser)
 
     def handle(self, *args, **options):
-        test = options.get('test', False)
         delete_all = options.get('delete_all', False)
-        build = options.get('build', None)
-        if test:
-            return init_test_database_data()
-        elif delete_all:
+        if delete_all:
             return delete_database_data_all()
-        elif build:
-            return build_database_data()
         else:
             init = options.get('init', False)
             pre_update = options.get('pre_update', None)
@@ -539,6 +461,9 @@ class Command(BaseCommand):
             export = options.get('export', False)
             file_path = options.get('file_path', None)
             dir_path = options.get('dir_path', None)
+            chunk_size = options.get('chunk_size', 0)
+            skip_rows = options.get('skip_rows', 0)
+            kargs = {}
             if not file_path and not init:
                 print('Please input file path')
                 return
@@ -549,11 +474,21 @@ class Command(BaseCommand):
                 print('Please confirm your operation. Choose one from -i, -a, -u, -d, -e.')
                 return
             if init:
-                return init_database_data(dir_path)
+                if chunk_size:
+                    kargs['chunk_size'] = chunk_size
+                return init_database_data(dir_path, **kargs)
             elif pre_update:
-                return pre_update_database_data(file_path)
+                if chunk_size:
+                    kargs['chunk_size'] = chunk_size
+                if skip_rows:
+                    kargs['skip_rows'] = skip_rows
+                return pre_update_database_data(file_path, **kargs)
             elif update:
-                return update_database_data(file_path)
+                if chunk_size:
+                    kargs['chunk_size'] = chunk_size
+                if skip_rows:
+                    kargs['skip_rows'] = skip_rows
+                return update_database_data(file_path, **kargs)
             elif delete:
                 if exclude:
                     return delete_database_data(file_path, False)

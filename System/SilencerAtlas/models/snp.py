@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from django.db import models
 
 from .base import Base
-from .region import Region
+from .region import CommonRegion
 
 
 # Single Nucleotide Polymorphism
@@ -31,7 +31,7 @@ class SNP(Base):
     def snp_id(self, value):
         self.rs_id = value
 
-    region = models.OneToOneField(Region, on_delete=models.CASCADE, verbose_name='位点', related_name='snp')
+    region = models.OneToOneField(CommonRegion, on_delete=models.CASCADE, verbose_name='位点', related_name='snp')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '单核苷酸多态性'

@@ -19,7 +19,7 @@ from SilencerAtlas.libs.model_choices import unknown, strand, strategies, varian
 from .base import Base
 from .gene import Gene
 from .recognition_factor import RecognitionFactor
-from .region import Region
+from .region import CommonRegion
 from .sample import Sample
 from .snp import SNP
 
@@ -31,7 +31,8 @@ class Silencer(Base):
     # 沉默子名称，可以不需要
     silencer_name = models.CharField(max_length=128, null=True, blank=True, db_index=True, verbose_name='沉默子名称')
     # OneToOneField类似于 ForeignKey 与 unique=True
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True, blank=True, verbose_name='沉默子区域',
+    # 一个区域对应多个silencer
+    region = models.ForeignKey(CommonRegion, on_delete=models.CASCADE, null=True, blank=True, verbose_name='沉默子区域',
                                related_name='silencer')
     # score = models.FloatField(null=True, blank=True, default=0, verbose_name='评分')
     score = models.CharField(max_length=64, null=True, blank=True, default='', verbose_name='评分')
@@ -49,21 +50,22 @@ class Silencer(Base):
     # relate_name是属性中用，related_query_name是filter或者其他查询方法中使用
     sample = models.ForeignKey(Sample, verbose_name='属于样本', db_index=True, null=True, blank=True,
                                on_delete=models.CASCADE, related_name='silencers')
-    # dhs = models.ManyToManyField(DHSs, verbose_name='DHSs', db_index=True, through='SilencerDHSs',
+    # dhs = models.ManyToManyField(DHSs, verbose_name='DHSs', db_index=True, through='SilencerDHS',
     #                              related_name='silencers')
 
-    TFBs = models.ManyToManyField(Gene, verbose_name='转录因子结合位点', db_index=True, through='SilencerTFBs',
+    TFBs = models.ManyToManyField(Gene, verbose_name='转录因子结合位点', db_index=True, through='SilencerTranscriptionFactor',
                                   related_name='tf_silencers')
-    SNPs = models.ManyToManyField(SNP, verbose_name='SNPs', db_index=True, through='SilencerSNPs',
+    SNPs = models.ManyToManyField(SNP, verbose_name='SNPs', db_index=True, through='SilencerSNP',
                                   related_name='silencers')
     recognition_factors = models.ManyToManyField(RecognitionFactor, verbose_name='识别因子情况', db_index=True,
-                                                 through='SilencerRecognitionFactors',
+                                                 through='SilencerRecognitionFactor',
                                                  related_name='recognized_silencers')
+    # sample_recognition_factors_singles
     sample_recognition_factors_z_score = models.ManyToManyField(RecognitionFactor, verbose_name='识别因子在各个样本中的z-score',
                                                                 db_index=True,
-                                                                through='SilencerSampleRecognitionFactors',
+                                                                through='SilencerSampleRecognitionFactor',
                                                                 related_name='z_scored_silencers')
-    Cas9s = models.ManyToManyField(Region, verbose_name='Cas9s', db_index=True, through='SilencerCas9s',
+    Cas9s = models.ManyToManyField(CommonRegion, verbose_name='Cas9s', db_index=True, through='SilencerCas9',
                                    related_name='silencers')
 
     class Meta(Base.Meta):
@@ -71,12 +73,12 @@ class Silencer(Base):
 
     # 可以用于在admin页面的子模型的外键的选项中指定父模型
     def __str__(self):
-        return '<Silencer id:{}>'.format(self.silencer_id)
+        return f'<Silencer silencer_id:{self.silencer_id}>'
 
 
-class SilencerGenes(Base):
+class SilencerGene(models.Model):
     STRATEGY_ITEMS = [(key, value) for key, value in strategies.items() | unknown.items()]
-    silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
+    silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE, related_name='target_genes')
     gene_name = models.CharField(max_length=64, default='--', verbose_name='基因名称')
     gene_ensembl_id = models.CharField(max_length=128, default='--', verbose_name='基因ensembl_id')
     genomic_loci = models.CharField(max_length=128, default='--', verbose_name='基因位点')
@@ -89,17 +91,17 @@ class SilencerGenes(Base):
         unique_together = (('silencer', 'gene_name', 'gene_ensembl_id', 'genomic_loci', 'strategy', 'sub_strategy'),)
 
 
-class SilencerTFBs(Base):
+class SilencerTranscriptionFactor(Base):
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
     transcription_factor = models.ForeignKey(Gene, on_delete=models.CASCADE)
-    binding_site = models.ForeignKey(Region, on_delete=models.CASCADE)
+    binding_site = models.ForeignKey(CommonRegion, on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '沉默子的转录因子结合位点'
         unique_together = (('silencer', 'transcription_factor', 'binding_site'),)
 
 
-class SilencerSNPs(Base):
+class SilencerSNP(Base):
     VARIANTS_ITEMS = [(key, value) for key, value in variants.items() | unknown.items()]
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
     snp = models.ForeignKey(SNP, on_delete=models.CASCADE)
@@ -111,7 +113,7 @@ class SilencerSNPs(Base):
         unique_together = (('silencer', 'snp', 'variant'),)
 
 
-class SilencerRecognitionFactors(Base):
+class SilencerRecognitionFactor(Base):
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
     recognition_factor = models.ForeignKey(RecognitionFactor, on_delete=models.CASCADE)
 
@@ -120,7 +122,7 @@ class SilencerRecognitionFactors(Base):
         unique_together = (('silencer', 'recognition_factor'),)
 
 
-class SilencerSampleRecognitionFactors(Base):
+class SilencerSampleRecognitionFactor(models.Model):
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
     recognition_factor = models.ForeignKey(RecognitionFactor, on_delete=models.CASCADE)
     # sample=models.ForeignKey(Sample, on_delete=models.CASCADE, verbose_name='样本')
@@ -135,9 +137,9 @@ class SilencerSampleRecognitionFactors(Base):
         unique_together = (('silencer', 'recognition_factor', 'bio_sample_name'),)
 
 
-class SilencerCas9s(Base):
+class SilencerCas9(Base):
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    region = models.ForeignKey(CommonRegion, on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '沉默子的CRISPR/Cas9'

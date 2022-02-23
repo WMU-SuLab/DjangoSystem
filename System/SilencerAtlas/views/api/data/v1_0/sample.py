@@ -47,7 +47,8 @@ def get_sample_by_id(request, sample_id):
 def get_sample_silencers(request):
     data: dict = request.json
     print(data)
-    silencers = filtered_sample_chosen_silencers(data)
+    # silencers = filtered_sample_chosen_silencers(data)
+    silencers= Silencer.objects.all()
     # 构建表格属性
     silencers = silencers.annotate(
         chromosome=F('region__chromosome'),
@@ -56,8 +57,8 @@ def get_sample_silencers(request):
         recognition_factors_group_concat=GroupConcat(
             'silencerrecognitionfactors__recognition_factor__name', distinct=True),
         species=F('sample__species'),
-        # tissue_type=F('sample__tissue_type'),
         bio_sample_type=F('sample__bio_sample_type'),
+        # tissue_type=F('sample__tissue_type'),
         bio_sample_name=F('sample__bio_sample_name'),
     )
     # 先查询
@@ -107,6 +108,7 @@ def get_sample_silencers(request):
     silencers = handle_sort_order(data, silencers)
     # 再分页
     silencers_current_page, total, first_load = handle_pagination(data, Silencer, silencers)
+    silencers_current_page.prefetch_related('region','sample')
     rows = [{
         'id': silencer.id,
         'silencer_id': silencer.silencer_id,

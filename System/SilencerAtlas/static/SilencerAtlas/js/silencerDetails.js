@@ -414,7 +414,6 @@ const AssociatedGeneExpression = {
             if (this.bulkDataMethod !== 'lasso') {
                 this.bulkDataMethod = 'lasso';
                 var newSource = [];
-                console.log(this.bulkData.source);
                 this.bulkData.source = this.bulkData.source.map(function (arr) {
                     var newArr = [];
                     arr.forEach(function (item) {
@@ -424,7 +423,6 @@ const AssociatedGeneExpression = {
                     newSource.push(newArr);
                     return newArr;
                 });
-                console.log(this.bulkData.source);
                 this.bulkData.source = newSource;
                 this.bulkChart.clear();
                 this.bulkChart.setOption(this.bulkChartOptions);

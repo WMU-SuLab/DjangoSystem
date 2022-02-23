@@ -14,12 +14,11 @@
 __auth__ = 'diklios'
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
-from django.db.models import Q
 from django_mysql.models import GroupConcat
 
 from SilencerAtlas.models.silencer import Silencer
 from SilencerAtlas.viewModels.recognition_factor import recognition_factors_upper
-from SilencerAtlas.libs.lists import recognition_factors_value_list
+
 
 @require_GET
 def silencer_details(request, silencer_id):

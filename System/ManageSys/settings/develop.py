@@ -76,6 +76,7 @@ DATABASES = {
         },
     }
 }
+
 # 缓存
 # CACHES = {
 #     # 'default': {
@@ -100,19 +101,19 @@ DATABASES = {
 #         'TIMEOUT': 60 * 10,
 #         'KEY_FUNCTION': lambda key, prefix_key, version: "django:%s" % key
 #     },
-#     'SilencerAtlas': {
-#         # 使用redis，django4.0之后支持redis
-#         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-#         'LOCATION': 'redis://127.0.0.1:6379',
-#         # 带身份验证的地址
-#         # 'LOCATION': 'redis://username:password@127.0.0.1:6379',
-#         # 多台机器
-#         # 'LOCATION': [
-#         #     'redis://127.0.0.1:6379', # leader
-#         #     'redis://127.0.0.1:6378', # read-replica 1
-#         #     'redis://127.0.0.1:6377', # read-replica 2
-#         # ],
-#         'TIMEOUT': 60 * 10,
-#         'KEY_FUNCTION': lambda key, prefix_key, version: "django:%s" % key
-#     }
+#     # 'SilencerAtlas': {
+#     #     # 使用redis，django4.0之后支持redis
+#     #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#     #     'LOCATION': 'redis://127.0.0.1:6379',
+#     #     # 带身份验证的地址
+#     #     # 'LOCATION': 'redis://username:password@127.0.0.1:6379',
+#     #     # 多台机器
+#     #     # 'LOCATION': [
+#     #     #     'redis://127.0.0.1:6379', # leader
+#     #     #     'redis://127.0.0.1:6378', # read-replica 1
+#     #     #     'redis://127.0.0.1:6377', # read-replica 2
+#     #     # ],
+#     #     'TIMEOUT': 60 * 10,
+#     #     'KEY_FUNCTION': lambda key, prefix_key, version: "django:%s" % key
+#     # }
 # }

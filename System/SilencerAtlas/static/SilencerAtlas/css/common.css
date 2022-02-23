@@ -33,6 +33,8 @@ form.needs-validation label.error {
 
 p {
     text-indent: 2em;
+    word-break: break-all;
+    word-wrap:break-word;
 }
 
 h2 {

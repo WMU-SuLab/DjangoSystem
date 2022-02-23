@@ -15,15 +15,15 @@ __auth__ = 'diklios'
 
 from django.db import models
 
+from SilencerAtlas.libs.model_choices import unknown, species
 from .base import Base
-from SilencerAtlas.libs.model_choices import unknown,species
 
 
-class Region(Base):
+class BaseRegion(Base):
     """
     一个基因区域或者位点（左开右闭）
     """
-    SPECIES_ITEMS = [(key,value) for key,value in species.items()|unknown.items()]
+    SPECIES_ITEMS = [(key, value) for key, value in species.items() | unknown.items()]
     # 由于区域位置用的太多，所以必须重新设置为bigint
     id = models.BigAutoField(primary_key=True)
     chromosome = models.CharField(max_length=6, null=True, blank=True, db_index=True, default='chr1',
@@ -84,11 +84,21 @@ class Region(Base):
         return self.location
 
     species = models.CharField(max_length=64, choices=SPECIES_ITEMS, null=True, blank=True, db_index=True,
-                               default='unknown', verbose_name='物种')
+                               default='--', verbose_name='物种')
 
     class Meta(Base.Meta):
+        abstract = True
         verbose_name = verbose_name_plural = '基因组区域/位点'
         unique_together = (('chromosome', 'start', 'end'),)
 
     def __str__(self):
         return f'<Region/locus/loci:{self.loci}>'
+
+
+class CommonRegion(BaseRegion):
+    class Meta(Base.Meta):
+        verbose_name = verbose_name_plural = '基因组通用区域/位点'
+        unique_together = (('chromosome', 'start', 'end'),)
+
+    def __str__(self):
+        return f'<Common region/locus/loci:{self.loci}>'

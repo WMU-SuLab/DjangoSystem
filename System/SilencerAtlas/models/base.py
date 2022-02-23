@@ -59,15 +59,17 @@ class Base(models.Model):
     # Meta用于配置Model的一些属性
     # 更多模型可选参数详见：https://docs.djangoproject.com/zh-hans/3.2/ref/models/options/
     class Meta:
-        # db_table:数据库表名
-        # ordering：这是一个字符串和／或查询表达式的元组或列表。每一个字符串都是一个字段名，前面有一个可选的“-”字头，表示降序。没有前缀“-”的字段将按升序排列。使用字符串“?”来随机排序。
-        # verbose_name和verbose_name_plural：阅读友好的单复数名
-        # abstract：是否是抽象类，设置为抽象类在数据库中不会构建
-        # Django在安装Meta属性前，对抽象基类的Meta做了一个调整——设置abstract = False。这意味着抽象基类的子类不会自动地变成抽象类。
-        # 为了继承一个抽象基类创建另一个抽象基类，你需要在子类上显式地设置abstract = True。
+        """
+        db_table:数据库表名
+        ordering：这是一个字符串和／或查询表达式的元组或列表。每一个字符串都是一个字段名，前面有一个可选的“-”字头，表示降序。没有前缀“-”的字段将按升序排列。使用字符串“?”来随机排序。
+        verbose_name和verbose_name_plural：阅读友好的单复数名，此属性不会被继承
+        abstract：是否是抽象类，设置为抽象类在数据库中不会构建，这个属性不会被继承
+        Django在安装Meta属性前，对抽象基类的Meta做了一个调整——设置abstract = False。这意味着抽象基类的子类不会自动地变成抽象类
+        为了继承一个抽象基类创建另一个抽象基类，你需要在子类上显式地设置abstract = True。
+        """
         abstract = True
-        # 必须要指定表的 app_label 名字，如果不指定则会创建到 default 中配置的数据库名下
-        # 注意是app_name，不是database_name
+        # 必须要指定表的 app_label，如果不指定则会创建到 default 中配置的数据库名下
+        # 注意app_label是app_name，不是database_name，虽然大部分情况下是一样的
         app_label = 'SilencerAtlas'
 
     @classmethod

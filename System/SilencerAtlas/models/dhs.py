@@ -16,13 +16,13 @@ __auth__ = 'diklios'
 from django.db import models
 
 from .base import Base
-from .region import Region
+from .region import CommonRegion
 
 
 # DNase I hyper sensitivity sites
 class DHS(Base):
     dhs_id = models.CharField(max_length=128, default='--', verbose_name='DHS id')
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='区域')
+    region = models.ForeignKey(CommonRegion, on_delete=models.CASCADE, verbose_name='区域')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = 'DHS'

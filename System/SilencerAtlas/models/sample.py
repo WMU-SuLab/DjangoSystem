@@ -26,11 +26,11 @@ class Sample(Base):
 
     # 目前由于直接整合了数据，没有多个样本了，一个sample_name只有一个样本，所以不需要sample_id,只需要sample_name就可以了
     # 但是为了扩充后期可能的需求，此字段还是保留
-    sample_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, verbose_name='样本的id')
+    sample_id = models.CharField(max_length=128,default='--', null=True, blank=True, db_index=True, verbose_name='样本的id')
 
     bio_sample_name = models.CharField(max_length=256, default='--', db_index=True, unique=True,
                                        verbose_name='样本名称')
-    tissue_type = models.CharField(max_length=128, default='--', unique=True, blank=True, db_index=True,
+    tissue_type = models.CharField(max_length=128, default='--', null=True, blank=True, db_index=True,
                                    verbose_name='组织或细胞类型')
 
     @property
@@ -50,4 +50,4 @@ class Sample(Base):
         verbose_name = verbose_name_plural = '样本'
 
     def __str__(self):
-        return f'<Sample id:{self.sample_id}>'
+        return f'<Sample bio sample name:{self.bio_sample_name}>'

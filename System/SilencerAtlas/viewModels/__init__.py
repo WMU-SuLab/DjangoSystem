@@ -16,12 +16,13 @@ __auth__ = 'diklios'
 from typing import Type
 
 from django.conf import settings
+from django.db.models import Model
 
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.base import Base
 
 
-def handle_search_select(data: dict, model: Type[Base], field: str):
+def handle_search_select(data: dict, model: Type[Base]|Type[Model], field: str):
     search_text = data.get('searchText', '')
     limit = data.get('limit', 10)
     page = data.get('page', 1)
@@ -42,7 +43,7 @@ def handle_search_select(data: dict, model: Type[Base], field: str):
     return {'selects': [{'value': field_item, 'text': field_item} for field_item in fields], 'more': more}
 
 
-def handle_pagination(data: dict, model: Type[Base], rows):
+def handle_pagination(data: dict, model: Type[Base]|Type[Model], rows):
     total = data.get('total', 0)
     first_load = data.get('firstLoad', False)
     page_size = data.get('pageSize', 10)

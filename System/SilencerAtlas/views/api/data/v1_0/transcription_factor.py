@@ -15,11 +15,11 @@ __auth__ = 'diklios'
 
 from django.views.decorators.http import require_POST
 
-from SilencerAtlas.models.silencer import SilencerTFBs
+from SilencerAtlas.models.silencer import SilencerTranscriptionFactor
 from SilencerAtlas.viewModels import handle_search_select
 from utils.response import JsonResponse
 
 
 @require_POST
 def get_transcription_factors(request):
-    return JsonResponse(handle_search_select(request.json, SilencerTFBs, 'transcription_factor__name'))
+    return JsonResponse(handle_search_select(request.json, SilencerTranscriptionFactor, 'transcription_factor__name'))

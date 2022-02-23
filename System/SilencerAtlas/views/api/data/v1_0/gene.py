@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from django.views.decorators.http import require_POST
 
 from SilencerAtlas.models.gene import Gene
-from SilencerAtlas.models.silencer import SilencerGenes
+from SilencerAtlas.models.silencer import SilencerGene
 from SilencerAtlas.viewModels import handle_search_select
 from utils.response import JsonResponse
 
@@ -27,4 +27,4 @@ def get_genes(request):
 
 
 def get_silencer_target_genes(request):
-    return JsonResponse(handle_search_select(request.json, SilencerGenes, 'gene_name'))
+    return JsonResponse(handle_search_select(request.json, SilencerGene, 'gene_name'))

@@ -23,7 +23,7 @@ from django_mysql.models import GroupConcat
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.models.gene import GeneExpression
 from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.models.silencer import Silencer, SilencerSampleRecognitionFactors, SilencerGenes
+from SilencerAtlas.models.silencer import Silencer, SilencerSampleRecognitionFactor, SilencerGene
 from SilencerAtlas.utils import remove_duplicate_dict_list
 from SilencerAtlas.viewModels import handle_sort_order,handle_pagination
 from SilencerAtlas.viewModels.recognition_factor import recognition_factors_upper
@@ -154,7 +154,7 @@ def get_silencer_by_id(request, silencer_id):
     silencer_id = silencer.silencer_id
     # Signal In Specific Bio Samples
     signal_in_this_bio_sample = []
-    silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.prefetch_related('silencer',
+    silencer_sample_recognition_factors = SilencerSampleRecognitionFactor.objects.prefetch_related('silencer',
                                                                                                     'recognition_factor').filter(
         silencer__silencer_id=silencer_id,
         bio_sample_name__in=list(
@@ -172,16 +172,15 @@ def get_silencer_by_id(request, silencer_id):
 
     signal_in_other_bio_samples = []
     other_bio_sample_names = list(
-        SilencerSampleRecognitionFactors.objects.filter(silencer=silencer).exclude(
+        SilencerSampleRecognitionFactor.objects.filter(silencer=silencer).exclude(
             bio_sample_name=silencer.sample.bio_sample_name).distinct().values_list('bio_sample_name', flat=True))
     for other_bio_sample_name in other_bio_sample_names:
         signal_in_other_bio_samples_row = {'bio_sample_name': other_bio_sample_name, }
         recognition_factors_list = []
-        silencer_sample_recognition_factors = SilencerSampleRecognitionFactors.objects.prefetch_related('silencer',
-                                                                                                        'recognition_factor').filter(
+        silencer_sample_recognition_factors = SilencerSampleRecognitionFactor.objects.filter(
             silencer__silencer_id=silencer_id,
             bio_sample_name__in=list({other_bio_sample_name, '_'.join(other_bio_sample_name.split(' '))})
-        ).exclude(recognition_factor__name__in=unknown_value_list)
+        ).exclude(recognition_factor__name__in=unknown_value_list).prefetch_related('silencer','recognition_factor')
         for silencer_sample_recognition_factor in silencer_sample_recognition_factors:
             signal_in_other_bio_samples_row[
                 silencer_sample_recognition_factor.recognition_factor.name] = silencer_sample_recognition_factor.z_score
@@ -197,7 +196,7 @@ def get_silencer_by_id(request, silencer_id):
 
     # Putative Target Gene
     # 表格
-    silencer_genes = list(SilencerGenes.objects.filter(silencer=silencer))
+    silencer_genes = list(SilencerGene.objects.filter(silencer=silencer))
     putative_target_genes_table_data = [
         # {"strategies_algorithm": "Lasso"},
         # {"strategies_algorithm": "PreSTIGE"}
@@ -281,7 +280,7 @@ def get_silencer_by_id(request, silencer_id):
     for silencer_gene in silencer_genes:
         if any([item.get('gene_name', '') == silencer_gene.gene_name for item in associated_gene_expressions]):
             continue
-        gene_expressions = GeneExpression.objects.filter(gene__name=silencer_gene.gene_name)
+        gene_expressions = GeneExpression.objects.filter(gene_name=silencer_gene.gene_name)
         source = []
         names = []
         for gene_expression in gene_expressions:

@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
-from django.urls import reverse,reverse_lazy
+from django.urls import reverse
 from SilencerAtlas.utils import ranged_data_response
 
 
@@ -69,16 +69,7 @@ def get_igv_tracks(request):
     # } for file in files]
     get_igv_file_data_url=reverse('SilencerAtlas:api:data:v1_0:get_igv_file_data',args=['test_file_path']).replace('test_file_path','')
     tracks = [
-        {
-            "name": "ENCSR952BJX",
-            "url": get_igv_file_data_url+"self/bw/ENCSR952BJX.subtract.bw",
-            "type": "wig",
-            "format": "bigwig",
-            "sourceType": "file",
-            "min": "0",
-            "max": "1",
-            "color": "#1890ff",
-        },
+
         {
             "name": "ENCSR024JJL",
             "url": get_igv_file_data_url+"self/bw/ENCSR024JJL.subtract.bw",
@@ -86,8 +77,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.1",
-            "color": "#1890ff",
+            # "max": "0.1",
+            "max": "0.3",
+            # "color": "#1890ff",
+            "color":'#fff566',
         },
         {
             "name": "ENCSR049FUB",
@@ -96,8 +89,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.1",
-            "color": "#1890ff",
+            # "max": "0.1",
+            "max": "0.3",
+            # "color": "#1890ff",
+            "color":"#389e0d",
         },
         {
             "name": "ENCSR057BFO",
@@ -106,8 +101,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.1",
-            "color": "#1890ff",
+            # "max": "0.1",
+            "max": "0.3",
+            # "color": "#1890ff",
+            "color":"#08979c"
         },
         {
             "name": "ENCSR177CGN",
@@ -116,8 +113,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.2",
-            "color": "#ff4d4f",
+            # "max": "0.2",
+            "max": "0.3",
+            # "color": "#ff4d4f",
+            "color":"#722ed1"
         },
         {
             "name": "ENCSR188HXK",
@@ -126,8 +125,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "1",
-            "color": "#ff4d4f",
+            # "max": "1",
+            "max": "0.2",
+            # "color": "#ff4d4f",
+            "color":"#ff441a"
         },
         {
             "name": "ENCSR200AFX",
@@ -136,8 +137,10 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.1",
-            "color": "#ff4d4f",
+            # "max": "0.1",
+            "max": "0.3",
+            # "color": "#ff4d4f",
+            "color":"#a3b61f"
         },
         {
             "name": "ENCSR543UBL",
@@ -146,9 +149,71 @@ def get_igv_tracks(request):
             "format": "bigwig",
             "sourceType": "file",
             "min": "0",
-            "max": "0.5",
-            "color": "#ff4d4f",
+            # "max": "0.5",
+            "max": "0.3",
+            # "color": "#ff4d4f",
+            "color":"#75856d"
         },
+        {
+            "name": "ENCSR952BJX",
+            "url": get_igv_file_data_url + "self/bw/ENCSR952BJX.subtract.bw",
+            "type": "wig",
+            "format": "bigwig",
+            "sourceType": "file",
+            "min": "0",
+            # "max": "1",
+            "max": "0.3",
+            # "color": "#1890ff",
+            "color":"#c78738"
+        },
+        {
+            "name": "ENCSR067VEM",
+            "url": get_igv_file_data_url + "self/bw/ENCSR067VEM.subtract.sort.bw",
+            "type": "wig",
+            "format": "bigwig",
+            "sourceType": "file",
+            "min": "0",
+            # "max": "0.5",
+            "max": "0.6",
+            # "color": "#ff4d4f",
+            "color":"#cc0000"
+        },
+        {
+            "name": "ENCSR000APE",
+            "url": get_igv_file_data_url + "self/bw/ENCSR000APE.subtract.sort.bw",
+            "type": "wig",
+            "format": "bigwig",
+            "sourceType": "file",
+            "min": "0",
+            # "max": "0.5",
+            "max": "0.6",
+            # "color": "#ff4d4f",
+            "color": "#cc0000"
+        },
+        {
+            "name": "ENCSR000EWB",
+            "url": get_igv_file_data_url + "self/bw/ENCSR000EWB.subtract.sort.bw",
+            "type": "wig",
+            "format": "bigwig",
+            "sourceType": "file",
+            "min": "0",
+            # "max": "0.5",
+            "max": "0.6",
+            # "color": "#ff4d4f",
+            "color": "#cc0000"
+        },
+        {
+            "name": "ENCSR404LJZ",
+            "url": get_igv_file_data_url + "self/bw/ENCSR404LJZ.subtract.sort.bw",
+            "type": "wig",
+            "format": "bigwig",
+            "sourceType": "file",
+            "min": "0",
+            # "max": "0.5",
+            "max": "0.6",
+            # "color": "#ff4d4f",
+            "color": "#cc0000"
+        }
     ]
     return JsonResponse({'tracks': tracks})
 

@@ -49,15 +49,6 @@ class BrowseView(TemplateView):
         bio_sample_names_select_data = silencers_classify_count_filter_zero(
             'bio_sample_name', {bio_sample_name: bio_sample_name for bio_sample_name in bio_sample_names},
             have_silencers=True, silencers=silencers)
-        print({
-            **self.context,
-            'allSilencersCount': all_silencers_count,
-            'sourcesSilencersCount': sources_silencers_count,
-            'speciesSilencersCount': species_silencers_count,
-            'bioSampleTypesSilencersCount': bio_sample_types_silencers_count,
-            # 'tissueTypesSelectData': tissue_types_select_data,
-            'bioSampleNamesSelectData': bio_sample_names_select_data,
-        })
         return {
             **self.context,
             'allSilencersCount': all_silencers_count,

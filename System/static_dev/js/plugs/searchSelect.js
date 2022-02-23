@@ -243,7 +243,8 @@ class searchSelect {
             const viewHeight = selects.clientHeight;
             const contentHeight = selects.scrollHeight;//内容高度
             const scrollTop = selects.scrollTop;
-            if (scrollTop + viewHeight - contentHeight < 2) { //到达底部100px时,加载新内容
+            if (contentHeight - (scrollTop + viewHeight) < 2) { //到达底部100px时,加载新内容
+                console.log(scrollTop, viewHeight, contentHeight);
                 if (!that.isLoading && that.more) {
                     that.isLoading = true;
                     that.searchServer(that.input.value, that, 'add');

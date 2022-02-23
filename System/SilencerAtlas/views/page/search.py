@@ -16,11 +16,11 @@ __auth__ = 'diklios'
 from django.shortcuts import render
 
 from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types, strategies, variants
-from SilencerAtlas.libs.lists import unknown_value_list
-from SilencerAtlas.models.gene import Gene
-from SilencerAtlas.models.sample import Sample
-from SilencerAtlas.models.silencer import SilencerTFBs
-from SilencerAtlas.models.snp import SNP
+# from SilencerAtlas.libs.lists import unknown_value_list
+# from SilencerAtlas.models.gene import Gene
+# from SilencerAtlas.models.sample import Sample
+# from SilencerAtlas.models.silencer import SilencerTranscriptionFactor
+# from SilencerAtlas.models.snp import SNP
 
 
 def search(request):
