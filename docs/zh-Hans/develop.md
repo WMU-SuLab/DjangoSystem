@@ -8,8 +8,12 @@
 
 - 基础环境（基础环境安装请自行搜索，不同操作系统有不同安装方法）
     - Python(3.9+)或者Conda(4.10+)
+        - 本项目有部分命令使用了conda，可以替换为相应激活环境和安装包的方式
     - NGINX(1.20+)
     - MySQL(8.0+)
+    - Supervisor(3.1+)
+    - Redis(4.0+)
+    - Memcached(1.5+)
 - 环境依赖文件位置
     - pipenv:`Django-backend/Pipfile`
     - conda
