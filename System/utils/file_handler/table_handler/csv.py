@@ -16,13 +16,17 @@ __auth__ = 'diklios'
 import pandas as pd
 
 
-def read_csv_n_lines_each_time_by_pandas_yield(file_path,sep='\t', chunk_size=1000,  skip_rows: int = 0):
+def read_csv_n_lines_each_time_by_pandas_yield(file_path,sep='\t', chunk_size=1000,  skip_rows: int = 0,has_header: bool = True):
     count = 0
     skip_rows = int(skip_rows)
     chunk_size = int(chunk_size)
     print(f'{count} chunks read')
     if skip_rows > 0:
-        dfs= pd.read_csv(file_path, sep=sep, chunksize=chunk_size, skiprows=range(1, skip_rows))
+        if has_header:
+            start_row = 1
+        else:
+            start_row = 0
+        dfs= pd.read_csv(file_path, sep=sep, chunksize=chunk_size, skiprows=range(start_row, skip_rows))
     else:
         dfs= pd.read_csv(file_path, sep=sep, chunksize=chunk_size)
     for df in dfs:

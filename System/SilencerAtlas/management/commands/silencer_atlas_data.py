@@ -95,7 +95,7 @@ def init_database_data(dir_path, chunk_size=1000):
     # 这个文件比较大，必须分开读取；因为文件前两行没有用所以跳过，大约5万多行
     for gene_sample_expressions_df in read_csv_n_lines_each_time_by_pandas_yield(
             os.path.join(dir_path, 'gene_expressions.gct'), sep='\t',
-            chunk_size=chunk_size, skip_rows=2):
+            chunk_size=chunk_size, skip_rows=2,has_header=False):
         gene_names = gene_sample_expressions_df['Description'].drop_duplicates().tolist()
         bio_sample_names=[]
         print('bulk create gene')
