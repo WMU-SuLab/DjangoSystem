@@ -18,10 +18,14 @@ import pandas as pd
 
 def read_csv_n_lines_each_time_by_pandas_yield(file_path,sep='\t', chunk_size=1000,  skip_rows: int = 0):
     count = 0
-    if skip_rows > 0:
-        skip_rows = range(1, skip_rows)
+    skip_rows = int(skip_rows)
+    chunk_size = int(chunk_size)
     print(f'{count} chunks read')
-    for df in pd.read_csv(file_path, sep=sep, chunksize=chunk_size, skiprows=skip_rows):
+    if skip_rows > 0:
+        dfs= pd.read_csv(file_path, sep=sep, chunksize=chunk_size, skiprows=range(1, skip_rows))
+    else:
+        dfs= pd.read_csv(file_path, sep=sep, chunksize=chunk_size)
+    for df in dfs:
         count += 1
         print(f'reading {(count - 1) * chunk_size + 1 + skip_rows}-{count * chunk_size + skip_rows} rows')
         yield df
