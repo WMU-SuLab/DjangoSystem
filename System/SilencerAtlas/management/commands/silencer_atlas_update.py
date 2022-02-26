@@ -37,7 +37,7 @@ def update_silencers(file_path, chunk_size=10000, skip_rows=0):
     100000/3min
     10-12hours
     """
-    batch_size = chunk_size / 10
+    batch_size = int(chunk_size / 10)
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
                                                          skip_rows=skip_rows):
         chromosomes = df['chr'].drop_duplicates().str.lower().to_list()
@@ -82,7 +82,7 @@ def update_samples_recognition_factors_z_score(file_path, chunk_size=100, skip_r
     200hours
     reading 314001-315000 rows
     """
-    batch_size = chunk_size * 10
+    batch_size = int(chunk_size * 10)
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
                                                          skip_rows=skip_rows):
         silencer_sample_recognition_factors_dict = {}
@@ -128,7 +128,7 @@ def update_samples_recognition_factors_recognized(file_path, chunk_size=100, ski
     50hours
     """
 
-    batch_size = chunk_size * 10
+    batch_size = int(chunk_size * 10)
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
                                                          skip_rows=skip_rows):
         silencer_sample_recognition_factors_dict = {
@@ -169,7 +169,7 @@ def update_target_genes(file_path, chunk_size=10000, skip_rows=0):
     100000/1.5min
     3hours
     """
-    batch_size = chunk_size / 10
+    batch_size = int(chunk_size / 10)
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
                                                          skip_rows=skip_rows):
         silencer_ids = df['silencerID'].to_list()

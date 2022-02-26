@@ -60,9 +60,11 @@
         - 如果已经启动，则重载配置：`sudo nginx -s reload`
 - 配置MySQL(需要先启动并设置好用户名和密码)
     - 进入MySQL：`mysql -u root -p`
-    - 创建数据库
+    - 创建数据库：django对于除了sqlite的数据库都要求提前建好库
         - `CREATE DATABASE DjangoAuth;`
         - `CREATE DATABASE SilencerAtlas;`
+        - ...，其余步骤自己查，或者用数据库管理工具建表，更加方便
+        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插插进去***☆☆☆☆☆
     - 配置`System/ManageSys/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
     - 迁移数据库
@@ -73,6 +75,7 @@
     - 创建django-admin的超级用户：`python manage.py createsuperuser`
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
+    - 启动：`gunicorn ManageSys.wsgi -c gunicorn.py`
 - 配置supervisor
     - 创建配置文件
         - `touch Django-backend/logs/supervisor/access.log`

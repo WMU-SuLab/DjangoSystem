@@ -43,54 +43,54 @@ def init_test_database_data():
     只适合完全为空或者只运行过test的数据库，否则会出错
     :return:
     """
-    # print('init test database data')
-    # count = 0
-    # for source_key in sources.keys():
-    #     for species_key in species.keys():
-    #         for bio_sample_type_key in bio_sample_types.keys():
-    #             count += 1
-    #             sample, sample_created = Sample.objects.get_or_create(
-    #                 sample_id='test_sample' + str(count),
-    #                 bio_sample_name='test_bio_sample_name' + str(count),
-    #                 tissue_type='test_type' + str(count),
-    #                 bio_sample_type=bio_sample_type_key,
-    #                 species=species_key,
-    #                 source=source_key
-    #             )
-    #             region, region_created = CommonRegion.objects.get_or_create(
-    #                 chromosome='silencer_fake_chr' + str(count),
-    #                 start=count * 10,
-    #                 end=999999999
-    #             )
-    #             silencer, silencer_created = Silencer.objects.get_or_create(
-    #                 silencer_id='test_silencer' + str(count),
-    #                 region=region,
-    #                 score=0, strand='+', sample=sample
-    #             )
-    #             for recognition_factor_key in recognition_factors.keys():
-    #                 recognition_factor, recognition_factor_created = RecognitionFactor.objects.get_or_create(
-    #                     name=recognition_factor_key
-    #                 )
-    #                 SilencerRecognitionFactor.objects.get_or_create(
-    #                     silencer=silencer,
-    #                     recognition_factor=recognition_factor,
-    #                 )
-    #                 SilencerSampleRecognitionFactor.objects.get_or_create(
-    #                     silencer=silencer,
-    #                     recognition_factor=recognition_factor,
-    #                     bio_sample_name=sample.bio_sample_name,
-    #                     z_score=1,
-    #                     recognized=True
-    #                 )
-    #             snp, snp_created = SNP.objects.get_or_create(rs_id='test_snp' + str(count), region=region)
-    #             for variant in variants.keys():
-    #                 SilencerSNP.objects.get_or_create(silencer=silencer, snp=snp, variant=variant)
-    #             gene, gene_created = Gene.objects.get_or_create(name='test_gene' + str(count), region=region)
-    #             SilencerTranscriptionFactor.objects.get_or_create(silencer=silencer, transcription_factor=gene, binding_site=region)
-    #             for strategy in strategies.keys():
-    #                 SilencerGene.objects.get_or_create(silencer=silencer, gene=gene, strategy=strategy)
-    #             SilencerCas9.objects.get_or_create(silencer=silencer, region=region)
-    # print('测试数据初始化完成，如果要删除测试数据建议直接重建数据库，速度更快')
+    print('init test database data')
+    count = 0
+    for source_key in sources.keys():
+        for species_key in species.keys():
+            for bio_sample_type_key in bio_sample_types.keys():
+                count += 1
+                sample, sample_created = Sample.objects.get_or_create(
+                    sample_id='test_sample' + str(count),
+                    bio_sample_name='test_bio_sample_name' + str(count),
+                    tissue_type='test_type' + str(count),
+                    bio_sample_type=bio_sample_type_key,
+                    species=species_key,
+                    source=source_key
+                )
+                region, region_created = CommonRegion.objects.get_or_create(
+                    chromosome='silencer_fake_chr' + str(count),
+                    start=count * 10,
+                    end=999999999
+                )
+                silencer, silencer_created = Silencer.objects.get_or_create(
+                    silencer_id='test_silencer' + str(count),
+                    region=region,
+                    score=0, strand='+', sample=sample
+                )
+                for recognition_factor_key in recognition_factors.keys():
+                    recognition_factor, recognition_factor_created = RecognitionFactor.objects.get_or_create(
+                        name=recognition_factor_key
+                    )
+                    SilencerRecognitionFactor.objects.get_or_create(
+                        silencer=silencer,
+                        recognition_factor=recognition_factor,
+                    )
+                    SilencerSampleRecognitionFactor.objects.get_or_create(
+                        silencer=silencer,
+                        recognition_factor=recognition_factor,
+                        bio_sample_name=sample.bio_sample_name,
+                        z_score=1,
+                        recognized=True
+                    )
+                snp, snp_created = SNP.objects.get_or_create(rs_id='test_snp' + str(count), region=region)
+                for variant in variants.keys():
+                    SilencerSNP.objects.get_or_create(silencer=silencer, snp=snp, variant=variant)
+                gene, gene_created = Gene.objects.get_or_create(name='test_gene' + str(count), region=region)
+                SilencerTranscriptionFactor.objects.get_or_create(silencer=silencer, transcription_factor=gene, binding_site=region)
+                for strategy in strategies.keys():
+                    SilencerGene.objects.get_or_create(silencer=silencer, gene=gene, strategy=strategy)
+                SilencerCas9.objects.get_or_create(silencer=silencer, region=region)
+    print('测试数据初始化完成，如果要删除测试数据建议直接重建数据库，速度更快')
 
 
 

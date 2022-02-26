@@ -22,7 +22,8 @@ openpyxl = "*"
 gevent = "*"
 waitress = { version = "*", sys_platform = "== 'win32'" }
 gunicorn = { version = "*", sys_platform = "!= 'win32'" }
-supervisor = "*"
+#supervisor建议装在全局环境下，通过系统的包管理工具进行安装
+#supervisor = "*"
 
 [dev-packages]
 autopep8 = "*"
