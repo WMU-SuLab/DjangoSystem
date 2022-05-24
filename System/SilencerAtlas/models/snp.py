@@ -31,7 +31,8 @@ class SNP(Base):
     def snp_id(self, value):
         self.rs_id = value
 
-    region = models.OneToOneField(CommonRegion, on_delete=models.CASCADE, verbose_name='位点', related_name='snp')
+    region = models.OneToOneField(CommonRegion, blank=True, null=True, on_delete=models.CASCADE, verbose_name='SNP位置',
+                                  related_name='snp')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '单核苷酸多态性'

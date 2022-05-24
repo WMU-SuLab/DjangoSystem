@@ -23,7 +23,7 @@ from SilencerAtlas.models.sample import Sample
 from SilencerAtlas.models.silencer import Silencer
 from SilencerAtlas.viewModels import handle_search_select, handle_sort_order, handle_pagination
 from SilencerAtlas.viewModels.silencer import filtered_sample_chosen_silencers
-from utils.response import JsonResponse
+from Common.utils.response import JsonResponse
 
 
 @require_POST
@@ -55,7 +55,7 @@ def get_sample_silencers(request):
         start=F('region__start'),
         end=F('region__end'),
         recognition_factors_group_concat=GroupConcat(
-            'silencerrecognitionfactors__recognition_factor__name', distinct=True),
+            'silencerrecognitionfactor__recognition_factor__name', distinct=True),
         species=F('sample__species'),
         bio_sample_type=F('sample__bio_sample_type'),
         # tissue_type=F('sample__tissue_type'),

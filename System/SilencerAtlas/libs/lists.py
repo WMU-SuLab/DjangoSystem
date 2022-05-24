@@ -16,6 +16,9 @@ __auth__ = "diklios"
 
 from .model_choices import recognition_factors, unknown
 
-igv_colors = ['rgb(215,25,28)', 'rgb(253,174,97)', 'rgb(171,217,233)', 'rgb(44,123,182)']
+igv_colors = [
+    'rgb(215,25,28)', 'rgb(253,174,97)', 'rgb(171,217,233)', 'rgb(44,123,182)', '#fff566',
+    "#389e0d", "#08979c", "#722ed1", "#ff441a", "#a3b61f", "#75856d", "#c78738", "#cc0000",
+]
 unknown_value_list = list(unknown.keys())
 recognition_factors_value_list = recognition_factors.keys()

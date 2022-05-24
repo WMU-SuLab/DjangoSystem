@@ -26,8 +26,8 @@ urlpatterns = [
     # silencer atlas 数据库管理
     path('admin/', silencer_atlas_site.urls, name='silencer_atlas_admin'),
     # 增加密码重置功能
-    path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='admin_password_reset', ),
-    path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done', ),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
+    # path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='silencer_atlas_admin_password_reset', ),
+    # path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='silencer_atlas_admin_password_reset_done', ),
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
+    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
 ]

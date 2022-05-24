@@ -1,7 +1,7 @@
 {% extends 'SilencerAtlas/home.html' %}
 
 {% block main_styles %}
-    {% include 'base/table-styles.html' %}
+    {% include 'plugs/table-styles.html' %}
 {% endblock %}
 
 {% block main_content %}
@@ -23,10 +23,10 @@
                             <div class="col">BioSample type:</div>
                             <div class="col">{{ silencer.bio_sample_type }}</div>
                         </li>
-{#                        <li class="list-group-item d-flex">#}
-{#                            <div class="col">Tissue/Cell line type:</div>#}
-{#                            <div class="col">{{ silencer.tissue_type }}</div>#}
-{#                        </li>#}
+                        {#                        <li class="list-group-item d-flex">#}
+                        {#                            <div class="col">Tissue/Cell line type:</div>#}
+                        {#                            <div class="col">{{ silencer.tissue_type }}</div>#}
+                        {#                        </li>#}
                         <li class="list-group-item d-flex">
                             <div class="col">BioSample name:</div>
                             <div class="col">{{ silencer.bio_sample_name }}</div>
@@ -110,7 +110,18 @@
                             <div id="putativeTargetGenesNetwork"></div>
                         </div>
                         <div class="tab-pane fade" id="AssociatedGeneExpression" role="tabpanel"></div>
-                        <div class="tab-pane fade" id="NearbyGenomicFeatures" role="tabpanel"></div>
+                        <div class="tab-pane fade d-flex justify-content-center" id="NearbyGenomicFeatures"
+                             role="tabpanel">
+                            <div id="NearbyTFs" class="col d-flex flex-column">
+                                <h2>TFs that bind this silencer</h2>
+                                <table id="nearbyTFsTable"></table>
+                                <table id="nearbyTFBsTable"></table>
+                            </div>
+                            <div id="NearbySNPs" class="col d-flex flex-column">
+                                <h2>Nearby SNPs</h2>
+                                <table id="nearbySNPsTable"></table>
+                            </div>
+                        </div>
                         <div class="tab-pane fade" id="CellTissueTypeSpecificity" role="tabpanel"></div>
                         <div class="tab-pane fade" id="LinkedSilencersInOtherAssemblies" role="tabpanel"></div>
                     </div>
@@ -121,8 +132,8 @@
 {% endblock %}
 
 {% block main_scripts %}
-    {% include 'base/table-scripts.html' %}
-    {% include 'base/vue.html' %}
+    {% include 'plugs/table-scripts.html' %}
+    {% include 'plugs/vue.html' %}
     <script src="{% static 'js/plugs/echarts.min.js' %}"></script>
     <script src="{% static 'SilencerAtlas/js/silencerDetails.js' %}"></script>
 {% endblock %}

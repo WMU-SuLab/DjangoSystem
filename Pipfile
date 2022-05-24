@@ -12,12 +12,22 @@ jinja2 = "*"
 django = "*"
 django-mysql = "*"
 pymysql = "*"
+#注意不是python-memcached也不是memcache
+pymemcache = "*"
 django-hashid-field = "*"
-django-rest-framework = "*"
+#注意不是django-rest-framework
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+#drf-yasg = "*"
+#这个支持到OpenAPI3.0
+drf-spectacular = "*"
 django-jinja = "*"
 django-simpleui = "*"
 django-cors-headers = "*"
 django-sslserver = "*"
+django-weasyprint = "*"
+#不需要django-celery
+celery = "*"
 openpyxl = "*"
 gevent = "*"
 waitress = { version = "*", sys_platform = "== 'win32'" }

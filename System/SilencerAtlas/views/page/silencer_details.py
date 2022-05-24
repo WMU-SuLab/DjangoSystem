@@ -26,7 +26,7 @@ def silencer_details(request, silencer_id):
 
     silencer = Silencer.objects.annotate(
         recognition_factors_group_concat=GroupConcat(
-            'silencerrecognitionfactors__recognition_factor__name', distinct=True),
+            'silencerrecognitionfactor__recognition_factor__name', distinct=True),
     ).prefetch_related('sample','region').get(id=silencer_id)
     # 这里的sample和region其实可以优化为查询一次数据库，但是这样就要在一次查询中使用concat()拼接或者silencer对象中手动拼接字符串了，考虑到只有一个对象要查，就还可以接受
     details = {

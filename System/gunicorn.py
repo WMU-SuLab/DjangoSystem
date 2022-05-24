@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 import multiprocessing
 import os
 
-from ManageSys.settings.base import BASE_DIR
+from Config.settings import BASE_DIR
 
 # 绑定ip和端口号
 bind = '0.0.0.0:5000'
@@ -26,8 +26,8 @@ backlog = 512
 chdir = str(BASE_DIR)
 # 超时
 timeout = 30
-# 设置守护进程(linux有效)
-daemon = 'true'
+# 设置守护进程(linux有效)，请注意使用sunpervisor的时候不能后台运行
+# daemon = 'true'
 # 使用gevent模式，还可以使用sync 模式，默认的是sync模式
 worker_class = 'gevent'
 # 进程数
@@ -38,6 +38,6 @@ threads = 3
 loglevel = 'info'
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
 # 访问日志文件
-accesslog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "access.log")
+accesslog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "access.log")
 # 错误日志文件
-errorlog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "error.log")
+errorlog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "error.log")

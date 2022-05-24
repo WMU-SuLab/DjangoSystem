@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 import re
 
-from utils.text_handler import upper_text
+from Common.utils.text_handler import upper_text
 
 
 def to_recognition_factors_dict(recognition_factors):

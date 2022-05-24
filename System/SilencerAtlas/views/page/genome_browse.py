@@ -14,10 +14,17 @@
 __auth__ = 'diklios'
 
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
+from SilencerAtlas.libs.dicts import genome_tree_data
+
+
+@cache_page(60 * 60 * 24)
 def genome_browse(request):
     page = 'genome_browse'
     return render(request, 'SilencerAtlas/genome_browse.html', context={
         'title': page,
         'menu': page,
+        'genome_tree_data': genome_tree_data,
+        'tracks': [],
     })

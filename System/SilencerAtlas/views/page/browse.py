@@ -12,17 +12,19 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-import time
+
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
+from Common.utils.response import JsonResponse
 from SilencerAtlas.libs.lists import unknown_value_list
 from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types
 from SilencerAtlas.models.sample import Sample
 from SilencerAtlas.models.silencer import Silencer
 from SilencerAtlas.viewModels.silencer import silencers_classify_count, \
     silencers_classify_count_filter_zero, filtered_sample_chosen_silencers
-from utils.response import JsonResponse
 
 
 class BrowseView(TemplateView):
@@ -59,6 +61,7 @@ class BrowseView(TemplateView):
             'bioSampleNamesSelectData': bio_sample_names_select_data,
         }
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request, *args, **kwargs):
         # silencers = filtered_unknown_silencers()
         silencers = Silencer.objects.all()

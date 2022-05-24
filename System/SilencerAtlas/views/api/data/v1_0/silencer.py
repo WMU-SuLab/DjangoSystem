@@ -29,8 +29,8 @@ from SilencerAtlas.viewModels import handle_sort_order,handle_pagination
 from SilencerAtlas.viewModels.recognition_factor import recognition_factors_upper
 from SilencerAtlas.viewModels.region import divide_region
 from SilencerAtlas.viewModels.silencer import filtered_unknown_silencers
-from utils.response import JsonResponse
-from utils.text_handler import lower_underline
+from Common.utils.response import JsonResponse
+from Common.utils.text_handler import lower_underline
 
 
 @require_POST
@@ -68,15 +68,15 @@ def get_silencers(request):
         silencers = silencers.filter(region__chromosome__icontains=chromosome, region__start__lte=int(end),
                                      region__end__gte=int(start))
     if gene:
-        silencers = silencers.filter(silencergenes__gene_name__icontains=gene)
+        silencers = silencers.filter(target_genes__gene_name__icontains=gene)
     if strategy:
-        silencers = silencers.filter(silencergenes__strategy=strategy)
+        silencers = silencers.filter(target_genes__strategy=strategy)
     if transcription_factor:
-        silencers = silencers.filter(silencertfbs__transcription_factor__name__icontains=transcription_factor)
+        silencers = silencers.filter(silencertranscriptionfactor__transcription_factor__name__icontains=transcription_factor)
     if rs_id:
-        silencers = silencers.filter(silencersnps__snp__rs_id__icontains=rs_id)
+        silencers = silencers.filter(silencersnp__snp__rs_id__icontains=rs_id)
     if variant:
-        silencers = silencers.filter(silencersnps__variant=variant)
+        silencers = silencers.filter(silencersnp__variant=variant)
     # 根据查询条件过滤
     # 构建表格属性
     silencers = silencers.annotate(
@@ -85,9 +85,9 @@ def get_silencers(request):
         end=F('region__end'),
         # GroupConcat之后再链接其他多对多会导致多个左连接，需要在每一个上面去除重复值
         recognition_factors_group_concat=GroupConcat(
-            'silencerrecognitionfactors__recognition_factor__name', distinct=True),
-        eQTLs_count=Count('SNPs', Q(silencersnps__variant='eQTL'), distinct=True),
-        risk_snps_count=Count('SNPs', Q(silencersnps__variant='risk_snp'), distinct=True),
+            'silencerrecognitionfactor__recognition_factor__name', distinct=True),
+        eQTLs_count=Count('SNPs', Q(silencersnp__variant='eQTL'), distinct=True),
+        risk_snps_count=Count('SNPs', Q(silencersnp__variant='risk_snp'), distinct=True),
         TFBs_count=Count('TFBs', distinct=True), Cas9s_count=Count('Cas9s', distinct=True)
     )
     # 先查询
@@ -293,6 +293,9 @@ def get_silencer_by_id(request, silencer_id):
             associated_gene_expressions.append(associated_gene_expression)
 
     # Nearby Genomic Features
+    
+
+
     # Cell / Tissue Type Specificity
     # Linked Silencers In Other Assemblies
 

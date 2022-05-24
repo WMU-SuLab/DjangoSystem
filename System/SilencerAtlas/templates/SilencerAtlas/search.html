@@ -1,6 +1,6 @@
 {% extends 'SilencerAtlas/home.html' %}
 {% block main_styles %}
-    {% include 'base/table-styles.html' %}
+    {% include 'plugs/table-styles.html' %}
     <link href="{% static 'css/plugs/searchSelect.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'SilencerAtlas/css/search.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -338,7 +338,7 @@
         var tableData = [];
 
     </script>
-    {% include 'base/table-scripts.html' %}
+    {% include 'plugs/table-scripts.html' %}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     {#    <script src="{% static 'js/plugs/jquery.validate.min.js' %}"></script>#}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>

@@ -1,20 +1,44 @@
 {% extends 'SilencerAtlas/home.html' %}
 {% block main_styles %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-plus@2.0.4/dist/index.css">
+    <link rel="stylesheet" href="{% static 'SilencerAtlas/css/genome_browse.css' %}">
 {% endblock %}
 {% block main_content %}
     <div id="mainContent" style="display: none">
-        <div class="d-flex justify-content-center pt-4 fs-3">
-            <div id="igv" class="col-10"></div>
+        <div id="genomeBrowser" class="d-flex justify-content-center pt-4 fs-3">
+            <div class="col-11 d-flex flex-row">
+                <div id="genomeFilter" class="col-2 border-end border-success border-2">
+                    <el-button @click="checkedNodesConfirm" type="success" class="fs-2">Confirm</el-button>
+                    <el-tree
+                            ref="genomeTree"
+                            :data="genomeTreeData"
+                            show-checkbox
+                            default-expand-all
+                            node-key="id"
+                            highlight-current
+                            :props="defaultProps"
+                            class="pt-3"
+                    ></el-tree>
+
+                </div>
+                <div id="igv" class="col-10"></div>
+            </div>
         </div>
     </div>
 {% endblock %}
+${ defaultProps }
 
 {% block main_scripts %}
-    {#    <script src="https://cdn.jsdelivr.net/npm/igv@2.10.4/dist/igv.min.js"></script>#}
+    {% include 'plugs/vue.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/element-plus@2.0.4/dist/index.full.min.js"></script>
+    {#    <script src="https://cdn.bootcdn.net/ajax/libs/element-plus/2.0.3/index.full.min.js"></script>#}
+    <script src="https://cdn.jsdelivr.net/npm/igv@2.10.5/dist/igv.min.js"></script>
+    {#    <script src="{% static 'js/plugs/igv.min.js' %}"></script>#}
     <script>
-    var getIgvReference=app_api_data_v1_0_prefix+'/get_igv_reference';
-    var getIgvTracks=app_api_data_v1_0_prefix+'/get_igv_tracks';
+        var getIgvReference = app_api_data_v1_0_prefix + '/get_igv_reference';
+        var getIgvTracks = app_api_data_v1_0_prefix + '/get_igv_tracks';
+        var genomeTreeData = {{ genome_tree_data|safe }};
+        var tracks={{ tracks|safe }};
     </script>
-    <script src="{% static 'js/plugs/igv.min.js' %}"></script>
     <script src="{% static 'SilencerAtlas/js/genomeBrowse.js' %}"></script>
 {% endblock %}

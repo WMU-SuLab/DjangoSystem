@@ -15,6 +15,26 @@ body {
     flex: 1;
 }
 
+p {
+    text-indent: 2em;
+    word-break: break-all;
+    word-wrap: break-word;
+    /*多行对齐*/
+    text-align: justify;
+}
+
+h2 {
+    color: #36445d;
+    font-size: 30px;
+}
+
+/*清除浮动*/
+/*.clearfix::after {*/
+/*    content: "";*/
+/*    display: block;*/
+/*    clear: both;*/
+/*}*/
+
 /*去除表格链接中的下划线*/
 .tableContent a {
     text-decoration: none;
@@ -31,16 +51,6 @@ form.needs-validation label.error {
     font-style: italic
 }
 
-p {
-    text-indent: 2em;
-    word-break: break-all;
-    word-wrap:break-word;
-}
-
-h2 {
-    color: #36445d;
-    font-size: 30px;
-}
 
 /*loading的圆点样式*/
 .backdrop {

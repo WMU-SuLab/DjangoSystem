@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
 from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types, strategies, variants
 # from SilencerAtlas.libs.lists import unknown_value_list
@@ -23,6 +24,7 @@ from SilencerAtlas.libs.model_choices import sources, species, bio_sample_types,
 # from SilencerAtlas.models.snp import SNP
 
 
+@cache_page(60 * 60 * 24 * 10)
 def search(request):
     page = 'search'
     # tissue_types = list(Sample.objects.distinct().exclude(tissue_type__in=unknown_value_list)[:20].values_list('tissue_type', flat=True))

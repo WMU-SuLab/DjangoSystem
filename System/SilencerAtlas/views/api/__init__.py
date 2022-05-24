@@ -15,8 +15,8 @@ __auth__ = 'diklios'
 
 from django.urls import path, include
 
-from .test import test
 from SilencerAtlas import app_name
+from .test import test
 
 urlpatterns = [
     path('test', test, name='test'),

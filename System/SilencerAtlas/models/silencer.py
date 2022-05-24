@@ -94,7 +94,9 @@ class SilencerGene(models.Model):
 class SilencerTranscriptionFactor(Base):
     silencer = models.ForeignKey(Silencer, on_delete=models.CASCADE)
     transcription_factor = models.ForeignKey(Gene, on_delete=models.CASCADE)
-    binding_site = models.ForeignKey(CommonRegion, on_delete=models.CASCADE)
+    binding_site = models.ForeignKey(CommonRegion,blank=True,null=True, on_delete=models.CASCADE,verbose_name='转录因子结合位点')
+
+    experiment = models.CharField(max_length=255,null=True, blank=True, default=list,verbose_name='相关实验')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '沉默子的转录因子结合位点'
@@ -107,6 +109,7 @@ class SilencerSNP(Base):
     snp = models.ForeignKey(SNP, on_delete=models.CASCADE)
 
     variant = models.CharField(max_length=32, choices=VARIANTS_ITEMS, default='--', verbose_name='策略')
+    distance=models.IntegerField(null=True,blank=True,default=0,verbose_name='距离')
 
     class Meta(Base.Meta):
         verbose_name = verbose_name_plural = '沉默子的SNP'
@@ -127,7 +130,10 @@ class SilencerSampleRecognitionFactor(models.Model):
     recognition_factor = models.ForeignKey(RecognitionFactor, on_delete=models.CASCADE)
     # sample=models.ForeignKey(Sample, on_delete=models.CASCADE, verbose_name='样本')
     # express_level=models.FloatField(verbose_name='表达水平')
-    bio_sample_name = models.CharField(max_length=256, default='--', db_index=True, verbose_name='样本名称')
+    # bio_sample_name = models.CharField(max_length=256, default='--', db_index=True, verbose_name='样本名称')
+    # 占用空间太大了，而且用的比较少，决定删除索引
+    bio_sample_name = models.CharField(max_length=256, default='--', verbose_name='样本名称')
+
     # 原来是每个样本一个表达水平的，现在把所有相同bio sample name的样本表达水平值合起来为z-score
     z_score = models.FloatField(null=True, blank=True, default=0, verbose_name='z-score')
     recognized = models.BooleanField(null=True, blank=True, default=False, verbose_name='是否识别')

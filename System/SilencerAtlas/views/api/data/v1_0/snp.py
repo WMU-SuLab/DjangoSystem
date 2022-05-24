@@ -17,7 +17,7 @@ from django.views.decorators.http import require_POST
 
 from SilencerAtlas.models.snp import SNP
 from SilencerAtlas.viewModels import handle_search_select
-from utils.response import JsonResponse
+from Common.utils.response import JsonResponse
 
 
 @require_POST

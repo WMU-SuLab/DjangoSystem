@@ -14,7 +14,7 @@
 __auth__ = 'diklios'
 from django.views.decorators.http import require_POST, require_GET
 from SilencerAtlas.models.silencer import Silencer
-from utils.response import JsonResponse
+from Common.utils.response import JsonResponse
 
 @require_GET
 def get_silencer(request, silencer_id):

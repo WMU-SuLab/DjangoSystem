@@ -21,14 +21,14 @@ from SilencerAtlas.models.recognition_factor import RecognitionFactor
 from SilencerAtlas.models.region import CommonRegion
 from SilencerAtlas.models.sample import Sample
 from SilencerAtlas.models.silencer import Silencer, SilencerRecognitionFactor, SilencerSampleRecognitionFactor, \
-    SilencerGene
+    SilencerGene,SilencerTranscriptionFactor
 from SilencerAtlas.viewModels.recognition_factor import to_recognition_factors_dict, recognition_factors_to_list
 from SilencerAtlas.viewModels.region import to_regions_dict, generate_region
 from SilencerAtlas.viewModels.sample import to_samples_dict
-from utils.file_handler.table_handler.csv import read_csv_n_lines_each_time_by_pandas_yield
-from utils.text_handler.lists import group_by_step
-from utils.time import print_accurate_execute_time
-from utils.command import BaseCommand
+from Common.utils.file_handler.table_handler.csv import read_csv_n_lines_each_time_by_pandas_yield
+from Common.utils.text_handler.lists import group_by_step
+from Common.utils.time import print_accurate_execute_time
+from Common.utils.command import BaseCommand
 
 
 @print_accurate_execute_time
@@ -127,7 +127,6 @@ def update_samples_recognition_factors_recognized(file_path, chunk_size=100, ski
     10000/2.5min
     50hours
     """
-
     batch_size = int(chunk_size * 10)
     for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
                                                          skip_rows=skip_rows):
@@ -206,16 +205,25 @@ def update_target_genes(file_path, chunk_size=10000, skip_rows=0):
         # Gene.objects.bulk_create([Gene(name=name) for name in gene_names], batch_size=batch_size, ignore_conflicts=True)
 
 
+@print_accurate_execute_time
+def update_transcription_factors(file_path, chunk_size=10000, skip_rows=0):
+    batch_size = int(chunk_size / 10)
+    for df in read_csv_n_lines_each_time_by_pandas_yield(file_path, sep='\t', chunk_size=chunk_size,
+                                                         skip_rows=skip_rows):
+        pass
+
+
 class Command(BaseCommand):
     help = 'silencer atlas database update subdivide command'
 
     def add_arguments(self, parser):
         parser.add_argument('-s', '--silencer', action='store_true', help='update silencers')
-        parser.add_argument('-t', '--target_gene', action='store_true', help='update silencers target genes')
+        parser.add_argument('-g', '--target_gene', action='store_true', help='update silencers target genes')
         parser.add_argument('-z', '--z_score', action='store_true',
                             help='update silencers samples recognition factors score')
         parser.add_argument('-r', '--recognized', action='store_true',
                             help='update silencers samples recognition factors recognized')
+        parser.add_argument('-t', '--transcription_factor', type=str, help='update silencers transcription factors')
         super(Command, self).add_arguments(parser)
 
     def handle(self, *args, **options):
@@ -229,6 +237,7 @@ class Command(BaseCommand):
         update_target_gene = options.get('target_gene', None)
         update_z_score = options.get('z_score', None)
         update_recognized = options.get('recognized', None)
+        update_transcription_factor = options.get('transcription_factor', None)
         kargs={}
         if chunk_size:
             kargs['chunk_size'] = chunk_size
@@ -248,3 +257,5 @@ class Command(BaseCommand):
             return update_samples_recognition_factors_z_score(file_path, **kargs)
         elif update_recognized:
             return update_samples_recognition_factors_recognized(file_path, **kargs)
+        elif update_transcription_factor:
+            return update_transcription_factors(file_path, **kargs)

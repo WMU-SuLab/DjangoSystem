@@ -1,9 +1,5 @@
-import os
+from django.contrib import admin
 
-from django.conf import settings
-from django.contrib import admin, messages
-
-from ManageSys.multi_db import MultiDBModelAdmin
 from SilencerAtlas.models.gene import Gene, GeneRegion, GeneExpression
 from SilencerAtlas.models.recognition_factor import RecognitionFactor
 from SilencerAtlas.models.region import CommonRegion
@@ -12,7 +8,7 @@ from SilencerAtlas.models.silencer import Silencer, SilencerGene, SilencerTransc
     SilencerSNP, \
     SilencerRecognitionFactor, SilencerSampleRecognitionFactor
 from SilencerAtlas.models.snp import SNP
-from utils.file_handler.table_handler.xlsx import generate_xlsx_file
+from Common.models.admin import BaseAdminModel
 
 # 注意使用AdminSite创建的site注册之后不能使用装饰器的写法，只能使用函数写法
 # 如果仍然需要使用装饰器的写法，使用admin.register(...,site=)的写法
@@ -22,46 +18,9 @@ silencer_atlas_site.site_header = 'Silencer Atlas'
 
 
 # Register your models here.
-class BaseAdmin(MultiDBModelAdmin):
+class BaseAdmin(BaseAdminModel):
     # 设置连接的数据库
     using = 'SilencerAtlas'
-    # 添加到动作栏
-    actions = ['export_data_to_txt', 'export_data_to_excel']
-
-    # 导出数据到txt
-    def export_data_to_txt(self, request, queryset):
-        # 判断超级用户
-        if request.user.is_superuser:
-            table_head = list(queryset[0].to_dict().keys())
-            table = [[str(item) for item in list(item.to_dict().values())] for item in queryset]
-            table.insert(0, table_head)
-            with open(os.path.join(settings.BASE_DIR, 'data.txt'), 'a') as f:
-                for row in table:
-                    f.write('\t'.join(row) + '\r\n')
-            # 设置提示信息
-            self.message_user(request, '数据导出成功！')
-        else:
-            # 非超级用户提示警告
-            self.message_user(request, '数据导出失败，没有权限！', level=messages.WARNING)
-
-    # 设置函数的显示名称
-    export_data_to_txt.short_description = '导出所选数据到txt'
-
-    def export_data_to_excel(self, request, queryset):
-        # 判断超级用户
-        if request.user.is_superuser:
-            table_head = list(queryset[0].to_dict().keys())
-            table = [[str(item) for item in list(item.to_dict().values())] for item in queryset]
-            table.insert(0, table_head)
-            table_sheets = [{'sheet_name': '', 'sheet_data': table}]
-            generate_xlsx_file('data.xlsx', table_sheets, settings.BASE_DIR)
-            # 设置提示信息
-            self.message_user(request, '数据导出成功！')
-        else:
-            # 非超级用户提示警告
-            self.message_user(request, '数据导出失败，没有权限！', level=messages.WARNING)
-
-    export_data_to_excel.short_description = '导出所选数据到excel'
 
 
 class CommonRegionAdmin(BaseAdmin):

@@ -1,6 +1,6 @@
 {% extends 'SilencerAtlas/home.html' %}
 {% block main_styles %}
-    {% include 'base/table-styles.html' %}
+    {% include 'plugs/table-styles.html' %}
     <link href="{% static 'css/plugs/searchMultipleSelect.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'SilencerAtlas/css/browse.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -90,8 +90,8 @@
         {#var tissueTypesSelectData ={{ tissueTypesSelectData|safe }};#}
         var bioSampleNamesSelectData ={{ bioSampleNamesSelectData | safe }};
     </script>
-    {% include 'base/table-scripts.html' %}
-    {% include 'base/vue.html' %}
+    {% include 'plugs/table-scripts.html' %}
+    {% include 'plugs/vue.html' %}
     <script src="{% static 'js/plugs/searchMultipleSelect.js' %}"></script>
     <script src="{% static 'SilencerAtlas/js/browse.js' %}"></script>
 {% endblock %}

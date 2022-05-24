@@ -33,10 +33,11 @@ from SilencerAtlas.viewModels.recognition_factor import to_recognition_factors_d
 from SilencerAtlas.viewModels.region import divide_region, generate_region, to_regions_dict
 from SilencerAtlas.viewModels.sample import to_samples_dict
 from SilencerAtlas.viewModels.snp import to_snps_dict
-from utils.file_handler.read import read_n_lines_each_time_yield
-from utils.file_handler.table_handler.csv import read_csv_n_lines_each_time_by_pandas_yield
-from utils.time import print_accurate_execute_time
-from utils.command import BaseCommand
+from Common.utils.file_handler.read import read_n_lines_each_time_yield
+from Common.utils.file_handler.table_handler.csv import read_csv_n_lines_each_time_by_pandas_yield
+from Common.utils.time import print_accurate_execute_time
+from Common.utils.command import BaseCommand
+
 @print_accurate_execute_time
 def init_test_database_data():
     """

@@ -1,5 +1,5 @@
-var api_get_silencer_by_id = app_api_data_v1_0_prefix + '/get_silencer_by_id/'
-
+var api_get_silencer_by_id = app_api_data_v1_0_prefix + '/get_silencer_by_id/';
+var api_get_silencer_transcription_factor_binding_sites = app_api_data_v1_0_prefix + '/get_silencer_transcription_factor_binding_sites/';
 
 let signalInThisBioSample;
 let signalInOtherBioSamples;
@@ -58,6 +58,12 @@ function initPutativeTargetGenesTable(data) {
             }, {
                 'field': 'gene_name',
                 'title': 'Gene Symbol',
+                formatter: function (value, row) {
+                    let gene_symbols = value.split(',');
+                    return gene_symbols.map(function (gene_symbol) {
+                        return '<a href="' + 'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + gene_symbol + '" target="_blank">' + gene_symbol + '</a>';
+                    }).join(',');
+                },
             }, {
                 'field': 'gene_ensembl_id',
                 'title': 'Ensembl',
@@ -536,6 +542,102 @@ function initAssociatedGeneExpression(genes) {
     }).mount('#AssociatedGeneExpression');
 }
 
+let nearbyTFsTable;
+
+function initNearbyTFsTable(data) {
+    nearbyTFsTable = initBootstrapTable({
+        dom: '#nearbyTFsTable',
+        columns: [
+            {
+                'field': 'transcription_factor',
+                'title': 'Factor',
+                formatter: function (value, row, index) {
+                    return "<a href='https://www.factorbook.org/tf/human/" + value + "/function'>" + value + "</a>";
+                }
+            }, {
+                'field': 'TFBs_count',
+                'title': 'Of experiments that support TF binding',
+                formatter: function (value, row) {
+                    return "<a href='#' onclick='getNearbyTFBs(row.silencer_id,row.transcription_factor)'>" + value + "</a>";
+                },
+            }, {
+                'field': 'experiments_total',
+                'title': 'Experiments in total',
+            },
+        ],
+        data: data
+    });
+}
+
+let nearbyTFBsTable;
+
+function initNearbyTFBsTable(data) {
+    nearbyTFBsTable = initBootstrapTable({
+        dom: '#nearbyTFBsTable',
+        columns: [
+            {
+                'field':'cell_type',
+                'title':'Cell type',
+            },
+            {
+                'field':'experiment',
+                'title':'Experiment/File',
+                formatter: function (value, row, index) {
+                    const [experiment,file] = value.split('/');
+                    return "<a href='https://www.encodeproject.org/experiments/" + experiment + "/'>" + value + "</a>";
+                }
+            }
+        ],
+        data: data
+    })
+}
+
+function getNearbyTFBs(silencer_id, transcription_factor) {
+    $.ajax({
+        url: api_get_silencer_transcription_factor_binding_sites,
+        type: 'POST',
+        data: JSON.stringify({
+            "silencer_id": silencer_id,
+            "transcription_factor": transcription_factor,
+        }),
+        contentType: "application/json;charset=utf-8",
+        dataType: 'json',
+        success: function (result, status) {
+            initNearbyTFBsTable(result.data.rows);
+        },error: function (result, status) {
+            console.log(result);
+        }
+    });
+}
+
+let nearbySNPsTable;
+
+function initNearbySNPsTable(data) {
+    nearbySNPsTable = initBootstrapTable({
+        dom: '#nearbySNPsTable',
+        columns: [
+            {
+                'field':'accession',
+                'title':'rs_id',
+                formatter: function (value, row, index) {
+                    return "<a href='https://asia.ensembl.org/Homo_sapiens/Variation/Explore?v=" + value + "' target='_blank'>" + value + "</a>";
+                },
+            },
+            {
+                'field':'distance',
+                'title':'distance',
+            },
+        ],
+        data: data
+    });
+}
+
+
+function initNearbyGenomicFeatures(data) {
+    initNearbyTFsTable(data.TFs);
+    initNearbySNPsTable(data.SNPs);
+}
+
 function getSilencer() {
     var pathname = window.location.pathname;
     var pathSplit = pathname.split('/');
@@ -550,6 +652,7 @@ function getSilencer() {
             initSignalInSpecificBioSamplesTables(res.data.signal_in_specific_bio_samples_tables_data);
             initPutativeTargetGenes(res.data.putative_target_genes.table_data, res.data.putative_target_genes.network_data);
             initAssociatedGeneExpression(res.data.associated_gene_expressions);
+            initNearbyGenomicFeatures(res.data.nearby_genomic_features);
         }, error: function (error) {
             console.log(error);
             endLoading();

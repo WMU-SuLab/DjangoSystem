@@ -13,8 +13,8 @@
 """
 __auth__ = 'diklios'
 
-from utils.response import JsonResponse
-
+from Common.utils.response import JsonResponse
+# from Common.models.user import User
 
 def test(request):
     return JsonResponse({})

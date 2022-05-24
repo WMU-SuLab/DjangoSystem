@@ -4,5 +4,6 @@ nohup python manage.py silencer_atlas_data --pre_update -f SilencerAtlas/libs/si
 nohup python manage.py silencer_atlas_update -s -f SilencerAtlas/libs/silencers.txt > silencer_atlas_data_update_silencers.log 2>&1 &
 nohup python manage.py silencer_atlas_update -z -f SilencerAtlas/libs/recognition_factor_singles.txt > silencer_atlas_data_update_recognition_factor_singles.log 2>&1 &
 nohup python manage.py silencer_atlas_update -r -f SilencerAtlas/libs/recognition_factor_classify.txt > silencer_atlas_data_update_recognition_factor_classify.log 2>&1 &
-nohup python manage.py silencer_atlas_update -t -f SilencerAtlas/libs/target_genes.txt > silencer_atlas_data_update_target_genes.log 2>&1 &
+nohup python manage.py silencer_atlas_update -g -f SilencerAtlas/libs/target_genes.txt > silencer_atlas_data_update_target_genes.log 2>&1 &
+nohup python manage.py silencer_atlas_update -t -f SilencerAtlas/libs/transcription_factors.txt > silencer_atlas_data_update_transcription_factors.log 2>&1 &
 echo "SilencerAtlas update done"

@@ -29,6 +29,7 @@ from .test import test
 
 urlpatterns = [
     path('', home, name='home'),
+    path('index',home,name='index'),
     path('test', test, name='test'),
     path('search', search, name='search'),
     path('browse', BrowseView.as_view(), name='browse'),
