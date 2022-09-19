@@ -9,7 +9,9 @@
     - 大小在0.5MB以内最佳，可以通过一些软件进行图片压缩，但是如果实在控制不了也可以大一些
 
 ## 数据库
+
 ### MySQL
+
 - 创建迁移脚本：`python manage.py makemigrations`
 - 迁移数据库：`python manage.py migrate --database=SilencerAtlas`
 

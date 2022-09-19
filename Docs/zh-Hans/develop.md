@@ -4,7 +4,9 @@
 
 - 以下配置大部分需要root权限，请自行切换权限或者在命令前面加上**sudo**
 - 项目根文件夹使用**ProjectRoot**代替
+
 ## 项目管理
+
 - 新建项目：`django-admin startproject project_name`
 - 新建app：`python manage.py startapp app_name`
 
@@ -22,27 +24,34 @@
     - Redis(4.0+)
     - Memcached(1.5+)
 - 环境依赖文件位置
+    - poetry:`ProjectRoot/pyproject.toml`
     - pipenv:`ProjectRoot/Pipfile`
     - conda
         - `ProjectRoot/depends/conda.yaml`
         - `ProjectRoot/depends/requirements-conda.txt`
     - pip:`ProjectRoot/depends/requirements-pip.txt`
-- 首先需要进入项目文件夹：`cd ProjectRoot`
 - 提供了以下几种环境安装方法
+    - 首先需要进入项目文件夹：`cd ProjectRoot`
+    - poetry(推荐)
+        - 安装 poetry：`pip install poetry`
+        - 安装依赖：`poetry install`
+        - 可在conda环境下使用
     - pipenv(推荐)
-        - 安装pipenv：`pip install pipenv`
+        - 安装 pipenv：`pip install pipenv`
         - 安装依赖：`pipenv install`
+        - **不可在conda环境下使用**
     - conda
-        - 使用导出的环境文件重建虚拟环境：`conda env create -f depends/conda.yaml`
+        - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
         - 单独创建
             - 创建虚拟环境：`conda create -n django python=3.10`
             - 激活虚拟环境：`conda activate django`
             - 安装依赖：`pip install -r requirements-conda.txt`
-                - 此处也可以直接使用`depends/requirements-pip.txt`安装依赖
+                - 此处也可以直接使用`Dependencies/requirements-pip.txt`安装依赖
+        - 以上方法安装基本都会遇到各种各样的问题而失败，不如直接对照`Pipfile`文件一个一个手动安装
     - 原生虚拟环境
         - 创建虚拟环境：`virtualenv -p python3.10 venv`
         - 激活虚拟环境：`source venv/bin/activate`
-        - 安装依赖：`pip install -r depends/requirements-pip.txt`
+        - 安装依赖：`pip install -r Dependencies/requirements-pip.txt`
 
 ### 环境导出
 
@@ -50,6 +59,7 @@
     - `conda env export > conda.yaml`
     - `conda list -e > requirements-conda.txt`
 - 导出pip环境：`pip freeze > requirements-pip.txt`
+- pipenv, poetry, pdm 环境管理不需要导出，会自动写入配置文件
 
 ## 项目启动（需要先激活虚拟环境）
 
@@ -57,12 +67,45 @@
 - 配置环境变量
     - `ProjectRoot/System`文件夹下创建`.env`文件
     - 配置`DJANGO_ENV`:`develop`或者`product`
-    - 配置`SECRET_KEY`:任意值
-    - 配置`HASHID_FIELD_SALT`:任意值
-    - 配置数据库密码字段
-      - DATABASE_DEFAULT_PASSWORD
-      - DATABASE_SILENCER_ATLAS_PASSWORD
-      - DATABASE_MYOPIA_PASSWORD
+    - 配置加密，可以自己定义，但是最好查询各个字段官方的生成方法
+        - 配置`SECRET_KEY`，django自带加密模块
+        - 配置`CRYPTOGRAPHY_SECRET_KEY`，cryptography模块
+        - 配置`HASHID_FIELD_SALT`，django-hashid-field插件
+    - 配置邮箱
+    - 配置数据库
+        - MySQL
+            - 根据是否使用多数据库添加其他数据库相应字段
+        - Redis
+        - Memcached
+
+```dotenv
+# .env文件示例
+SECRET_KEY='django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e'
+HASHID_FIELD_SALT='wmu-sulab-django-system'
+CRYPTOGRAPHY_SECRET_KEY='no8tx8BM-bhPwSB-ud7sDXEg73eYFTaJqBJuS-qMKf8='
+
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
+
+DJANGO_ENV='develop'
+#DJANGO_ENV='product'
+
+SERVER_DOMAIN='localhost'
+SERVER_PORT='5000'
+
+# Database
+DATABASE_DEFAULT_PASSWORD=''
+DATABASE_SILENCER_ATLAS_PASSWORD=''
+
+```
+
+- 创建日志文件夹
+    - 使用`mkdir -p 路径`
+        - django:`/.../ProjectRoot/System/logs/django`
+        - gunicorn:`/.../ProjectRoot/System/logs/gunicorn`
+        - supervisor:`/.../ProjectRoot/System/logs/supervisor`
+        - NGINX:`/var/log/nginx`
+    - 不需要创建对应的文件，配置文件里写好后这些都会自动创建文件
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`
@@ -73,7 +116,8 @@
         - 修改日志路径
         - 修改django服务器相关部分
         - 修改ssl相关配置
-    - 全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/wmu-bio-data.conf`
+    -
+  全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/wmu-bio-data.conf`
     - 启动NGINX：`sudo systemctl start nginx`
         - 或者`sudo service nginx start`
         - 如果已经启动，则重载配置：`sudo nginx -s reload`
@@ -83,7 +127,8 @@
         - `CREATE DATABASE DjangoAuth;`
         - `CREATE DATABASE SilencerAtlas;`
         - 其余步骤自己查，或者用数据库管理工具建表，更加方便快速
-        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插插进去***☆☆☆☆☆
+        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插插进去***
+          ☆☆☆☆☆
     - 配置`System/Manage/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
     - 迁移数据库
